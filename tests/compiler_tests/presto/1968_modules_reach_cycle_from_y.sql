@@ -371,7 +371,7 @@ CREATE TABLE synalog_test.Graph_Reach_sn_new_f9 AS WITH t_1_Loop AS (SELECT * FR
       'z' AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
+t_3_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
   
     SELECT
       Loop.a AS a,
@@ -382,32 +382,51 @@ t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
   
     SELECT
       Graph_Reach_sn_delta_f9.a AS a,
-      t_2_Loop.b AS b
+      t_4_Loop.b AS b
     FROM
-      synalog_test.Graph_Reach_sn_delta_f9 AS Graph_Reach_sn_delta_f9, t_1_Loop AS t_2_Loop
+      synalog_test.Graph_Reach_sn_delta_f9 AS Graph_Reach_sn_delta_f9, t_1_Loop AS t_4_Loop
     WHERE
-      (t_2_Loop.a = Graph_Reach_sn_delta_f9.b)
+      (t_4_Loop.a = Graph_Reach_sn_delta_f9.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Graph_Reach_sn_step_f9 AS (SELECT
+t_2_Graph_Reach_sn_step_f9 AS (SELECT
   Graph_Reach_MultBodyAggAux_f8_f9.a AS a,
   Graph_Reach_MultBodyAggAux_f8_f9.b AS b
 FROM
-  t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS Graph_Reach_MultBodyAggAux_f8_f9
+  t_3_Graph_Reach_MultBodyAggAux_f8_f9 AS Graph_Reach_MultBodyAggAux_f8_f9
+GROUP BY 1, 2),
+t_1_Graph_Reach_sn_seen_MultBodyAggAux_f9 AS (SELECT * FROM (
+  
+    SELECT
+      Graph_Reach_sn_full_f9.a AS a,
+      Graph_Reach_sn_full_f9.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
+   UNION ALL
+  
+    SELECT
+      Graph_Reach_sn_step_f9.a AS a,
+      Graph_Reach_sn_step_f9.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Graph_Reach_sn_step_f9 AS Graph_Reach_sn_step_f9
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Graph_Reach_sn_seen_f9 AS (SELECT
+  Graph_Reach_sn_seen_MultBodyAggAux_f9.a AS a,
+  Graph_Reach_sn_seen_MultBodyAggAux_f9.b AS b,
+  MAX(Graph_Reach_sn_seen_MultBodyAggAux_f9.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Graph_Reach_sn_seen_MultBodyAggAux_f9 AS Graph_Reach_sn_seen_MultBodyAggAux_f9
 GROUP BY 1, 2)
 SELECT
-  Graph_Reach_sn_step_f9.a AS a,
-  Graph_Reach_sn_step_f9.b AS b
+  Graph_Reach_sn_seen_f9.a AS a,
+  Graph_Reach_sn_seen_f9.b AS b
 FROM
-  t_0_Graph_Reach_sn_step_f9 AS Graph_Reach_sn_step_f9
+  t_0_Graph_Reach_sn_seen_f9 AS Graph_Reach_sn_seen_f9
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
-  WHERE
-    (Graph_Reach_sn_full_f9.a = Graph_Reach_sn_step_f9.a) AND
-    (Graph_Reach_sn_full_f9.b = Graph_Reach_sn_step_f9.b)) IS NULL)
+  (Graph_Reach_sn_seen_f9.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Graph_Reach_sn_full_f9 SELECT * FROM synalog_test.Graph_Reach_sn_new_f9;
@@ -430,7 +449,7 @@ CREATE TABLE synalog_test.Graph_Reach_sn_delta_f9 AS WITH t_1_Loop AS (SELECT * 
       'z' AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
+t_3_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
   
     SELECT
       Loop.a AS a,
@@ -441,32 +460,51 @@ t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
   
     SELECT
       Graph_Reach_sn_new_f9.a AS a,
-      t_2_Loop.b AS b
+      t_4_Loop.b AS b
     FROM
-      synalog_test.Graph_Reach_sn_new_f9 AS Graph_Reach_sn_new_f9, t_1_Loop AS t_2_Loop
+      synalog_test.Graph_Reach_sn_new_f9 AS Graph_Reach_sn_new_f9, t_1_Loop AS t_4_Loop
     WHERE
-      (t_2_Loop.a = Graph_Reach_sn_new_f9.b)
+      (t_4_Loop.a = Graph_Reach_sn_new_f9.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Graph_Reach_sn_back_step_f9 AS (SELECT
+t_2_Graph_Reach_sn_back_step_f9 AS (SELECT
   Graph_Reach_MultBodyAggAux_f1_f9.a AS a,
   Graph_Reach_MultBodyAggAux_f1_f9.b AS b
 FROM
-  t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS Graph_Reach_MultBodyAggAux_f1_f9
+  t_3_Graph_Reach_MultBodyAggAux_f1_f9 AS Graph_Reach_MultBodyAggAux_f1_f9
+GROUP BY 1, 2),
+t_1_Graph_Reach_sn_back_seen_MultBodyAggAux_f9 AS (SELECT * FROM (
+  
+    SELECT
+      Graph_Reach_sn_back_step_f9.a AS a,
+      Graph_Reach_sn_back_step_f9.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Graph_Reach_sn_back_step_f9 AS Graph_Reach_sn_back_step_f9
+   UNION ALL
+  
+    SELECT
+      Graph_Reach_sn_full_f9.a AS a,
+      Graph_Reach_sn_full_f9.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Graph_Reach_sn_back_seen_f9 AS (SELECT
+  Graph_Reach_sn_back_seen_MultBodyAggAux_f9.a AS a,
+  Graph_Reach_sn_back_seen_MultBodyAggAux_f9.b AS b,
+  MAX(Graph_Reach_sn_back_seen_MultBodyAggAux_f9.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Graph_Reach_sn_back_seen_MultBodyAggAux_f9 AS Graph_Reach_sn_back_seen_MultBodyAggAux_f9
 GROUP BY 1, 2)
 SELECT
-  Graph_Reach_sn_back_step_f9.a AS a,
-  Graph_Reach_sn_back_step_f9.b AS b
+  Graph_Reach_sn_back_seen_f9.a AS a,
+  Graph_Reach_sn_back_seen_f9.b AS b
 FROM
-  t_0_Graph_Reach_sn_back_step_f9 AS Graph_Reach_sn_back_step_f9
+  t_0_Graph_Reach_sn_back_seen_f9 AS Graph_Reach_sn_back_seen_f9
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
-  WHERE
-    (Graph_Reach_sn_full_f9.a = Graph_Reach_sn_back_step_f9.a) AND
-    (Graph_Reach_sn_full_f9.b = Graph_Reach_sn_back_step_f9.b)) IS NULL)
+  (Graph_Reach_sn_back_seen_f9.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Graph_Reach_sn_full_f9 SELECT * FROM synalog_test.Graph_Reach_sn_delta_f9;
@@ -489,7 +527,7 @@ CREATE TABLE synalog_test.Graph_Reach_sn_new_f9 AS WITH t_1_Loop AS (SELECT * FR
       'z' AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
+t_3_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
   
     SELECT
       Loop.a AS a,
@@ -500,32 +538,51 @@ t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
   
     SELECT
       Graph_Reach_sn_delta_f9.a AS a,
-      t_2_Loop.b AS b
+      t_4_Loop.b AS b
     FROM
-      synalog_test.Graph_Reach_sn_delta_f9 AS Graph_Reach_sn_delta_f9, t_1_Loop AS t_2_Loop
+      synalog_test.Graph_Reach_sn_delta_f9 AS Graph_Reach_sn_delta_f9, t_1_Loop AS t_4_Loop
     WHERE
-      (t_2_Loop.a = Graph_Reach_sn_delta_f9.b)
+      (t_4_Loop.a = Graph_Reach_sn_delta_f9.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Graph_Reach_sn_step_f9 AS (SELECT
+t_2_Graph_Reach_sn_step_f9 AS (SELECT
   Graph_Reach_MultBodyAggAux_f8_f9.a AS a,
   Graph_Reach_MultBodyAggAux_f8_f9.b AS b
 FROM
-  t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS Graph_Reach_MultBodyAggAux_f8_f9
+  t_3_Graph_Reach_MultBodyAggAux_f8_f9 AS Graph_Reach_MultBodyAggAux_f8_f9
+GROUP BY 1, 2),
+t_1_Graph_Reach_sn_seen_MultBodyAggAux_f9 AS (SELECT * FROM (
+  
+    SELECT
+      Graph_Reach_sn_full_f9.a AS a,
+      Graph_Reach_sn_full_f9.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
+   UNION ALL
+  
+    SELECT
+      Graph_Reach_sn_step_f9.a AS a,
+      Graph_Reach_sn_step_f9.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Graph_Reach_sn_step_f9 AS Graph_Reach_sn_step_f9
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Graph_Reach_sn_seen_f9 AS (SELECT
+  Graph_Reach_sn_seen_MultBodyAggAux_f9.a AS a,
+  Graph_Reach_sn_seen_MultBodyAggAux_f9.b AS b,
+  MAX(Graph_Reach_sn_seen_MultBodyAggAux_f9.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Graph_Reach_sn_seen_MultBodyAggAux_f9 AS Graph_Reach_sn_seen_MultBodyAggAux_f9
 GROUP BY 1, 2)
 SELECT
-  Graph_Reach_sn_step_f9.a AS a,
-  Graph_Reach_sn_step_f9.b AS b
+  Graph_Reach_sn_seen_f9.a AS a,
+  Graph_Reach_sn_seen_f9.b AS b
 FROM
-  t_0_Graph_Reach_sn_step_f9 AS Graph_Reach_sn_step_f9
+  t_0_Graph_Reach_sn_seen_f9 AS Graph_Reach_sn_seen_f9
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
-  WHERE
-    (Graph_Reach_sn_full_f9.a = Graph_Reach_sn_step_f9.a) AND
-    (Graph_Reach_sn_full_f9.b = Graph_Reach_sn_step_f9.b)) IS NULL)
+  (Graph_Reach_sn_seen_f9.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Graph_Reach_sn_full_f9 SELECT * FROM synalog_test.Graph_Reach_sn_new_f9;
@@ -548,7 +605,7 @@ CREATE TABLE synalog_test.Graph_Reach_sn_delta_f9 AS WITH t_1_Loop AS (SELECT * 
       'z' AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
+t_3_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
   
     SELECT
       Loop.a AS a,
@@ -559,32 +616,51 @@ t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
   
     SELECT
       Graph_Reach_sn_new_f9.a AS a,
-      t_2_Loop.b AS b
+      t_4_Loop.b AS b
     FROM
-      synalog_test.Graph_Reach_sn_new_f9 AS Graph_Reach_sn_new_f9, t_1_Loop AS t_2_Loop
+      synalog_test.Graph_Reach_sn_new_f9 AS Graph_Reach_sn_new_f9, t_1_Loop AS t_4_Loop
     WHERE
-      (t_2_Loop.a = Graph_Reach_sn_new_f9.b)
+      (t_4_Loop.a = Graph_Reach_sn_new_f9.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Graph_Reach_sn_back_step_f9 AS (SELECT
+t_2_Graph_Reach_sn_back_step_f9 AS (SELECT
   Graph_Reach_MultBodyAggAux_f1_f9.a AS a,
   Graph_Reach_MultBodyAggAux_f1_f9.b AS b
 FROM
-  t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS Graph_Reach_MultBodyAggAux_f1_f9
+  t_3_Graph_Reach_MultBodyAggAux_f1_f9 AS Graph_Reach_MultBodyAggAux_f1_f9
+GROUP BY 1, 2),
+t_1_Graph_Reach_sn_back_seen_MultBodyAggAux_f9 AS (SELECT * FROM (
+  
+    SELECT
+      Graph_Reach_sn_back_step_f9.a AS a,
+      Graph_Reach_sn_back_step_f9.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Graph_Reach_sn_back_step_f9 AS Graph_Reach_sn_back_step_f9
+   UNION ALL
+  
+    SELECT
+      Graph_Reach_sn_full_f9.a AS a,
+      Graph_Reach_sn_full_f9.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Graph_Reach_sn_back_seen_f9 AS (SELECT
+  Graph_Reach_sn_back_seen_MultBodyAggAux_f9.a AS a,
+  Graph_Reach_sn_back_seen_MultBodyAggAux_f9.b AS b,
+  MAX(Graph_Reach_sn_back_seen_MultBodyAggAux_f9.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Graph_Reach_sn_back_seen_MultBodyAggAux_f9 AS Graph_Reach_sn_back_seen_MultBodyAggAux_f9
 GROUP BY 1, 2)
 SELECT
-  Graph_Reach_sn_back_step_f9.a AS a,
-  Graph_Reach_sn_back_step_f9.b AS b
+  Graph_Reach_sn_back_seen_f9.a AS a,
+  Graph_Reach_sn_back_seen_f9.b AS b
 FROM
-  t_0_Graph_Reach_sn_back_step_f9 AS Graph_Reach_sn_back_step_f9
+  t_0_Graph_Reach_sn_back_seen_f9 AS Graph_Reach_sn_back_seen_f9
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
-  WHERE
-    (Graph_Reach_sn_full_f9.a = Graph_Reach_sn_back_step_f9.a) AND
-    (Graph_Reach_sn_full_f9.b = Graph_Reach_sn_back_step_f9.b)) IS NULL)
+  (Graph_Reach_sn_back_seen_f9.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Graph_Reach_sn_full_f9 SELECT * FROM synalog_test.Graph_Reach_sn_delta_f9;
@@ -607,7 +683,7 @@ CREATE TABLE synalog_test.Graph_Reach_sn_new_f9 AS WITH t_1_Loop AS (SELECT * FR
       'z' AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
+t_3_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
   
     SELECT
       Loop.a AS a,
@@ -618,32 +694,51 @@ t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
   
     SELECT
       Graph_Reach_sn_delta_f9.a AS a,
-      t_2_Loop.b AS b
+      t_4_Loop.b AS b
     FROM
-      synalog_test.Graph_Reach_sn_delta_f9 AS Graph_Reach_sn_delta_f9, t_1_Loop AS t_2_Loop
+      synalog_test.Graph_Reach_sn_delta_f9 AS Graph_Reach_sn_delta_f9, t_1_Loop AS t_4_Loop
     WHERE
-      (t_2_Loop.a = Graph_Reach_sn_delta_f9.b)
+      (t_4_Loop.a = Graph_Reach_sn_delta_f9.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Graph_Reach_sn_step_f9 AS (SELECT
+t_2_Graph_Reach_sn_step_f9 AS (SELECT
   Graph_Reach_MultBodyAggAux_f8_f9.a AS a,
   Graph_Reach_MultBodyAggAux_f8_f9.b AS b
 FROM
-  t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS Graph_Reach_MultBodyAggAux_f8_f9
+  t_3_Graph_Reach_MultBodyAggAux_f8_f9 AS Graph_Reach_MultBodyAggAux_f8_f9
+GROUP BY 1, 2),
+t_1_Graph_Reach_sn_seen_MultBodyAggAux_f9 AS (SELECT * FROM (
+  
+    SELECT
+      Graph_Reach_sn_full_f9.a AS a,
+      Graph_Reach_sn_full_f9.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
+   UNION ALL
+  
+    SELECT
+      Graph_Reach_sn_step_f9.a AS a,
+      Graph_Reach_sn_step_f9.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Graph_Reach_sn_step_f9 AS Graph_Reach_sn_step_f9
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Graph_Reach_sn_seen_f9 AS (SELECT
+  Graph_Reach_sn_seen_MultBodyAggAux_f9.a AS a,
+  Graph_Reach_sn_seen_MultBodyAggAux_f9.b AS b,
+  MAX(Graph_Reach_sn_seen_MultBodyAggAux_f9.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Graph_Reach_sn_seen_MultBodyAggAux_f9 AS Graph_Reach_sn_seen_MultBodyAggAux_f9
 GROUP BY 1, 2)
 SELECT
-  Graph_Reach_sn_step_f9.a AS a,
-  Graph_Reach_sn_step_f9.b AS b
+  Graph_Reach_sn_seen_f9.a AS a,
+  Graph_Reach_sn_seen_f9.b AS b
 FROM
-  t_0_Graph_Reach_sn_step_f9 AS Graph_Reach_sn_step_f9
+  t_0_Graph_Reach_sn_seen_f9 AS Graph_Reach_sn_seen_f9
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
-  WHERE
-    (Graph_Reach_sn_full_f9.a = Graph_Reach_sn_step_f9.a) AND
-    (Graph_Reach_sn_full_f9.b = Graph_Reach_sn_step_f9.b)) IS NULL)
+  (Graph_Reach_sn_seen_f9.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Graph_Reach_sn_full_f9 SELECT * FROM synalog_test.Graph_Reach_sn_new_f9;
@@ -666,7 +761,7 @@ CREATE TABLE synalog_test.Graph_Reach_sn_delta_f9 AS WITH t_1_Loop AS (SELECT * 
       'z' AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
+t_3_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
   
     SELECT
       Loop.a AS a,
@@ -677,32 +772,51 @@ t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
   
     SELECT
       Graph_Reach_sn_new_f9.a AS a,
-      t_2_Loop.b AS b
+      t_4_Loop.b AS b
     FROM
-      synalog_test.Graph_Reach_sn_new_f9 AS Graph_Reach_sn_new_f9, t_1_Loop AS t_2_Loop
+      synalog_test.Graph_Reach_sn_new_f9 AS Graph_Reach_sn_new_f9, t_1_Loop AS t_4_Loop
     WHERE
-      (t_2_Loop.a = Graph_Reach_sn_new_f9.b)
+      (t_4_Loop.a = Graph_Reach_sn_new_f9.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Graph_Reach_sn_back_step_f9 AS (SELECT
+t_2_Graph_Reach_sn_back_step_f9 AS (SELECT
   Graph_Reach_MultBodyAggAux_f1_f9.a AS a,
   Graph_Reach_MultBodyAggAux_f1_f9.b AS b
 FROM
-  t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS Graph_Reach_MultBodyAggAux_f1_f9
+  t_3_Graph_Reach_MultBodyAggAux_f1_f9 AS Graph_Reach_MultBodyAggAux_f1_f9
+GROUP BY 1, 2),
+t_1_Graph_Reach_sn_back_seen_MultBodyAggAux_f9 AS (SELECT * FROM (
+  
+    SELECT
+      Graph_Reach_sn_back_step_f9.a AS a,
+      Graph_Reach_sn_back_step_f9.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Graph_Reach_sn_back_step_f9 AS Graph_Reach_sn_back_step_f9
+   UNION ALL
+  
+    SELECT
+      Graph_Reach_sn_full_f9.a AS a,
+      Graph_Reach_sn_full_f9.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Graph_Reach_sn_back_seen_f9 AS (SELECT
+  Graph_Reach_sn_back_seen_MultBodyAggAux_f9.a AS a,
+  Graph_Reach_sn_back_seen_MultBodyAggAux_f9.b AS b,
+  MAX(Graph_Reach_sn_back_seen_MultBodyAggAux_f9.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Graph_Reach_sn_back_seen_MultBodyAggAux_f9 AS Graph_Reach_sn_back_seen_MultBodyAggAux_f9
 GROUP BY 1, 2)
 SELECT
-  Graph_Reach_sn_back_step_f9.a AS a,
-  Graph_Reach_sn_back_step_f9.b AS b
+  Graph_Reach_sn_back_seen_f9.a AS a,
+  Graph_Reach_sn_back_seen_f9.b AS b
 FROM
-  t_0_Graph_Reach_sn_back_step_f9 AS Graph_Reach_sn_back_step_f9
+  t_0_Graph_Reach_sn_back_seen_f9 AS Graph_Reach_sn_back_seen_f9
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
-  WHERE
-    (Graph_Reach_sn_full_f9.a = Graph_Reach_sn_back_step_f9.a) AND
-    (Graph_Reach_sn_full_f9.b = Graph_Reach_sn_back_step_f9.b)) IS NULL)
+  (Graph_Reach_sn_back_seen_f9.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Graph_Reach_sn_full_f9 SELECT * FROM synalog_test.Graph_Reach_sn_delta_f9;
@@ -725,7 +839,7 @@ CREATE TABLE synalog_test.Graph_Reach_sn_new_f9 AS WITH t_1_Loop AS (SELECT * FR
       'z' AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
+t_3_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
   
     SELECT
       Loop.a AS a,
@@ -736,32 +850,51 @@ t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
   
     SELECT
       Graph_Reach_sn_delta_f9.a AS a,
-      t_2_Loop.b AS b
+      t_4_Loop.b AS b
     FROM
-      synalog_test.Graph_Reach_sn_delta_f9 AS Graph_Reach_sn_delta_f9, t_1_Loop AS t_2_Loop
+      synalog_test.Graph_Reach_sn_delta_f9 AS Graph_Reach_sn_delta_f9, t_1_Loop AS t_4_Loop
     WHERE
-      (t_2_Loop.a = Graph_Reach_sn_delta_f9.b)
+      (t_4_Loop.a = Graph_Reach_sn_delta_f9.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Graph_Reach_sn_step_f9 AS (SELECT
+t_2_Graph_Reach_sn_step_f9 AS (SELECT
   Graph_Reach_MultBodyAggAux_f8_f9.a AS a,
   Graph_Reach_MultBodyAggAux_f8_f9.b AS b
 FROM
-  t_1_Graph_Reach_MultBodyAggAux_f8_f9 AS Graph_Reach_MultBodyAggAux_f8_f9
+  t_3_Graph_Reach_MultBodyAggAux_f8_f9 AS Graph_Reach_MultBodyAggAux_f8_f9
+GROUP BY 1, 2),
+t_1_Graph_Reach_sn_seen_MultBodyAggAux_f9 AS (SELECT * FROM (
+  
+    SELECT
+      Graph_Reach_sn_full_f9.a AS a,
+      Graph_Reach_sn_full_f9.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
+   UNION ALL
+  
+    SELECT
+      Graph_Reach_sn_step_f9.a AS a,
+      Graph_Reach_sn_step_f9.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Graph_Reach_sn_step_f9 AS Graph_Reach_sn_step_f9
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Graph_Reach_sn_seen_f9 AS (SELECT
+  Graph_Reach_sn_seen_MultBodyAggAux_f9.a AS a,
+  Graph_Reach_sn_seen_MultBodyAggAux_f9.b AS b,
+  MAX(Graph_Reach_sn_seen_MultBodyAggAux_f9.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Graph_Reach_sn_seen_MultBodyAggAux_f9 AS Graph_Reach_sn_seen_MultBodyAggAux_f9
 GROUP BY 1, 2)
 SELECT
-  Graph_Reach_sn_step_f9.a AS a,
-  Graph_Reach_sn_step_f9.b AS b
+  Graph_Reach_sn_seen_f9.a AS a,
+  Graph_Reach_sn_seen_f9.b AS b
 FROM
-  t_0_Graph_Reach_sn_step_f9 AS Graph_Reach_sn_step_f9
+  t_0_Graph_Reach_sn_seen_f9 AS Graph_Reach_sn_seen_f9
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
-  WHERE
-    (Graph_Reach_sn_full_f9.a = Graph_Reach_sn_step_f9.a) AND
-    (Graph_Reach_sn_full_f9.b = Graph_Reach_sn_step_f9.b)) IS NULL)
+  (Graph_Reach_sn_seen_f9.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Graph_Reach_sn_full_f9 SELECT * FROM synalog_test.Graph_Reach_sn_new_f9;
@@ -784,7 +917,7 @@ CREATE TABLE synalog_test.Graph_Reach_sn_delta_f9 AS WITH t_1_Loop AS (SELECT * 
       'z' AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
+t_3_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
   
     SELECT
       Loop.a AS a,
@@ -795,32 +928,51 @@ t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
   
     SELECT
       Graph_Reach_sn_new_f9.a AS a,
-      t_2_Loop.b AS b
+      t_4_Loop.b AS b
     FROM
-      synalog_test.Graph_Reach_sn_new_f9 AS Graph_Reach_sn_new_f9, t_1_Loop AS t_2_Loop
+      synalog_test.Graph_Reach_sn_new_f9 AS Graph_Reach_sn_new_f9, t_1_Loop AS t_4_Loop
     WHERE
-      (t_2_Loop.a = Graph_Reach_sn_new_f9.b)
+      (t_4_Loop.a = Graph_Reach_sn_new_f9.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Graph_Reach_sn_back_step_f9 AS (SELECT
+t_2_Graph_Reach_sn_back_step_f9 AS (SELECT
   Graph_Reach_MultBodyAggAux_f1_f9.a AS a,
   Graph_Reach_MultBodyAggAux_f1_f9.b AS b
 FROM
-  t_1_Graph_Reach_MultBodyAggAux_f1_f9 AS Graph_Reach_MultBodyAggAux_f1_f9
+  t_3_Graph_Reach_MultBodyAggAux_f1_f9 AS Graph_Reach_MultBodyAggAux_f1_f9
+GROUP BY 1, 2),
+t_1_Graph_Reach_sn_back_seen_MultBodyAggAux_f9 AS (SELECT * FROM (
+  
+    SELECT
+      Graph_Reach_sn_back_step_f9.a AS a,
+      Graph_Reach_sn_back_step_f9.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Graph_Reach_sn_back_step_f9 AS Graph_Reach_sn_back_step_f9
+   UNION ALL
+  
+    SELECT
+      Graph_Reach_sn_full_f9.a AS a,
+      Graph_Reach_sn_full_f9.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Graph_Reach_sn_back_seen_f9 AS (SELECT
+  Graph_Reach_sn_back_seen_MultBodyAggAux_f9.a AS a,
+  Graph_Reach_sn_back_seen_MultBodyAggAux_f9.b AS b,
+  MAX(Graph_Reach_sn_back_seen_MultBodyAggAux_f9.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Graph_Reach_sn_back_seen_MultBodyAggAux_f9 AS Graph_Reach_sn_back_seen_MultBodyAggAux_f9
 GROUP BY 1, 2)
 SELECT
-  Graph_Reach_sn_back_step_f9.a AS a,
-  Graph_Reach_sn_back_step_f9.b AS b
+  Graph_Reach_sn_back_seen_f9.a AS a,
+  Graph_Reach_sn_back_seen_f9.b AS b
 FROM
-  t_0_Graph_Reach_sn_back_step_f9 AS Graph_Reach_sn_back_step_f9
+  t_0_Graph_Reach_sn_back_seen_f9 AS Graph_Reach_sn_back_seen_f9
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Graph_Reach_sn_full_f9 AS Graph_Reach_sn_full_f9
-  WHERE
-    (Graph_Reach_sn_full_f9.a = Graph_Reach_sn_back_step_f9.a) AND
-    (Graph_Reach_sn_full_f9.b = Graph_Reach_sn_back_step_f9.b)) IS NULL)
+  (Graph_Reach_sn_back_seen_f9.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Graph_Reach_sn_full_f9 SELECT * FROM synalog_test.Graph_Reach_sn_delta_f9;

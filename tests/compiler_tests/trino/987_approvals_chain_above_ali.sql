@@ -406,7 +406,7 @@ CREATE TABLE synalog_test.Above_sn_new AS WITH t_1_ApproverOf AS (SELECT * FROM 
       'ali' AS requester
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       ApproverOf.approver AS approver,
@@ -416,33 +416,52 @@ t_1_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_ApproverOf.approver AS approver,
+      t_4_ApproverOf.approver AS approver,
       Above_sn_delta.requester AS requester
     FROM
-      synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_2_ApproverOf
+      synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_delta.approver)
+      (t_4_ApproverOf.requester = Above_sn_delta.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Above_sn_step AS (SELECT
+t_2_Above_sn_step AS (SELECT
   Above_MultBodyAggAux_f8.approver AS approver,
   Above_MultBodyAggAux_f8.requester AS requester
 FROM
-  t_1_Above_MultBodyAggAux_f8 AS Above_MultBodyAggAux_f8
+  t_3_Above_MultBodyAggAux_f8 AS Above_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Above_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Above_sn_step.approver AS approver,
+      Above_sn_step.requester AS requester,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Above_sn_step AS Above_sn_step
+   UNION ALL
+  
+    SELECT
+      Above_sn_full.approver AS approver,
+      Above_sn_full.requester AS requester,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Above_sn_full AS Above_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Above_sn_seen AS (SELECT
+  Above_sn_seen_MultBodyAggAux.approver AS approver,
+  Above_sn_seen_MultBodyAggAux.requester AS requester,
+  MAX(Above_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Above_sn_seen_MultBodyAggAux AS Above_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Above_sn_step.approver AS approver,
-  Above_sn_step.requester AS requester
+  Above_sn_seen.approver AS approver,
+  Above_sn_seen.requester AS requester
 FROM
-  t_0_Above_sn_step AS Above_sn_step
+  t_0_Above_sn_seen AS Above_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Above_sn_full AS Above_sn_full
-  WHERE
-    (Above_sn_full.approver = Above_sn_step.approver) AND
-    (Above_sn_full.requester = Above_sn_step.requester)) IS NULL)
+  (Above_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Above_sn_full SELECT * FROM synalog_test.Above_sn_new;
@@ -470,7 +489,7 @@ CREATE TABLE synalog_test.Above_sn_delta AS WITH t_1_ApproverOf AS (SELECT * FRO
       'ali' AS requester
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       ApproverOf.approver AS approver,
@@ -480,33 +499,52 @@ t_1_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_ApproverOf.approver AS approver,
+      t_4_ApproverOf.approver AS approver,
       Above_sn_new.requester AS requester
     FROM
-      synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_2_ApproverOf
+      synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_new.approver)
+      (t_4_ApproverOf.requester = Above_sn_new.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Above_sn_back_step AS (SELECT
+t_2_Above_sn_back_step AS (SELECT
   Above_MultBodyAggAux_f1.approver AS approver,
   Above_MultBodyAggAux_f1.requester AS requester
 FROM
-  t_1_Above_MultBodyAggAux_f1 AS Above_MultBodyAggAux_f1
+  t_3_Above_MultBodyAggAux_f1 AS Above_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Above_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Above_sn_back_step.approver AS approver,
+      Above_sn_back_step.requester AS requester,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Above_sn_back_step AS Above_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Above_sn_full.approver AS approver,
+      Above_sn_full.requester AS requester,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Above_sn_full AS Above_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Above_sn_back_seen AS (SELECT
+  Above_sn_back_seen_MultBodyAggAux.approver AS approver,
+  Above_sn_back_seen_MultBodyAggAux.requester AS requester,
+  MAX(Above_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Above_sn_back_seen_MultBodyAggAux AS Above_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Above_sn_back_step.approver AS approver,
-  Above_sn_back_step.requester AS requester
+  Above_sn_back_seen.approver AS approver,
+  Above_sn_back_seen.requester AS requester
 FROM
-  t_0_Above_sn_back_step AS Above_sn_back_step
+  t_0_Above_sn_back_seen AS Above_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Above_sn_full AS Above_sn_full
-  WHERE
-    (Above_sn_full.approver = Above_sn_back_step.approver) AND
-    (Above_sn_full.requester = Above_sn_back_step.requester)) IS NULL)
+  (Above_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Above_sn_full SELECT * FROM synalog_test.Above_sn_delta;
@@ -534,7 +572,7 @@ CREATE TABLE synalog_test.Above_sn_new AS WITH t_1_ApproverOf AS (SELECT * FROM 
       'ali' AS requester
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       ApproverOf.approver AS approver,
@@ -544,33 +582,52 @@ t_1_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_ApproverOf.approver AS approver,
+      t_4_ApproverOf.approver AS approver,
       Above_sn_delta.requester AS requester
     FROM
-      synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_2_ApproverOf
+      synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_delta.approver)
+      (t_4_ApproverOf.requester = Above_sn_delta.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Above_sn_step AS (SELECT
+t_2_Above_sn_step AS (SELECT
   Above_MultBodyAggAux_f8.approver AS approver,
   Above_MultBodyAggAux_f8.requester AS requester
 FROM
-  t_1_Above_MultBodyAggAux_f8 AS Above_MultBodyAggAux_f8
+  t_3_Above_MultBodyAggAux_f8 AS Above_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Above_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Above_sn_step.approver AS approver,
+      Above_sn_step.requester AS requester,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Above_sn_step AS Above_sn_step
+   UNION ALL
+  
+    SELECT
+      Above_sn_full.approver AS approver,
+      Above_sn_full.requester AS requester,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Above_sn_full AS Above_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Above_sn_seen AS (SELECT
+  Above_sn_seen_MultBodyAggAux.approver AS approver,
+  Above_sn_seen_MultBodyAggAux.requester AS requester,
+  MAX(Above_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Above_sn_seen_MultBodyAggAux AS Above_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Above_sn_step.approver AS approver,
-  Above_sn_step.requester AS requester
+  Above_sn_seen.approver AS approver,
+  Above_sn_seen.requester AS requester
 FROM
-  t_0_Above_sn_step AS Above_sn_step
+  t_0_Above_sn_seen AS Above_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Above_sn_full AS Above_sn_full
-  WHERE
-    (Above_sn_full.approver = Above_sn_step.approver) AND
-    (Above_sn_full.requester = Above_sn_step.requester)) IS NULL)
+  (Above_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Above_sn_full SELECT * FROM synalog_test.Above_sn_new;
@@ -598,7 +655,7 @@ CREATE TABLE synalog_test.Above_sn_delta AS WITH t_1_ApproverOf AS (SELECT * FRO
       'ali' AS requester
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       ApproverOf.approver AS approver,
@@ -608,33 +665,52 @@ t_1_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_ApproverOf.approver AS approver,
+      t_4_ApproverOf.approver AS approver,
       Above_sn_new.requester AS requester
     FROM
-      synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_2_ApproverOf
+      synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_new.approver)
+      (t_4_ApproverOf.requester = Above_sn_new.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Above_sn_back_step AS (SELECT
+t_2_Above_sn_back_step AS (SELECT
   Above_MultBodyAggAux_f1.approver AS approver,
   Above_MultBodyAggAux_f1.requester AS requester
 FROM
-  t_1_Above_MultBodyAggAux_f1 AS Above_MultBodyAggAux_f1
+  t_3_Above_MultBodyAggAux_f1 AS Above_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Above_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Above_sn_back_step.approver AS approver,
+      Above_sn_back_step.requester AS requester,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Above_sn_back_step AS Above_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Above_sn_full.approver AS approver,
+      Above_sn_full.requester AS requester,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Above_sn_full AS Above_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Above_sn_back_seen AS (SELECT
+  Above_sn_back_seen_MultBodyAggAux.approver AS approver,
+  Above_sn_back_seen_MultBodyAggAux.requester AS requester,
+  MAX(Above_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Above_sn_back_seen_MultBodyAggAux AS Above_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Above_sn_back_step.approver AS approver,
-  Above_sn_back_step.requester AS requester
+  Above_sn_back_seen.approver AS approver,
+  Above_sn_back_seen.requester AS requester
 FROM
-  t_0_Above_sn_back_step AS Above_sn_back_step
+  t_0_Above_sn_back_seen AS Above_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Above_sn_full AS Above_sn_full
-  WHERE
-    (Above_sn_full.approver = Above_sn_back_step.approver) AND
-    (Above_sn_full.requester = Above_sn_back_step.requester)) IS NULL)
+  (Above_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Above_sn_full SELECT * FROM synalog_test.Above_sn_delta;
@@ -662,7 +738,7 @@ CREATE TABLE synalog_test.Above_sn_new AS WITH t_1_ApproverOf AS (SELECT * FROM 
       'ali' AS requester
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       ApproverOf.approver AS approver,
@@ -672,33 +748,52 @@ t_1_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_ApproverOf.approver AS approver,
+      t_4_ApproverOf.approver AS approver,
       Above_sn_delta.requester AS requester
     FROM
-      synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_2_ApproverOf
+      synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_delta.approver)
+      (t_4_ApproverOf.requester = Above_sn_delta.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Above_sn_step AS (SELECT
+t_2_Above_sn_step AS (SELECT
   Above_MultBodyAggAux_f8.approver AS approver,
   Above_MultBodyAggAux_f8.requester AS requester
 FROM
-  t_1_Above_MultBodyAggAux_f8 AS Above_MultBodyAggAux_f8
+  t_3_Above_MultBodyAggAux_f8 AS Above_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Above_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Above_sn_step.approver AS approver,
+      Above_sn_step.requester AS requester,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Above_sn_step AS Above_sn_step
+   UNION ALL
+  
+    SELECT
+      Above_sn_full.approver AS approver,
+      Above_sn_full.requester AS requester,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Above_sn_full AS Above_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Above_sn_seen AS (SELECT
+  Above_sn_seen_MultBodyAggAux.approver AS approver,
+  Above_sn_seen_MultBodyAggAux.requester AS requester,
+  MAX(Above_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Above_sn_seen_MultBodyAggAux AS Above_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Above_sn_step.approver AS approver,
-  Above_sn_step.requester AS requester
+  Above_sn_seen.approver AS approver,
+  Above_sn_seen.requester AS requester
 FROM
-  t_0_Above_sn_step AS Above_sn_step
+  t_0_Above_sn_seen AS Above_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Above_sn_full AS Above_sn_full
-  WHERE
-    (Above_sn_full.approver = Above_sn_step.approver) AND
-    (Above_sn_full.requester = Above_sn_step.requester)) IS NULL)
+  (Above_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Above_sn_full SELECT * FROM synalog_test.Above_sn_new;
@@ -726,7 +821,7 @@ CREATE TABLE synalog_test.Above_sn_delta AS WITH t_1_ApproverOf AS (SELECT * FRO
       'ali' AS requester
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       ApproverOf.approver AS approver,
@@ -736,33 +831,52 @@ t_1_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_ApproverOf.approver AS approver,
+      t_4_ApproverOf.approver AS approver,
       Above_sn_new.requester AS requester
     FROM
-      synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_2_ApproverOf
+      synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_new.approver)
+      (t_4_ApproverOf.requester = Above_sn_new.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Above_sn_back_step AS (SELECT
+t_2_Above_sn_back_step AS (SELECT
   Above_MultBodyAggAux_f1.approver AS approver,
   Above_MultBodyAggAux_f1.requester AS requester
 FROM
-  t_1_Above_MultBodyAggAux_f1 AS Above_MultBodyAggAux_f1
+  t_3_Above_MultBodyAggAux_f1 AS Above_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Above_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Above_sn_back_step.approver AS approver,
+      Above_sn_back_step.requester AS requester,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Above_sn_back_step AS Above_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Above_sn_full.approver AS approver,
+      Above_sn_full.requester AS requester,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Above_sn_full AS Above_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Above_sn_back_seen AS (SELECT
+  Above_sn_back_seen_MultBodyAggAux.approver AS approver,
+  Above_sn_back_seen_MultBodyAggAux.requester AS requester,
+  MAX(Above_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Above_sn_back_seen_MultBodyAggAux AS Above_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Above_sn_back_step.approver AS approver,
-  Above_sn_back_step.requester AS requester
+  Above_sn_back_seen.approver AS approver,
+  Above_sn_back_seen.requester AS requester
 FROM
-  t_0_Above_sn_back_step AS Above_sn_back_step
+  t_0_Above_sn_back_seen AS Above_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Above_sn_full AS Above_sn_full
-  WHERE
-    (Above_sn_full.approver = Above_sn_back_step.approver) AND
-    (Above_sn_full.requester = Above_sn_back_step.requester)) IS NULL)
+  (Above_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Above_sn_full SELECT * FROM synalog_test.Above_sn_delta;

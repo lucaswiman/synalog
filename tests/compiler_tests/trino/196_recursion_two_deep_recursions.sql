@@ -283,1506 +283,2237 @@ CREATE TABLE synalog_test.B_sn_full AS SELECT * FROM (
 -- Interacting with table synalog_test.B_sn_full
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_delta;
-CREATE TABLE synalog_test.A_sn_delta AS WITH t_1_A_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_new AS A_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_new.y = x_9)
+      (A_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_back_step AS (SELECT
+t_2_A_sn_back_step AS (SELECT
   A_MultBodyAggAux_f1.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+  t_3_A_MultBodyAggAux_f1 AS A_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_A_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_back_step AS A_sn_back_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_back_seen AS (SELECT
+  A_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_back_seen_MultBodyAggAux AS A_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_back_step.y AS y
+  A_sn_back_seen.y AS y
 FROM
-  t_0_A_sn_back_step AS A_sn_back_step
+  t_0_A_sn_back_seen AS A_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_back_step.y)) IS NULL)
+  (A_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.A_sn_new;
-CREATE TABLE synalog_test.A_sn_new AS WITH t_1_A_MultBodyAggAux_f6 AS (SELECT * FROM (
+CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.A_sn_delta AS A_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (A_sn_delta.y = x_9)
+      (A_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_A_sn_step AS (SELECT
+t_2_A_sn_step AS (SELECT
   A_MultBodyAggAux_f6.y AS y
 FROM
-  t_1_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+  t_3_A_MultBodyAggAux_f6 AS A_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_A_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      A_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_A_sn_step AS A_sn_step
+   UNION ALL
+  
+    SELECT
+      A_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.A_sn_full AS A_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_A_sn_seen AS (SELECT
+  A_sn_seen_MultBodyAggAux.y AS y,
+  MAX(A_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_A_sn_seen_MultBodyAggAux AS A_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  A_sn_step.y AS y
+  A_sn_seen.y AS y
 FROM
-  t_0_A_sn_step AS A_sn_step
+  t_0_A_sn_seen AS A_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.A_sn_full AS A_sn_full
-  WHERE
-    (A_sn_full.y = A_sn_step.y)) IS NULL)
+  (A_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.A_sn_full SELECT * FROM synalog_test.A_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_new;
-CREATE TABLE synalog_test.B_sn_new AS WITH t_1_B_MultBodyAggAux_f12 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_delta AS B_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_delta.y = x_9)
+      (B_sn_delta.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_step AS (SELECT
+t_2_B_sn_step AS (SELECT
   B_MultBodyAggAux_f12.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+  t_3_B_MultBodyAggAux_f12 AS B_MultBodyAggAux_f12
+GROUP BY 1),
+t_1_B_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_step AS B_sn_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_seen AS (SELECT
+  B_sn_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_seen_MultBodyAggAux AS B_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_step.y AS y
+  B_sn_seen.y AS y
 FROM
-  t_0_B_sn_step AS B_sn_step
+  t_0_B_sn_seen AS B_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_step.y)) IS NULL)
+  (B_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.B_sn_delta;
-CREATE TABLE synalog_test.B_sn_delta AS WITH t_1_B_MultBodyAggAux_f7 AS (SELECT * FROM (
+CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT * FROM (
   
     SELECT
       0 AS y
    UNION ALL
   
     SELECT
-      ((x_9) + (1)) AS y
+      ((x_16) + (1)) AS y
     FROM
-      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
+      synalog_test.B_sn_new AS B_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 100), x -> x < 100), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (B_sn_new.y = x_9)
+      (B_sn_new.y = x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_B_sn_back_step AS (SELECT
+t_2_B_sn_back_step AS (SELECT
   B_MultBodyAggAux_f7.y AS y
 FROM
-  t_1_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+  t_3_B_MultBodyAggAux_f7 AS B_MultBodyAggAux_f7
+GROUP BY 1),
+t_1_B_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      B_sn_back_step.y AS y,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_B_sn_back_step AS B_sn_back_step
+   UNION ALL
+  
+    SELECT
+      B_sn_full.y AS y,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.B_sn_full AS B_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_B_sn_back_seen AS (SELECT
+  B_sn_back_seen_MultBodyAggAux.y AS y,
+  MAX(B_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_B_sn_back_seen_MultBodyAggAux AS B_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  B_sn_back_step.y AS y
+  B_sn_back_seen.y AS y
 FROM
-  t_0_B_sn_back_step AS B_sn_back_step
+  t_0_B_sn_back_seen AS B_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.B_sn_full AS B_sn_full
-  WHERE
-    (B_sn_full.y = B_sn_back_step.y)) IS NULL)
+  (B_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.B_sn_full SELECT * FROM synalog_test.B_sn_delta;

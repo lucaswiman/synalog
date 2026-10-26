@@ -455,7 +455,7 @@ WHERE
   (Management.manager_id = Person.person_id) AND
   (Management.employee_id = t_3_Person.person_id)
 GROUP BY 1, 2),
-t_1_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Chain_sn_delta.employee_id AS employee_id,
@@ -467,31 +467,50 @@ t_1_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_3_Manages.employee_id AS employee_id,
-      t_3_Manages.manager_id AS manager_id
+      t_5_Manages.employee_id AS employee_id,
+      t_5_Manages.manager_id AS manager_id
     FROM
-      t_2_Manages AS t_3_Manages
+      t_2_Manages AS t_5_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Chain_sn_step AS (SELECT
+t_2_Chain_sn_step AS (SELECT
   Chain_MultBodyAggAux_f8.employee_id AS employee_id,
   Chain_MultBodyAggAux_f8.manager_id AS manager_id
 FROM
-  t_1_Chain_MultBodyAggAux_f8 AS Chain_MultBodyAggAux_f8
+  t_3_Chain_MultBodyAggAux_f8 AS Chain_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Chain_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Chain_sn_step.employee_id AS employee_id,
+      Chain_sn_step.manager_id AS manager_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Chain_sn_step AS Chain_sn_step
+   UNION ALL
+  
+    SELECT
+      Chain_sn_full.employee_id AS employee_id,
+      Chain_sn_full.manager_id AS manager_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Chain_sn_full AS Chain_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Chain_sn_seen AS (SELECT
+  Chain_sn_seen_MultBodyAggAux.employee_id AS employee_id,
+  Chain_sn_seen_MultBodyAggAux.manager_id AS manager_id,
+  MAX(Chain_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Chain_sn_seen_MultBodyAggAux AS Chain_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Chain_sn_step.employee_id AS employee_id,
-  Chain_sn_step.manager_id AS manager_id
+  Chain_sn_seen.employee_id AS employee_id,
+  Chain_sn_seen.manager_id AS manager_id
 FROM
-  t_0_Chain_sn_step AS Chain_sn_step
+  t_0_Chain_sn_seen AS Chain_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Chain_sn_full AS Chain_sn_full
-  WHERE
-    (Chain_sn_full.employee_id = Chain_sn_step.employee_id) AND
-    (Chain_sn_full.manager_id = Chain_sn_step.manager_id)) IS NULL)
+  (Chain_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Chain_sn_full SELECT * FROM synalog_test.Chain_sn_new;
@@ -526,7 +545,7 @@ WHERE
   (Management.manager_id = Person.person_id) AND
   (Management.employee_id = t_3_Person.person_id)
 GROUP BY 1, 2),
-t_1_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Chain_sn_new.employee_id AS employee_id,
@@ -538,31 +557,50 @@ t_1_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_3_Manages.employee_id AS employee_id,
-      t_3_Manages.manager_id AS manager_id
+      t_5_Manages.employee_id AS employee_id,
+      t_5_Manages.manager_id AS manager_id
     FROM
-      t_2_Manages AS t_3_Manages
+      t_2_Manages AS t_5_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Chain_sn_back_step AS (SELECT
+t_2_Chain_sn_back_step AS (SELECT
   Chain_MultBodyAggAux_f1.employee_id AS employee_id,
   Chain_MultBodyAggAux_f1.manager_id AS manager_id
 FROM
-  t_1_Chain_MultBodyAggAux_f1 AS Chain_MultBodyAggAux_f1
+  t_3_Chain_MultBodyAggAux_f1 AS Chain_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Chain_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Chain_sn_back_step.employee_id AS employee_id,
+      Chain_sn_back_step.manager_id AS manager_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Chain_sn_back_step AS Chain_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Chain_sn_full.employee_id AS employee_id,
+      Chain_sn_full.manager_id AS manager_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Chain_sn_full AS Chain_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Chain_sn_back_seen AS (SELECT
+  Chain_sn_back_seen_MultBodyAggAux.employee_id AS employee_id,
+  Chain_sn_back_seen_MultBodyAggAux.manager_id AS manager_id,
+  MAX(Chain_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Chain_sn_back_seen_MultBodyAggAux AS Chain_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Chain_sn_back_step.employee_id AS employee_id,
-  Chain_sn_back_step.manager_id AS manager_id
+  Chain_sn_back_seen.employee_id AS employee_id,
+  Chain_sn_back_seen.manager_id AS manager_id
 FROM
-  t_0_Chain_sn_back_step AS Chain_sn_back_step
+  t_0_Chain_sn_back_seen AS Chain_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Chain_sn_full AS Chain_sn_full
-  WHERE
-    (Chain_sn_full.employee_id = Chain_sn_back_step.employee_id) AND
-    (Chain_sn_full.manager_id = Chain_sn_back_step.manager_id)) IS NULL)
+  (Chain_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Chain_sn_full SELECT * FROM synalog_test.Chain_sn_delta;
@@ -597,7 +635,7 @@ WHERE
   (Management.manager_id = Person.person_id) AND
   (Management.employee_id = t_3_Person.person_id)
 GROUP BY 1, 2),
-t_1_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Chain_sn_delta.employee_id AS employee_id,
@@ -609,31 +647,50 @@ t_1_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_3_Manages.employee_id AS employee_id,
-      t_3_Manages.manager_id AS manager_id
+      t_5_Manages.employee_id AS employee_id,
+      t_5_Manages.manager_id AS manager_id
     FROM
-      t_2_Manages AS t_3_Manages
+      t_2_Manages AS t_5_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Chain_sn_step AS (SELECT
+t_2_Chain_sn_step AS (SELECT
   Chain_MultBodyAggAux_f8.employee_id AS employee_id,
   Chain_MultBodyAggAux_f8.manager_id AS manager_id
 FROM
-  t_1_Chain_MultBodyAggAux_f8 AS Chain_MultBodyAggAux_f8
+  t_3_Chain_MultBodyAggAux_f8 AS Chain_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Chain_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Chain_sn_step.employee_id AS employee_id,
+      Chain_sn_step.manager_id AS manager_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Chain_sn_step AS Chain_sn_step
+   UNION ALL
+  
+    SELECT
+      Chain_sn_full.employee_id AS employee_id,
+      Chain_sn_full.manager_id AS manager_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Chain_sn_full AS Chain_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Chain_sn_seen AS (SELECT
+  Chain_sn_seen_MultBodyAggAux.employee_id AS employee_id,
+  Chain_sn_seen_MultBodyAggAux.manager_id AS manager_id,
+  MAX(Chain_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Chain_sn_seen_MultBodyAggAux AS Chain_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Chain_sn_step.employee_id AS employee_id,
-  Chain_sn_step.manager_id AS manager_id
+  Chain_sn_seen.employee_id AS employee_id,
+  Chain_sn_seen.manager_id AS manager_id
 FROM
-  t_0_Chain_sn_step AS Chain_sn_step
+  t_0_Chain_sn_seen AS Chain_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Chain_sn_full AS Chain_sn_full
-  WHERE
-    (Chain_sn_full.employee_id = Chain_sn_step.employee_id) AND
-    (Chain_sn_full.manager_id = Chain_sn_step.manager_id)) IS NULL)
+  (Chain_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Chain_sn_full SELECT * FROM synalog_test.Chain_sn_new;
@@ -668,7 +725,7 @@ WHERE
   (Management.manager_id = Person.person_id) AND
   (Management.employee_id = t_3_Person.person_id)
 GROUP BY 1, 2),
-t_1_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Chain_sn_new.employee_id AS employee_id,
@@ -680,31 +737,50 @@ t_1_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_3_Manages.employee_id AS employee_id,
-      t_3_Manages.manager_id AS manager_id
+      t_5_Manages.employee_id AS employee_id,
+      t_5_Manages.manager_id AS manager_id
     FROM
-      t_2_Manages AS t_3_Manages
+      t_2_Manages AS t_5_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Chain_sn_back_step AS (SELECT
+t_2_Chain_sn_back_step AS (SELECT
   Chain_MultBodyAggAux_f1.employee_id AS employee_id,
   Chain_MultBodyAggAux_f1.manager_id AS manager_id
 FROM
-  t_1_Chain_MultBodyAggAux_f1 AS Chain_MultBodyAggAux_f1
+  t_3_Chain_MultBodyAggAux_f1 AS Chain_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Chain_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Chain_sn_back_step.employee_id AS employee_id,
+      Chain_sn_back_step.manager_id AS manager_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Chain_sn_back_step AS Chain_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Chain_sn_full.employee_id AS employee_id,
+      Chain_sn_full.manager_id AS manager_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Chain_sn_full AS Chain_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Chain_sn_back_seen AS (SELECT
+  Chain_sn_back_seen_MultBodyAggAux.employee_id AS employee_id,
+  Chain_sn_back_seen_MultBodyAggAux.manager_id AS manager_id,
+  MAX(Chain_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Chain_sn_back_seen_MultBodyAggAux AS Chain_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Chain_sn_back_step.employee_id AS employee_id,
-  Chain_sn_back_step.manager_id AS manager_id
+  Chain_sn_back_seen.employee_id AS employee_id,
+  Chain_sn_back_seen.manager_id AS manager_id
 FROM
-  t_0_Chain_sn_back_step AS Chain_sn_back_step
+  t_0_Chain_sn_back_seen AS Chain_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Chain_sn_full AS Chain_sn_full
-  WHERE
-    (Chain_sn_full.employee_id = Chain_sn_back_step.employee_id) AND
-    (Chain_sn_full.manager_id = Chain_sn_back_step.manager_id)) IS NULL)
+  (Chain_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Chain_sn_full SELECT * FROM synalog_test.Chain_sn_delta;
@@ -739,7 +815,7 @@ WHERE
   (Management.manager_id = Person.person_id) AND
   (Management.employee_id = t_3_Person.person_id)
 GROUP BY 1, 2),
-t_1_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Chain_sn_delta.employee_id AS employee_id,
@@ -751,31 +827,50 @@ t_1_Chain_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_3_Manages.employee_id AS employee_id,
-      t_3_Manages.manager_id AS manager_id
+      t_5_Manages.employee_id AS employee_id,
+      t_5_Manages.manager_id AS manager_id
     FROM
-      t_2_Manages AS t_3_Manages
+      t_2_Manages AS t_5_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Chain_sn_step AS (SELECT
+t_2_Chain_sn_step AS (SELECT
   Chain_MultBodyAggAux_f8.employee_id AS employee_id,
   Chain_MultBodyAggAux_f8.manager_id AS manager_id
 FROM
-  t_1_Chain_MultBodyAggAux_f8 AS Chain_MultBodyAggAux_f8
+  t_3_Chain_MultBodyAggAux_f8 AS Chain_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Chain_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Chain_sn_step.employee_id AS employee_id,
+      Chain_sn_step.manager_id AS manager_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Chain_sn_step AS Chain_sn_step
+   UNION ALL
+  
+    SELECT
+      Chain_sn_full.employee_id AS employee_id,
+      Chain_sn_full.manager_id AS manager_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Chain_sn_full AS Chain_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Chain_sn_seen AS (SELECT
+  Chain_sn_seen_MultBodyAggAux.employee_id AS employee_id,
+  Chain_sn_seen_MultBodyAggAux.manager_id AS manager_id,
+  MAX(Chain_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Chain_sn_seen_MultBodyAggAux AS Chain_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Chain_sn_step.employee_id AS employee_id,
-  Chain_sn_step.manager_id AS manager_id
+  Chain_sn_seen.employee_id AS employee_id,
+  Chain_sn_seen.manager_id AS manager_id
 FROM
-  t_0_Chain_sn_step AS Chain_sn_step
+  t_0_Chain_sn_seen AS Chain_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Chain_sn_full AS Chain_sn_full
-  WHERE
-    (Chain_sn_full.employee_id = Chain_sn_step.employee_id) AND
-    (Chain_sn_full.manager_id = Chain_sn_step.manager_id)) IS NULL)
+  (Chain_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Chain_sn_full SELECT * FROM synalog_test.Chain_sn_new;
@@ -810,7 +905,7 @@ WHERE
   (Management.manager_id = Person.person_id) AND
   (Management.employee_id = t_3_Person.person_id)
 GROUP BY 1, 2),
-t_1_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Chain_sn_new.employee_id AS employee_id,
@@ -822,31 +917,50 @@ t_1_Chain_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_3_Manages.employee_id AS employee_id,
-      t_3_Manages.manager_id AS manager_id
+      t_5_Manages.employee_id AS employee_id,
+      t_5_Manages.manager_id AS manager_id
     FROM
-      t_2_Manages AS t_3_Manages
+      t_2_Manages AS t_5_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Chain_sn_back_step AS (SELECT
+t_2_Chain_sn_back_step AS (SELECT
   Chain_MultBodyAggAux_f1.employee_id AS employee_id,
   Chain_MultBodyAggAux_f1.manager_id AS manager_id
 FROM
-  t_1_Chain_MultBodyAggAux_f1 AS Chain_MultBodyAggAux_f1
+  t_3_Chain_MultBodyAggAux_f1 AS Chain_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Chain_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Chain_sn_back_step.employee_id AS employee_id,
+      Chain_sn_back_step.manager_id AS manager_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Chain_sn_back_step AS Chain_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Chain_sn_full.employee_id AS employee_id,
+      Chain_sn_full.manager_id AS manager_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Chain_sn_full AS Chain_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Chain_sn_back_seen AS (SELECT
+  Chain_sn_back_seen_MultBodyAggAux.employee_id AS employee_id,
+  Chain_sn_back_seen_MultBodyAggAux.manager_id AS manager_id,
+  MAX(Chain_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Chain_sn_back_seen_MultBodyAggAux AS Chain_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Chain_sn_back_step.employee_id AS employee_id,
-  Chain_sn_back_step.manager_id AS manager_id
+  Chain_sn_back_seen.employee_id AS employee_id,
+  Chain_sn_back_seen.manager_id AS manager_id
 FROM
-  t_0_Chain_sn_back_step AS Chain_sn_back_step
+  t_0_Chain_sn_back_seen AS Chain_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Chain_sn_full AS Chain_sn_full
-  WHERE
-    (Chain_sn_full.employee_id = Chain_sn_back_step.employee_id) AND
-    (Chain_sn_full.manager_id = Chain_sn_back_step.manager_id)) IS NULL)
+  (Chain_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Chain_sn_full SELECT * FROM synalog_test.Chain_sn_delta;

@@ -345,7 +345,7 @@ CREATE TABLE synalog_test.Below_sn_full AS SELECT * FROM (
 -- Interacting with table synalog_test.Below_sn_full
 
 DROP TABLE IF EXISTS synalog_test.Below_sn_new;
-CREATE TABLE synalog_test.Below_sn_new AS WITH t_1_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Below_sn_new AS WITH t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Below_sn_delta.manager_id AS manager_id,
@@ -357,37 +357,56 @@ CREATE TABLE synalog_test.Below_sn_new AS WITH t_1_Below_MultBodyAggAux_f8 AS (S
    UNION ALL
   
     SELECT
-      t_2_Manages.manager_id AS manager_id,
-      t_2_Manages.employee_id AS employee_id
+      t_4_Manages.manager_id AS manager_id,
+      t_4_Manages.employee_id AS employee_id
     FROM
-      synalog_test.Manages AS t_2_Manages
+      synalog_test.Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Below_sn_step AS (SELECT
+t_2_Below_sn_step AS (SELECT
   Below_MultBodyAggAux_f8.manager_id AS manager_id,
   Below_MultBodyAggAux_f8.employee_id AS employee_id
 FROM
-  t_1_Below_MultBodyAggAux_f8 AS Below_MultBodyAggAux_f8
+  t_3_Below_MultBodyAggAux_f8 AS Below_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Below_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Below_sn_step.manager_id AS manager_id,
+      Below_sn_step.employee_id AS employee_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Below_sn_step AS Below_sn_step
+   UNION ALL
+  
+    SELECT
+      Below_sn_full.manager_id AS manager_id,
+      Below_sn_full.employee_id AS employee_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Below_sn_full AS Below_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Below_sn_seen AS (SELECT
+  Below_sn_seen_MultBodyAggAux.manager_id AS manager_id,
+  Below_sn_seen_MultBodyAggAux.employee_id AS employee_id,
+  MAX(Below_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Below_sn_seen_MultBodyAggAux AS Below_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Below_sn_step.manager_id AS manager_id,
-  Below_sn_step.employee_id AS employee_id
+  Below_sn_seen.manager_id AS manager_id,
+  Below_sn_seen.employee_id AS employee_id
 FROM
-  t_0_Below_sn_step AS Below_sn_step
+  t_0_Below_sn_seen AS Below_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Below_sn_full AS Below_sn_full
-  WHERE
-    (Below_sn_full.manager_id = Below_sn_step.manager_id) AND
-    (Below_sn_full.employee_id = Below_sn_step.employee_id)) IS NULL)
+  (Below_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Below_sn_full SELECT * FROM synalog_test.Below_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.Below_sn_delta;
-CREATE TABLE synalog_test.Below_sn_delta AS WITH t_1_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Below_sn_delta AS WITH t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Below_sn_new.manager_id AS manager_id,
@@ -399,37 +418,56 @@ CREATE TABLE synalog_test.Below_sn_delta AS WITH t_1_Below_MultBodyAggAux_f1 AS 
    UNION ALL
   
     SELECT
-      t_2_Manages.manager_id AS manager_id,
-      t_2_Manages.employee_id AS employee_id
+      t_4_Manages.manager_id AS manager_id,
+      t_4_Manages.employee_id AS employee_id
     FROM
-      synalog_test.Manages AS t_2_Manages
+      synalog_test.Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Below_sn_back_step AS (SELECT
+t_2_Below_sn_back_step AS (SELECT
   Below_MultBodyAggAux_f1.manager_id AS manager_id,
   Below_MultBodyAggAux_f1.employee_id AS employee_id
 FROM
-  t_1_Below_MultBodyAggAux_f1 AS Below_MultBodyAggAux_f1
+  t_3_Below_MultBodyAggAux_f1 AS Below_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Below_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Below_sn_back_step.manager_id AS manager_id,
+      Below_sn_back_step.employee_id AS employee_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Below_sn_back_step AS Below_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Below_sn_full.manager_id AS manager_id,
+      Below_sn_full.employee_id AS employee_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Below_sn_full AS Below_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Below_sn_back_seen AS (SELECT
+  Below_sn_back_seen_MultBodyAggAux.manager_id AS manager_id,
+  Below_sn_back_seen_MultBodyAggAux.employee_id AS employee_id,
+  MAX(Below_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Below_sn_back_seen_MultBodyAggAux AS Below_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Below_sn_back_step.manager_id AS manager_id,
-  Below_sn_back_step.employee_id AS employee_id
+  Below_sn_back_seen.manager_id AS manager_id,
+  Below_sn_back_seen.employee_id AS employee_id
 FROM
-  t_0_Below_sn_back_step AS Below_sn_back_step
+  t_0_Below_sn_back_seen AS Below_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Below_sn_full AS Below_sn_full
-  WHERE
-    (Below_sn_full.manager_id = Below_sn_back_step.manager_id) AND
-    (Below_sn_full.employee_id = Below_sn_back_step.employee_id)) IS NULL)
+  (Below_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Below_sn_full SELECT * FROM synalog_test.Below_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.Below_sn_new;
-CREATE TABLE synalog_test.Below_sn_new AS WITH t_1_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Below_sn_new AS WITH t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Below_sn_delta.manager_id AS manager_id,
@@ -441,37 +479,56 @@ CREATE TABLE synalog_test.Below_sn_new AS WITH t_1_Below_MultBodyAggAux_f8 AS (S
    UNION ALL
   
     SELECT
-      t_2_Manages.manager_id AS manager_id,
-      t_2_Manages.employee_id AS employee_id
+      t_4_Manages.manager_id AS manager_id,
+      t_4_Manages.employee_id AS employee_id
     FROM
-      synalog_test.Manages AS t_2_Manages
+      synalog_test.Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Below_sn_step AS (SELECT
+t_2_Below_sn_step AS (SELECT
   Below_MultBodyAggAux_f8.manager_id AS manager_id,
   Below_MultBodyAggAux_f8.employee_id AS employee_id
 FROM
-  t_1_Below_MultBodyAggAux_f8 AS Below_MultBodyAggAux_f8
+  t_3_Below_MultBodyAggAux_f8 AS Below_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Below_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Below_sn_step.manager_id AS manager_id,
+      Below_sn_step.employee_id AS employee_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Below_sn_step AS Below_sn_step
+   UNION ALL
+  
+    SELECT
+      Below_sn_full.manager_id AS manager_id,
+      Below_sn_full.employee_id AS employee_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Below_sn_full AS Below_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Below_sn_seen AS (SELECT
+  Below_sn_seen_MultBodyAggAux.manager_id AS manager_id,
+  Below_sn_seen_MultBodyAggAux.employee_id AS employee_id,
+  MAX(Below_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Below_sn_seen_MultBodyAggAux AS Below_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Below_sn_step.manager_id AS manager_id,
-  Below_sn_step.employee_id AS employee_id
+  Below_sn_seen.manager_id AS manager_id,
+  Below_sn_seen.employee_id AS employee_id
 FROM
-  t_0_Below_sn_step AS Below_sn_step
+  t_0_Below_sn_seen AS Below_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Below_sn_full AS Below_sn_full
-  WHERE
-    (Below_sn_full.manager_id = Below_sn_step.manager_id) AND
-    (Below_sn_full.employee_id = Below_sn_step.employee_id)) IS NULL)
+  (Below_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Below_sn_full SELECT * FROM synalog_test.Below_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.Below_sn_delta;
-CREATE TABLE synalog_test.Below_sn_delta AS WITH t_1_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Below_sn_delta AS WITH t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Below_sn_new.manager_id AS manager_id,
@@ -483,37 +540,56 @@ CREATE TABLE synalog_test.Below_sn_delta AS WITH t_1_Below_MultBodyAggAux_f1 AS 
    UNION ALL
   
     SELECT
-      t_2_Manages.manager_id AS manager_id,
-      t_2_Manages.employee_id AS employee_id
+      t_4_Manages.manager_id AS manager_id,
+      t_4_Manages.employee_id AS employee_id
     FROM
-      synalog_test.Manages AS t_2_Manages
+      synalog_test.Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Below_sn_back_step AS (SELECT
+t_2_Below_sn_back_step AS (SELECT
   Below_MultBodyAggAux_f1.manager_id AS manager_id,
   Below_MultBodyAggAux_f1.employee_id AS employee_id
 FROM
-  t_1_Below_MultBodyAggAux_f1 AS Below_MultBodyAggAux_f1
+  t_3_Below_MultBodyAggAux_f1 AS Below_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Below_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Below_sn_back_step.manager_id AS manager_id,
+      Below_sn_back_step.employee_id AS employee_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Below_sn_back_step AS Below_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Below_sn_full.manager_id AS manager_id,
+      Below_sn_full.employee_id AS employee_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Below_sn_full AS Below_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Below_sn_back_seen AS (SELECT
+  Below_sn_back_seen_MultBodyAggAux.manager_id AS manager_id,
+  Below_sn_back_seen_MultBodyAggAux.employee_id AS employee_id,
+  MAX(Below_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Below_sn_back_seen_MultBodyAggAux AS Below_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Below_sn_back_step.manager_id AS manager_id,
-  Below_sn_back_step.employee_id AS employee_id
+  Below_sn_back_seen.manager_id AS manager_id,
+  Below_sn_back_seen.employee_id AS employee_id
 FROM
-  t_0_Below_sn_back_step AS Below_sn_back_step
+  t_0_Below_sn_back_seen AS Below_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Below_sn_full AS Below_sn_full
-  WHERE
-    (Below_sn_full.manager_id = Below_sn_back_step.manager_id) AND
-    (Below_sn_full.employee_id = Below_sn_back_step.employee_id)) IS NULL)
+  (Below_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Below_sn_full SELECT * FROM synalog_test.Below_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.Below_sn_new;
-CREATE TABLE synalog_test.Below_sn_new AS WITH t_1_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Below_sn_new AS WITH t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Below_sn_delta.manager_id AS manager_id,
@@ -525,37 +601,56 @@ CREATE TABLE synalog_test.Below_sn_new AS WITH t_1_Below_MultBodyAggAux_f8 AS (S
    UNION ALL
   
     SELECT
-      t_2_Manages.manager_id AS manager_id,
-      t_2_Manages.employee_id AS employee_id
+      t_4_Manages.manager_id AS manager_id,
+      t_4_Manages.employee_id AS employee_id
     FROM
-      synalog_test.Manages AS t_2_Manages
+      synalog_test.Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Below_sn_step AS (SELECT
+t_2_Below_sn_step AS (SELECT
   Below_MultBodyAggAux_f8.manager_id AS manager_id,
   Below_MultBodyAggAux_f8.employee_id AS employee_id
 FROM
-  t_1_Below_MultBodyAggAux_f8 AS Below_MultBodyAggAux_f8
+  t_3_Below_MultBodyAggAux_f8 AS Below_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Below_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Below_sn_step.manager_id AS manager_id,
+      Below_sn_step.employee_id AS employee_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Below_sn_step AS Below_sn_step
+   UNION ALL
+  
+    SELECT
+      Below_sn_full.manager_id AS manager_id,
+      Below_sn_full.employee_id AS employee_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Below_sn_full AS Below_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Below_sn_seen AS (SELECT
+  Below_sn_seen_MultBodyAggAux.manager_id AS manager_id,
+  Below_sn_seen_MultBodyAggAux.employee_id AS employee_id,
+  MAX(Below_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Below_sn_seen_MultBodyAggAux AS Below_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Below_sn_step.manager_id AS manager_id,
-  Below_sn_step.employee_id AS employee_id
+  Below_sn_seen.manager_id AS manager_id,
+  Below_sn_seen.employee_id AS employee_id
 FROM
-  t_0_Below_sn_step AS Below_sn_step
+  t_0_Below_sn_seen AS Below_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Below_sn_full AS Below_sn_full
-  WHERE
-    (Below_sn_full.manager_id = Below_sn_step.manager_id) AND
-    (Below_sn_full.employee_id = Below_sn_step.employee_id)) IS NULL)
+  (Below_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Below_sn_full SELECT * FROM synalog_test.Below_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.Below_sn_delta;
-CREATE TABLE synalog_test.Below_sn_delta AS WITH t_1_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Below_sn_delta AS WITH t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Below_sn_new.manager_id AS manager_id,
@@ -567,31 +662,50 @@ CREATE TABLE synalog_test.Below_sn_delta AS WITH t_1_Below_MultBodyAggAux_f1 AS 
    UNION ALL
   
     SELECT
-      t_2_Manages.manager_id AS manager_id,
-      t_2_Manages.employee_id AS employee_id
+      t_4_Manages.manager_id AS manager_id,
+      t_4_Manages.employee_id AS employee_id
     FROM
-      synalog_test.Manages AS t_2_Manages
+      synalog_test.Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Below_sn_back_step AS (SELECT
+t_2_Below_sn_back_step AS (SELECT
   Below_MultBodyAggAux_f1.manager_id AS manager_id,
   Below_MultBodyAggAux_f1.employee_id AS employee_id
 FROM
-  t_1_Below_MultBodyAggAux_f1 AS Below_MultBodyAggAux_f1
+  t_3_Below_MultBodyAggAux_f1 AS Below_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Below_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Below_sn_back_step.manager_id AS manager_id,
+      Below_sn_back_step.employee_id AS employee_id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Below_sn_back_step AS Below_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Below_sn_full.manager_id AS manager_id,
+      Below_sn_full.employee_id AS employee_id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Below_sn_full AS Below_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Below_sn_back_seen AS (SELECT
+  Below_sn_back_seen_MultBodyAggAux.manager_id AS manager_id,
+  Below_sn_back_seen_MultBodyAggAux.employee_id AS employee_id,
+  MAX(Below_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Below_sn_back_seen_MultBodyAggAux AS Below_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Below_sn_back_step.manager_id AS manager_id,
-  Below_sn_back_step.employee_id AS employee_id
+  Below_sn_back_seen.manager_id AS manager_id,
+  Below_sn_back_seen.employee_id AS employee_id
 FROM
-  t_0_Below_sn_back_step AS Below_sn_back_step
+  t_0_Below_sn_back_seen AS Below_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Below_sn_full AS Below_sn_full
-  WHERE
-    (Below_sn_full.manager_id = Below_sn_back_step.manager_id) AND
-    (Below_sn_full.employee_id = Below_sn_back_step.employee_id)) IS NULL)
+  (Below_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Below_sn_full SELECT * FROM synalog_test.Below_sn_delta;

@@ -738,7 +738,7 @@ CREATE TABLE synalog_test.C_sn_new AS WITH t_2_Own AS (SELECT * FROM (
       10 AS percent
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_C_MultBodyAggAux_f12 AS (SELECT * FROM (
+t_3_C_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       C_sn_delta.owner AS owner,
@@ -752,39 +752,62 @@ t_1_C_MultBodyAggAux_f12 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Own.owner AS owner,
-      t_2_Own.owned AS entity,
+      t_4_Own.owner AS owner,
+      t_4_Own.owned AS entity,
       1 AS hops,
-      t_2_Own.percent AS stake
+      t_4_Own.percent AS stake
     FROM
-      t_2_Own
+      t_2_Own AS t_4_Own
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_C_sn_step AS (SELECT
+t_2_C_sn_step AS (SELECT
   C_MultBodyAggAux_f12.owner AS owner,
   C_MultBodyAggAux_f12.entity AS entity,
   C_MultBodyAggAux_f12.hops AS hops,
   C_MultBodyAggAux_f12.stake AS stake
 FROM
-  t_1_C_MultBodyAggAux_f12 AS C_MultBodyAggAux_f12
+  t_3_C_MultBodyAggAux_f12 AS C_MultBodyAggAux_f12
+GROUP BY 1, 2, 3, 4),
+t_1_C_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      C_sn_step.owner AS owner,
+      C_sn_step.entity AS entity,
+      C_sn_step.hops AS hops,
+      C_sn_step.stake AS stake,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_C_sn_step AS C_sn_step
+   UNION ALL
+  
+    SELECT
+      C_sn_full.owner AS owner,
+      C_sn_full.entity AS entity,
+      C_sn_full.hops AS hops,
+      C_sn_full.stake AS stake,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.C_sn_full AS C_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_C_sn_seen AS (SELECT
+  C_sn_seen_MultBodyAggAux.owner AS owner,
+  C_sn_seen_MultBodyAggAux.entity AS entity,
+  C_sn_seen_MultBodyAggAux.hops AS hops,
+  C_sn_seen_MultBodyAggAux.stake AS stake,
+  MAX(C_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_C_sn_seen_MultBodyAggAux AS C_sn_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  C_sn_step.owner AS owner,
-  C_sn_step.entity AS entity,
-  C_sn_step.hops AS hops,
-  C_sn_step.stake AS stake
+  C_sn_seen.owner AS owner,
+  C_sn_seen.entity AS entity,
+  C_sn_seen.hops AS hops,
+  C_sn_seen.stake AS stake
 FROM
-  t_0_C_sn_step AS C_sn_step
+  t_0_C_sn_seen AS C_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.C_sn_full AS C_sn_full
-  WHERE
-    (C_sn_full.owner = C_sn_step.owner) AND
-    (C_sn_full.entity = C_sn_step.entity) AND
-    (C_sn_full.hops = C_sn_step.hops) AND
-    (C_sn_full.stake = C_sn_step.stake)) IS NULL)
+  (C_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.C_sn_full SELECT * FROM synalog_test.C_sn_new;
@@ -810,7 +833,7 @@ CREATE TABLE synalog_test.C_sn_delta AS WITH t_2_Own AS (SELECT * FROM (
       10 AS percent
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_C_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_C_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       C_sn_new.owner AS owner,
@@ -824,39 +847,62 @@ t_1_C_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Own.owner AS owner,
-      t_2_Own.owned AS entity,
+      t_4_Own.owner AS owner,
+      t_4_Own.owned AS entity,
       1 AS hops,
-      t_2_Own.percent AS stake
+      t_4_Own.percent AS stake
     FROM
-      t_2_Own
+      t_2_Own AS t_4_Own
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_C_sn_back_step AS (SELECT
+t_2_C_sn_back_step AS (SELECT
   C_MultBodyAggAux_f1.owner AS owner,
   C_MultBodyAggAux_f1.entity AS entity,
   C_MultBodyAggAux_f1.hops AS hops,
   C_MultBodyAggAux_f1.stake AS stake
 FROM
-  t_1_C_MultBodyAggAux_f1 AS C_MultBodyAggAux_f1
+  t_3_C_MultBodyAggAux_f1 AS C_MultBodyAggAux_f1
+GROUP BY 1, 2, 3, 4),
+t_1_C_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      C_sn_back_step.owner AS owner,
+      C_sn_back_step.entity AS entity,
+      C_sn_back_step.hops AS hops,
+      C_sn_back_step.stake AS stake,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_C_sn_back_step AS C_sn_back_step
+   UNION ALL
+  
+    SELECT
+      C_sn_full.owner AS owner,
+      C_sn_full.entity AS entity,
+      C_sn_full.hops AS hops,
+      C_sn_full.stake AS stake,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.C_sn_full AS C_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_C_sn_back_seen AS (SELECT
+  C_sn_back_seen_MultBodyAggAux.owner AS owner,
+  C_sn_back_seen_MultBodyAggAux.entity AS entity,
+  C_sn_back_seen_MultBodyAggAux.hops AS hops,
+  C_sn_back_seen_MultBodyAggAux.stake AS stake,
+  MAX(C_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_C_sn_back_seen_MultBodyAggAux AS C_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  C_sn_back_step.owner AS owner,
-  C_sn_back_step.entity AS entity,
-  C_sn_back_step.hops AS hops,
-  C_sn_back_step.stake AS stake
+  C_sn_back_seen.owner AS owner,
+  C_sn_back_seen.entity AS entity,
+  C_sn_back_seen.hops AS hops,
+  C_sn_back_seen.stake AS stake
 FROM
-  t_0_C_sn_back_step AS C_sn_back_step
+  t_0_C_sn_back_seen AS C_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.C_sn_full AS C_sn_full
-  WHERE
-    (C_sn_full.owner = C_sn_back_step.owner) AND
-    (C_sn_full.entity = C_sn_back_step.entity) AND
-    (C_sn_full.hops = C_sn_back_step.hops) AND
-    (C_sn_full.stake = C_sn_back_step.stake)) IS NULL)
+  (C_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.C_sn_full SELECT * FROM synalog_test.C_sn_delta;
@@ -882,7 +928,7 @@ CREATE TABLE synalog_test.C_sn_new AS WITH t_2_Own AS (SELECT * FROM (
       10 AS percent
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_C_MultBodyAggAux_f12 AS (SELECT * FROM (
+t_3_C_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       C_sn_delta.owner AS owner,
@@ -896,39 +942,62 @@ t_1_C_MultBodyAggAux_f12 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Own.owner AS owner,
-      t_2_Own.owned AS entity,
+      t_4_Own.owner AS owner,
+      t_4_Own.owned AS entity,
       1 AS hops,
-      t_2_Own.percent AS stake
+      t_4_Own.percent AS stake
     FROM
-      t_2_Own
+      t_2_Own AS t_4_Own
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_C_sn_step AS (SELECT
+t_2_C_sn_step AS (SELECT
   C_MultBodyAggAux_f12.owner AS owner,
   C_MultBodyAggAux_f12.entity AS entity,
   C_MultBodyAggAux_f12.hops AS hops,
   C_MultBodyAggAux_f12.stake AS stake
 FROM
-  t_1_C_MultBodyAggAux_f12 AS C_MultBodyAggAux_f12
+  t_3_C_MultBodyAggAux_f12 AS C_MultBodyAggAux_f12
+GROUP BY 1, 2, 3, 4),
+t_1_C_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      C_sn_step.owner AS owner,
+      C_sn_step.entity AS entity,
+      C_sn_step.hops AS hops,
+      C_sn_step.stake AS stake,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_C_sn_step AS C_sn_step
+   UNION ALL
+  
+    SELECT
+      C_sn_full.owner AS owner,
+      C_sn_full.entity AS entity,
+      C_sn_full.hops AS hops,
+      C_sn_full.stake AS stake,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.C_sn_full AS C_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_C_sn_seen AS (SELECT
+  C_sn_seen_MultBodyAggAux.owner AS owner,
+  C_sn_seen_MultBodyAggAux.entity AS entity,
+  C_sn_seen_MultBodyAggAux.hops AS hops,
+  C_sn_seen_MultBodyAggAux.stake AS stake,
+  MAX(C_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_C_sn_seen_MultBodyAggAux AS C_sn_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  C_sn_step.owner AS owner,
-  C_sn_step.entity AS entity,
-  C_sn_step.hops AS hops,
-  C_sn_step.stake AS stake
+  C_sn_seen.owner AS owner,
+  C_sn_seen.entity AS entity,
+  C_sn_seen.hops AS hops,
+  C_sn_seen.stake AS stake
 FROM
-  t_0_C_sn_step AS C_sn_step
+  t_0_C_sn_seen AS C_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.C_sn_full AS C_sn_full
-  WHERE
-    (C_sn_full.owner = C_sn_step.owner) AND
-    (C_sn_full.entity = C_sn_step.entity) AND
-    (C_sn_full.hops = C_sn_step.hops) AND
-    (C_sn_full.stake = C_sn_step.stake)) IS NULL)
+  (C_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.C_sn_full SELECT * FROM synalog_test.C_sn_new;
@@ -954,7 +1023,7 @@ CREATE TABLE synalog_test.C_sn_delta AS WITH t_2_Own AS (SELECT * FROM (
       10 AS percent
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_C_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_C_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       C_sn_new.owner AS owner,
@@ -968,39 +1037,62 @@ t_1_C_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Own.owner AS owner,
-      t_2_Own.owned AS entity,
+      t_4_Own.owner AS owner,
+      t_4_Own.owned AS entity,
       1 AS hops,
-      t_2_Own.percent AS stake
+      t_4_Own.percent AS stake
     FROM
-      t_2_Own
+      t_2_Own AS t_4_Own
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_C_sn_back_step AS (SELECT
+t_2_C_sn_back_step AS (SELECT
   C_MultBodyAggAux_f1.owner AS owner,
   C_MultBodyAggAux_f1.entity AS entity,
   C_MultBodyAggAux_f1.hops AS hops,
   C_MultBodyAggAux_f1.stake AS stake
 FROM
-  t_1_C_MultBodyAggAux_f1 AS C_MultBodyAggAux_f1
+  t_3_C_MultBodyAggAux_f1 AS C_MultBodyAggAux_f1
+GROUP BY 1, 2, 3, 4),
+t_1_C_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      C_sn_back_step.owner AS owner,
+      C_sn_back_step.entity AS entity,
+      C_sn_back_step.hops AS hops,
+      C_sn_back_step.stake AS stake,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_C_sn_back_step AS C_sn_back_step
+   UNION ALL
+  
+    SELECT
+      C_sn_full.owner AS owner,
+      C_sn_full.entity AS entity,
+      C_sn_full.hops AS hops,
+      C_sn_full.stake AS stake,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.C_sn_full AS C_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_C_sn_back_seen AS (SELECT
+  C_sn_back_seen_MultBodyAggAux.owner AS owner,
+  C_sn_back_seen_MultBodyAggAux.entity AS entity,
+  C_sn_back_seen_MultBodyAggAux.hops AS hops,
+  C_sn_back_seen_MultBodyAggAux.stake AS stake,
+  MAX(C_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_C_sn_back_seen_MultBodyAggAux AS C_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  C_sn_back_step.owner AS owner,
-  C_sn_back_step.entity AS entity,
-  C_sn_back_step.hops AS hops,
-  C_sn_back_step.stake AS stake
+  C_sn_back_seen.owner AS owner,
+  C_sn_back_seen.entity AS entity,
+  C_sn_back_seen.hops AS hops,
+  C_sn_back_seen.stake AS stake
 FROM
-  t_0_C_sn_back_step AS C_sn_back_step
+  t_0_C_sn_back_seen AS C_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.C_sn_full AS C_sn_full
-  WHERE
-    (C_sn_full.owner = C_sn_back_step.owner) AND
-    (C_sn_full.entity = C_sn_back_step.entity) AND
-    (C_sn_full.hops = C_sn_back_step.hops) AND
-    (C_sn_full.stake = C_sn_back_step.stake)) IS NULL)
+  (C_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.C_sn_full SELECT * FROM synalog_test.C_sn_delta;

@@ -580,7 +580,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -592,37 +592,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -650,7 +671,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -662,37 +683,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -720,7 +762,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -732,37 +774,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -790,7 +853,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -802,37 +865,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -860,7 +944,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -872,37 +956,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -930,7 +1035,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -942,37 +1047,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -1000,7 +1126,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1012,37 +1138,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -1070,7 +1217,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1082,37 +1229,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -1140,7 +1308,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1152,37 +1320,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -1210,7 +1399,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1222,37 +1411,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -1280,7 +1490,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1292,37 +1502,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -1350,7 +1581,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1362,37 +1593,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -1420,7 +1672,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1432,37 +1684,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -1490,7 +1763,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1502,37 +1775,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -1560,7 +1854,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1572,37 +1866,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -1630,7 +1945,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1642,37 +1957,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -1700,7 +2036,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1712,37 +2048,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -1770,7 +2127,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1782,37 +2139,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -1840,7 +2218,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1852,37 +2230,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -1910,7 +2309,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1922,37 +2321,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -1980,7 +2400,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -1992,37 +2412,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -2050,7 +2491,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2062,37 +2503,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -2120,7 +2582,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2132,37 +2594,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -2190,7 +2673,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2202,37 +2685,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -2260,7 +2764,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2272,37 +2776,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -2330,7 +2855,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2342,37 +2867,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -2400,7 +2946,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2412,37 +2958,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -2470,7 +3037,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2482,37 +3049,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;
@@ -2540,7 +3128,7 @@ CREATE TABLE synalog_test.Path_sn_new AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2552,37 +3140,58 @@ t_1_Path_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Path_sn_delta.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_delta.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_delta AS Path_sn_delta, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_delta.n < 3) AND
-      (t_2_Edge.a = Path_sn_delta.b)
+      (t_4_Edge.a = Path_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_step AS (SELECT
+t_2_Path_sn_step AS (SELECT
   Path_MultBodyAggAux_f10.a AS a,
   Path_MultBodyAggAux_f10.b AS b,
   Path_MultBodyAggAux_f10.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+  t_3_Path_MultBodyAggAux_f10 AS Path_MultBodyAggAux_f10
+GROUP BY a, b, n),
+t_1_Path_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_step.a AS a,
+      Path_sn_step.b AS b,
+      Path_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_step AS Path_sn_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_seen AS (SELECT
+  Path_sn_seen_MultBodyAggAux.a AS a,
+  Path_sn_seen_MultBodyAggAux.b AS b,
+  Path_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_seen_MultBodyAggAux AS Path_sn_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_step.a AS a,
-  Path_sn_step.b AS b,
-  Path_sn_step.n AS n
+  Path_sn_seen.a AS a,
+  Path_sn_seen.b AS b,
+  Path_sn_seen.n AS n
 FROM
-  t_0_Path_sn_step AS Path_sn_step
+  t_0_Path_sn_seen AS Path_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_step.a) AND
-    (Path_sn_full.b = Path_sn_step.b) AND
-    (Path_sn_full.n = Path_sn_step.n)) IS NULL)
+  (Path_sn_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_new;
@@ -2610,7 +3219,7 @@ CREATE TABLE synalog_test.Path_sn_delta AS WITH t_1_Edge AS (SELECT * FROM (
       5 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Edge.a AS a,
@@ -2622,37 +3231,58 @@ t_1_Path_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Path_sn_new.a AS a,
-      t_2_Edge.b AS b,
+      t_4_Edge.b AS b,
       ((Path_sn_new.n) + (1)) AS n
     FROM
-      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_2_Edge
+      synalog_test.Path_sn_new AS Path_sn_new, t_1_Edge AS t_4_Edge
     WHERE
       (Path_sn_new.n < 3) AND
-      (t_2_Edge.a = Path_sn_new.b)
+      (t_4_Edge.a = Path_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Path_sn_back_step AS (SELECT
+t_2_Path_sn_back_step AS (SELECT
   Path_MultBodyAggAux_f1.a AS a,
   Path_MultBodyAggAux_f1.b AS b,
   Path_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+  t_3_Path_MultBodyAggAux_f1 AS Path_MultBodyAggAux_f1
+GROUP BY a, b, n),
+t_1_Path_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Path_sn_back_step.a AS a,
+      Path_sn_back_step.b AS b,
+      Path_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Path_sn_back_step AS Path_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Path_sn_full.a AS a,
+      Path_sn_full.b AS b,
+      Path_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Path_sn_full AS Path_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Path_sn_back_seen AS (SELECT
+  Path_sn_back_seen_MultBodyAggAux.a AS a,
+  Path_sn_back_seen_MultBodyAggAux.b AS b,
+  Path_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Path_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Path_sn_back_seen_MultBodyAggAux AS Path_sn_back_seen_MultBodyAggAux
 GROUP BY a, b, n)
 SELECT
-  Path_sn_back_step.a AS a,
-  Path_sn_back_step.b AS b,
-  Path_sn_back_step.n AS n
+  Path_sn_back_seen.a AS a,
+  Path_sn_back_seen.b AS b,
+  Path_sn_back_seen.n AS n
 FROM
-  t_0_Path_sn_back_step AS Path_sn_back_step
+  t_0_Path_sn_back_seen AS Path_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Path_sn_full AS Path_sn_full
-  WHERE
-    (Path_sn_full.a = Path_sn_back_step.a) AND
-    (Path_sn_full.b = Path_sn_back_step.b) AND
-    (Path_sn_full.n = Path_sn_back_step.n)) IS NULL)
+  (Path_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY a, b, n;
 
 INSERT INTO synalog_test.Path_sn_full SELECT * FROM synalog_test.Path_sn_delta;

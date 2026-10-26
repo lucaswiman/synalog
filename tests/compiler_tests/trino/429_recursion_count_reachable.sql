@@ -371,7 +371,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_1_E AS (SELECT * FROM (
       4 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       E.a AS s,
@@ -382,32 +382,51 @@ t_1_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Reach_sn_delta.s AS s,
-      t_2_E.b AS t
+      t_4_E.b AS t
     FROM
-      synalog_test.Reach_sn_delta AS Reach_sn_delta, t_1_E AS t_2_E
+      synalog_test.Reach_sn_delta AS Reach_sn_delta, t_1_E AS t_4_E
     WHERE
-      (t_2_E.a = Reach_sn_delta.t)
+      (t_4_E.a = Reach_sn_delta.t)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Reach_sn_step AS (SELECT
+t_2_Reach_sn_step AS (SELECT
   Reach_MultBodyAggAux_f8.s AS s,
   Reach_MultBodyAggAux_f8.t AS t
 FROM
-  t_1_Reach_MultBodyAggAux_f8 AS Reach_MultBodyAggAux_f8
+  t_3_Reach_MultBodyAggAux_f8 AS Reach_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Reach_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Reach_sn_step.s AS s,
+      Reach_sn_step.t AS t,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Reach_sn_step AS Reach_sn_step
+   UNION ALL
+  
+    SELECT
+      Reach_sn_full.s AS s,
+      Reach_sn_full.t AS t,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Reach_sn_full AS Reach_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Reach_sn_seen AS (SELECT
+  Reach_sn_seen_MultBodyAggAux.s AS s,
+  Reach_sn_seen_MultBodyAggAux.t AS t,
+  MAX(Reach_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Reach_sn_seen_MultBodyAggAux AS Reach_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Reach_sn_step.s AS s,
-  Reach_sn_step.t AS t
+  Reach_sn_seen.s AS s,
+  Reach_sn_seen.t AS t
 FROM
-  t_0_Reach_sn_step AS Reach_sn_step
+  t_0_Reach_sn_seen AS Reach_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Reach_sn_full AS Reach_sn_full
-  WHERE
-    (Reach_sn_full.s = Reach_sn_step.s) AND
-    (Reach_sn_full.t = Reach_sn_step.t)) IS NULL)
+  (Reach_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Reach_sn_full SELECT * FROM synalog_test.Reach_sn_new;
@@ -430,7 +449,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_1_E AS (SELECT * FROM (
       4 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       E.a AS s,
@@ -441,32 +460,51 @@ t_1_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Reach_sn_new.s AS s,
-      t_2_E.b AS t
+      t_4_E.b AS t
     FROM
-      synalog_test.Reach_sn_new AS Reach_sn_new, t_1_E AS t_2_E
+      synalog_test.Reach_sn_new AS Reach_sn_new, t_1_E AS t_4_E
     WHERE
-      (t_2_E.a = Reach_sn_new.t)
+      (t_4_E.a = Reach_sn_new.t)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Reach_sn_back_step AS (SELECT
+t_2_Reach_sn_back_step AS (SELECT
   Reach_MultBodyAggAux_f1.s AS s,
   Reach_MultBodyAggAux_f1.t AS t
 FROM
-  t_1_Reach_MultBodyAggAux_f1 AS Reach_MultBodyAggAux_f1
+  t_3_Reach_MultBodyAggAux_f1 AS Reach_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Reach_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Reach_sn_back_step.s AS s,
+      Reach_sn_back_step.t AS t,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Reach_sn_back_step AS Reach_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Reach_sn_full.s AS s,
+      Reach_sn_full.t AS t,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Reach_sn_full AS Reach_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Reach_sn_back_seen AS (SELECT
+  Reach_sn_back_seen_MultBodyAggAux.s AS s,
+  Reach_sn_back_seen_MultBodyAggAux.t AS t,
+  MAX(Reach_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Reach_sn_back_seen_MultBodyAggAux AS Reach_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Reach_sn_back_step.s AS s,
-  Reach_sn_back_step.t AS t
+  Reach_sn_back_seen.s AS s,
+  Reach_sn_back_seen.t AS t
 FROM
-  t_0_Reach_sn_back_step AS Reach_sn_back_step
+  t_0_Reach_sn_back_seen AS Reach_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Reach_sn_full AS Reach_sn_full
-  WHERE
-    (Reach_sn_full.s = Reach_sn_back_step.s) AND
-    (Reach_sn_full.t = Reach_sn_back_step.t)) IS NULL)
+  (Reach_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Reach_sn_full SELECT * FROM synalog_test.Reach_sn_delta;
@@ -489,7 +527,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_1_E AS (SELECT * FROM (
       4 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       E.a AS s,
@@ -500,32 +538,51 @@ t_1_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Reach_sn_delta.s AS s,
-      t_2_E.b AS t
+      t_4_E.b AS t
     FROM
-      synalog_test.Reach_sn_delta AS Reach_sn_delta, t_1_E AS t_2_E
+      synalog_test.Reach_sn_delta AS Reach_sn_delta, t_1_E AS t_4_E
     WHERE
-      (t_2_E.a = Reach_sn_delta.t)
+      (t_4_E.a = Reach_sn_delta.t)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Reach_sn_step AS (SELECT
+t_2_Reach_sn_step AS (SELECT
   Reach_MultBodyAggAux_f8.s AS s,
   Reach_MultBodyAggAux_f8.t AS t
 FROM
-  t_1_Reach_MultBodyAggAux_f8 AS Reach_MultBodyAggAux_f8
+  t_3_Reach_MultBodyAggAux_f8 AS Reach_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Reach_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Reach_sn_step.s AS s,
+      Reach_sn_step.t AS t,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Reach_sn_step AS Reach_sn_step
+   UNION ALL
+  
+    SELECT
+      Reach_sn_full.s AS s,
+      Reach_sn_full.t AS t,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Reach_sn_full AS Reach_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Reach_sn_seen AS (SELECT
+  Reach_sn_seen_MultBodyAggAux.s AS s,
+  Reach_sn_seen_MultBodyAggAux.t AS t,
+  MAX(Reach_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Reach_sn_seen_MultBodyAggAux AS Reach_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Reach_sn_step.s AS s,
-  Reach_sn_step.t AS t
+  Reach_sn_seen.s AS s,
+  Reach_sn_seen.t AS t
 FROM
-  t_0_Reach_sn_step AS Reach_sn_step
+  t_0_Reach_sn_seen AS Reach_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Reach_sn_full AS Reach_sn_full
-  WHERE
-    (Reach_sn_full.s = Reach_sn_step.s) AND
-    (Reach_sn_full.t = Reach_sn_step.t)) IS NULL)
+  (Reach_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Reach_sn_full SELECT * FROM synalog_test.Reach_sn_new;
@@ -548,7 +605,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_1_E AS (SELECT * FROM (
       4 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       E.a AS s,
@@ -559,32 +616,51 @@ t_1_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Reach_sn_new.s AS s,
-      t_2_E.b AS t
+      t_4_E.b AS t
     FROM
-      synalog_test.Reach_sn_new AS Reach_sn_new, t_1_E AS t_2_E
+      synalog_test.Reach_sn_new AS Reach_sn_new, t_1_E AS t_4_E
     WHERE
-      (t_2_E.a = Reach_sn_new.t)
+      (t_4_E.a = Reach_sn_new.t)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Reach_sn_back_step AS (SELECT
+t_2_Reach_sn_back_step AS (SELECT
   Reach_MultBodyAggAux_f1.s AS s,
   Reach_MultBodyAggAux_f1.t AS t
 FROM
-  t_1_Reach_MultBodyAggAux_f1 AS Reach_MultBodyAggAux_f1
+  t_3_Reach_MultBodyAggAux_f1 AS Reach_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Reach_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Reach_sn_back_step.s AS s,
+      Reach_sn_back_step.t AS t,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Reach_sn_back_step AS Reach_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Reach_sn_full.s AS s,
+      Reach_sn_full.t AS t,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Reach_sn_full AS Reach_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Reach_sn_back_seen AS (SELECT
+  Reach_sn_back_seen_MultBodyAggAux.s AS s,
+  Reach_sn_back_seen_MultBodyAggAux.t AS t,
+  MAX(Reach_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Reach_sn_back_seen_MultBodyAggAux AS Reach_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Reach_sn_back_step.s AS s,
-  Reach_sn_back_step.t AS t
+  Reach_sn_back_seen.s AS s,
+  Reach_sn_back_seen.t AS t
 FROM
-  t_0_Reach_sn_back_step AS Reach_sn_back_step
+  t_0_Reach_sn_back_seen AS Reach_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Reach_sn_full AS Reach_sn_full
-  WHERE
-    (Reach_sn_full.s = Reach_sn_back_step.s) AND
-    (Reach_sn_full.t = Reach_sn_back_step.t)) IS NULL)
+  (Reach_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Reach_sn_full SELECT * FROM synalog_test.Reach_sn_delta;
@@ -607,7 +683,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_1_E AS (SELECT * FROM (
       4 AS b
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       E.a AS s,
@@ -618,32 +694,51 @@ t_1_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Reach_sn_delta.s AS s,
-      t_2_E.b AS t
+      t_4_E.b AS t
     FROM
-      synalog_test.Reach_sn_delta AS Reach_sn_delta, t_1_E AS t_2_E
+      synalog_test.Reach_sn_delta AS Reach_sn_delta, t_1_E AS t_4_E
     WHERE
-      (t_2_E.a = Reach_sn_delta.t)
+      (t_4_E.a = Reach_sn_delta.t)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Reach_sn_step AS (SELECT
+t_2_Reach_sn_step AS (SELECT
   Reach_MultBodyAggAux_f8.s AS s,
   Reach_MultBodyAggAux_f8.t AS t
 FROM
-  t_1_Reach_MultBodyAggAux_f8 AS Reach_MultBodyAggAux_f8
+  t_3_Reach_MultBodyAggAux_f8 AS Reach_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Reach_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Reach_sn_step.s AS s,
+      Reach_sn_step.t AS t,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Reach_sn_step AS Reach_sn_step
+   UNION ALL
+  
+    SELECT
+      Reach_sn_full.s AS s,
+      Reach_sn_full.t AS t,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Reach_sn_full AS Reach_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Reach_sn_seen AS (SELECT
+  Reach_sn_seen_MultBodyAggAux.s AS s,
+  Reach_sn_seen_MultBodyAggAux.t AS t,
+  MAX(Reach_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Reach_sn_seen_MultBodyAggAux AS Reach_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Reach_sn_step.s AS s,
-  Reach_sn_step.t AS t
+  Reach_sn_seen.s AS s,
+  Reach_sn_seen.t AS t
 FROM
-  t_0_Reach_sn_step AS Reach_sn_step
+  t_0_Reach_sn_seen AS Reach_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Reach_sn_full AS Reach_sn_full
-  WHERE
-    (Reach_sn_full.s = Reach_sn_step.s) AND
-    (Reach_sn_full.t = Reach_sn_step.t)) IS NULL)
+  (Reach_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Reach_sn_full SELECT * FROM synalog_test.Reach_sn_new;

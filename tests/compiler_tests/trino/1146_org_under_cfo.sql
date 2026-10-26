@@ -581,7 +581,7 @@ CREATE TABLE synalog_test.Under_sn_new AS WITH t_2_Manages AS (SELECT * FROM (
       'intern' AS report
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Under_sn_delta.boss AS boss,
@@ -593,31 +593,50 @@ t_1_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Manages.boss AS boss,
-      t_2_Manages.report AS report
+      t_4_Manages.boss AS boss,
+      t_4_Manages.report AS report
     FROM
-      t_2_Manages
+      t_2_Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Under_sn_step AS (SELECT
+t_2_Under_sn_step AS (SELECT
   Under_MultBodyAggAux_f8.boss AS boss,
   Under_MultBodyAggAux_f8.report AS report
 FROM
-  t_1_Under_MultBodyAggAux_f8 AS Under_MultBodyAggAux_f8
+  t_3_Under_MultBodyAggAux_f8 AS Under_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Under_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Under_sn_step.boss AS boss,
+      Under_sn_step.report AS report,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Under_sn_step AS Under_sn_step
+   UNION ALL
+  
+    SELECT
+      Under_sn_full.boss AS boss,
+      Under_sn_full.report AS report,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Under_sn_full AS Under_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Under_sn_seen AS (SELECT
+  Under_sn_seen_MultBodyAggAux.boss AS boss,
+  Under_sn_seen_MultBodyAggAux.report AS report,
+  MAX(Under_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Under_sn_seen_MultBodyAggAux AS Under_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Under_sn_step.boss AS boss,
-  Under_sn_step.report AS report
+  Under_sn_seen.boss AS boss,
+  Under_sn_seen.report AS report
 FROM
-  t_0_Under_sn_step AS Under_sn_step
+  t_0_Under_sn_seen AS Under_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Under_sn_full AS Under_sn_full
-  WHERE
-    (Under_sn_full.boss = Under_sn_step.boss) AND
-    (Under_sn_full.report = Under_sn_step.report)) IS NULL)
+  (Under_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Under_sn_full SELECT * FROM synalog_test.Under_sn_new;
@@ -670,7 +689,7 @@ CREATE TABLE synalog_test.Under_sn_delta AS WITH t_2_Manages AS (SELECT * FROM (
       'intern' AS report
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Under_sn_new.boss AS boss,
@@ -682,31 +701,50 @@ t_1_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Manages.boss AS boss,
-      t_2_Manages.report AS report
+      t_4_Manages.boss AS boss,
+      t_4_Manages.report AS report
     FROM
-      t_2_Manages
+      t_2_Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Under_sn_back_step AS (SELECT
+t_2_Under_sn_back_step AS (SELECT
   Under_MultBodyAggAux_f1.boss AS boss,
   Under_MultBodyAggAux_f1.report AS report
 FROM
-  t_1_Under_MultBodyAggAux_f1 AS Under_MultBodyAggAux_f1
+  t_3_Under_MultBodyAggAux_f1 AS Under_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Under_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Under_sn_back_step.boss AS boss,
+      Under_sn_back_step.report AS report,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Under_sn_back_step AS Under_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Under_sn_full.boss AS boss,
+      Under_sn_full.report AS report,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Under_sn_full AS Under_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Under_sn_back_seen AS (SELECT
+  Under_sn_back_seen_MultBodyAggAux.boss AS boss,
+  Under_sn_back_seen_MultBodyAggAux.report AS report,
+  MAX(Under_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Under_sn_back_seen_MultBodyAggAux AS Under_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Under_sn_back_step.boss AS boss,
-  Under_sn_back_step.report AS report
+  Under_sn_back_seen.boss AS boss,
+  Under_sn_back_seen.report AS report
 FROM
-  t_0_Under_sn_back_step AS Under_sn_back_step
+  t_0_Under_sn_back_seen AS Under_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Under_sn_full AS Under_sn_full
-  WHERE
-    (Under_sn_full.boss = Under_sn_back_step.boss) AND
-    (Under_sn_full.report = Under_sn_back_step.report)) IS NULL)
+  (Under_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Under_sn_full SELECT * FROM synalog_test.Under_sn_delta;
@@ -759,7 +797,7 @@ CREATE TABLE synalog_test.Under_sn_new AS WITH t_2_Manages AS (SELECT * FROM (
       'intern' AS report
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Under_sn_delta.boss AS boss,
@@ -771,31 +809,50 @@ t_1_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Manages.boss AS boss,
-      t_2_Manages.report AS report
+      t_4_Manages.boss AS boss,
+      t_4_Manages.report AS report
     FROM
-      t_2_Manages
+      t_2_Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Under_sn_step AS (SELECT
+t_2_Under_sn_step AS (SELECT
   Under_MultBodyAggAux_f8.boss AS boss,
   Under_MultBodyAggAux_f8.report AS report
 FROM
-  t_1_Under_MultBodyAggAux_f8 AS Under_MultBodyAggAux_f8
+  t_3_Under_MultBodyAggAux_f8 AS Under_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Under_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Under_sn_step.boss AS boss,
+      Under_sn_step.report AS report,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Under_sn_step AS Under_sn_step
+   UNION ALL
+  
+    SELECT
+      Under_sn_full.boss AS boss,
+      Under_sn_full.report AS report,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Under_sn_full AS Under_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Under_sn_seen AS (SELECT
+  Under_sn_seen_MultBodyAggAux.boss AS boss,
+  Under_sn_seen_MultBodyAggAux.report AS report,
+  MAX(Under_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Under_sn_seen_MultBodyAggAux AS Under_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Under_sn_step.boss AS boss,
-  Under_sn_step.report AS report
+  Under_sn_seen.boss AS boss,
+  Under_sn_seen.report AS report
 FROM
-  t_0_Under_sn_step AS Under_sn_step
+  t_0_Under_sn_seen AS Under_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Under_sn_full AS Under_sn_full
-  WHERE
-    (Under_sn_full.boss = Under_sn_step.boss) AND
-    (Under_sn_full.report = Under_sn_step.report)) IS NULL)
+  (Under_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Under_sn_full SELECT * FROM synalog_test.Under_sn_new;
@@ -848,7 +905,7 @@ CREATE TABLE synalog_test.Under_sn_delta AS WITH t_2_Manages AS (SELECT * FROM (
       'intern' AS report
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Under_sn_new.boss AS boss,
@@ -860,31 +917,50 @@ t_1_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Manages.boss AS boss,
-      t_2_Manages.report AS report
+      t_4_Manages.boss AS boss,
+      t_4_Manages.report AS report
     FROM
-      t_2_Manages
+      t_2_Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Under_sn_back_step AS (SELECT
+t_2_Under_sn_back_step AS (SELECT
   Under_MultBodyAggAux_f1.boss AS boss,
   Under_MultBodyAggAux_f1.report AS report
 FROM
-  t_1_Under_MultBodyAggAux_f1 AS Under_MultBodyAggAux_f1
+  t_3_Under_MultBodyAggAux_f1 AS Under_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Under_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Under_sn_back_step.boss AS boss,
+      Under_sn_back_step.report AS report,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Under_sn_back_step AS Under_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Under_sn_full.boss AS boss,
+      Under_sn_full.report AS report,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Under_sn_full AS Under_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Under_sn_back_seen AS (SELECT
+  Under_sn_back_seen_MultBodyAggAux.boss AS boss,
+  Under_sn_back_seen_MultBodyAggAux.report AS report,
+  MAX(Under_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Under_sn_back_seen_MultBodyAggAux AS Under_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Under_sn_back_step.boss AS boss,
-  Under_sn_back_step.report AS report
+  Under_sn_back_seen.boss AS boss,
+  Under_sn_back_seen.report AS report
 FROM
-  t_0_Under_sn_back_step AS Under_sn_back_step
+  t_0_Under_sn_back_seen AS Under_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Under_sn_full AS Under_sn_full
-  WHERE
-    (Under_sn_full.boss = Under_sn_back_step.boss) AND
-    (Under_sn_full.report = Under_sn_back_step.report)) IS NULL)
+  (Under_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Under_sn_full SELECT * FROM synalog_test.Under_sn_delta;
@@ -937,7 +1013,7 @@ CREATE TABLE synalog_test.Under_sn_new AS WITH t_2_Manages AS (SELECT * FROM (
       'intern' AS report
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Under_sn_delta.boss AS boss,
@@ -949,31 +1025,50 @@ t_1_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Manages.boss AS boss,
-      t_2_Manages.report AS report
+      t_4_Manages.boss AS boss,
+      t_4_Manages.report AS report
     FROM
-      t_2_Manages
+      t_2_Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Under_sn_step AS (SELECT
+t_2_Under_sn_step AS (SELECT
   Under_MultBodyAggAux_f8.boss AS boss,
   Under_MultBodyAggAux_f8.report AS report
 FROM
-  t_1_Under_MultBodyAggAux_f8 AS Under_MultBodyAggAux_f8
+  t_3_Under_MultBodyAggAux_f8 AS Under_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Under_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Under_sn_step.boss AS boss,
+      Under_sn_step.report AS report,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Under_sn_step AS Under_sn_step
+   UNION ALL
+  
+    SELECT
+      Under_sn_full.boss AS boss,
+      Under_sn_full.report AS report,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Under_sn_full AS Under_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Under_sn_seen AS (SELECT
+  Under_sn_seen_MultBodyAggAux.boss AS boss,
+  Under_sn_seen_MultBodyAggAux.report AS report,
+  MAX(Under_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Under_sn_seen_MultBodyAggAux AS Under_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Under_sn_step.boss AS boss,
-  Under_sn_step.report AS report
+  Under_sn_seen.boss AS boss,
+  Under_sn_seen.report AS report
 FROM
-  t_0_Under_sn_step AS Under_sn_step
+  t_0_Under_sn_seen AS Under_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Under_sn_full AS Under_sn_full
-  WHERE
-    (Under_sn_full.boss = Under_sn_step.boss) AND
-    (Under_sn_full.report = Under_sn_step.report)) IS NULL)
+  (Under_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Under_sn_full SELECT * FROM synalog_test.Under_sn_new;
@@ -1026,7 +1121,7 @@ CREATE TABLE synalog_test.Under_sn_delta AS WITH t_2_Manages AS (SELECT * FROM (
       'intern' AS report
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Under_sn_new.boss AS boss,
@@ -1038,31 +1133,50 @@ t_1_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Manages.boss AS boss,
-      t_2_Manages.report AS report
+      t_4_Manages.boss AS boss,
+      t_4_Manages.report AS report
     FROM
-      t_2_Manages
+      t_2_Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Under_sn_back_step AS (SELECT
+t_2_Under_sn_back_step AS (SELECT
   Under_MultBodyAggAux_f1.boss AS boss,
   Under_MultBodyAggAux_f1.report AS report
 FROM
-  t_1_Under_MultBodyAggAux_f1 AS Under_MultBodyAggAux_f1
+  t_3_Under_MultBodyAggAux_f1 AS Under_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Under_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Under_sn_back_step.boss AS boss,
+      Under_sn_back_step.report AS report,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Under_sn_back_step AS Under_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Under_sn_full.boss AS boss,
+      Under_sn_full.report AS report,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Under_sn_full AS Under_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Under_sn_back_seen AS (SELECT
+  Under_sn_back_seen_MultBodyAggAux.boss AS boss,
+  Under_sn_back_seen_MultBodyAggAux.report AS report,
+  MAX(Under_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Under_sn_back_seen_MultBodyAggAux AS Under_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Under_sn_back_step.boss AS boss,
-  Under_sn_back_step.report AS report
+  Under_sn_back_seen.boss AS boss,
+  Under_sn_back_seen.report AS report
 FROM
-  t_0_Under_sn_back_step AS Under_sn_back_step
+  t_0_Under_sn_back_seen AS Under_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Under_sn_full AS Under_sn_full
-  WHERE
-    (Under_sn_full.boss = Under_sn_back_step.boss) AND
-    (Under_sn_full.report = Under_sn_back_step.report)) IS NULL)
+  (Under_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Under_sn_full SELECT * FROM synalog_test.Under_sn_delta;
@@ -1115,7 +1229,7 @@ CREATE TABLE synalog_test.Under_sn_new AS WITH t_2_Manages AS (SELECT * FROM (
       'intern' AS report
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Under_sn_delta.boss AS boss,
@@ -1127,31 +1241,50 @@ t_1_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Manages.boss AS boss,
-      t_2_Manages.report AS report
+      t_4_Manages.boss AS boss,
+      t_4_Manages.report AS report
     FROM
-      t_2_Manages
+      t_2_Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Under_sn_step AS (SELECT
+t_2_Under_sn_step AS (SELECT
   Under_MultBodyAggAux_f8.boss AS boss,
   Under_MultBodyAggAux_f8.report AS report
 FROM
-  t_1_Under_MultBodyAggAux_f8 AS Under_MultBodyAggAux_f8
+  t_3_Under_MultBodyAggAux_f8 AS Under_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Under_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Under_sn_step.boss AS boss,
+      Under_sn_step.report AS report,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Under_sn_step AS Under_sn_step
+   UNION ALL
+  
+    SELECT
+      Under_sn_full.boss AS boss,
+      Under_sn_full.report AS report,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Under_sn_full AS Under_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Under_sn_seen AS (SELECT
+  Under_sn_seen_MultBodyAggAux.boss AS boss,
+  Under_sn_seen_MultBodyAggAux.report AS report,
+  MAX(Under_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Under_sn_seen_MultBodyAggAux AS Under_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Under_sn_step.boss AS boss,
-  Under_sn_step.report AS report
+  Under_sn_seen.boss AS boss,
+  Under_sn_seen.report AS report
 FROM
-  t_0_Under_sn_step AS Under_sn_step
+  t_0_Under_sn_seen AS Under_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Under_sn_full AS Under_sn_full
-  WHERE
-    (Under_sn_full.boss = Under_sn_step.boss) AND
-    (Under_sn_full.report = Under_sn_step.report)) IS NULL)
+  (Under_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Under_sn_full SELECT * FROM synalog_test.Under_sn_new;
@@ -1204,7 +1337,7 @@ CREATE TABLE synalog_test.Under_sn_delta AS WITH t_2_Manages AS (SELECT * FROM (
       'intern' AS report
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Under_sn_new.boss AS boss,
@@ -1216,31 +1349,50 @@ t_1_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Manages.boss AS boss,
-      t_2_Manages.report AS report
+      t_4_Manages.boss AS boss,
+      t_4_Manages.report AS report
     FROM
-      t_2_Manages
+      t_2_Manages AS t_4_Manages
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Under_sn_back_step AS (SELECT
+t_2_Under_sn_back_step AS (SELECT
   Under_MultBodyAggAux_f1.boss AS boss,
   Under_MultBodyAggAux_f1.report AS report
 FROM
-  t_1_Under_MultBodyAggAux_f1 AS Under_MultBodyAggAux_f1
+  t_3_Under_MultBodyAggAux_f1 AS Under_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Under_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Under_sn_back_step.boss AS boss,
+      Under_sn_back_step.report AS report,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Under_sn_back_step AS Under_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Under_sn_full.boss AS boss,
+      Under_sn_full.report AS report,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Under_sn_full AS Under_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Under_sn_back_seen AS (SELECT
+  Under_sn_back_seen_MultBodyAggAux.boss AS boss,
+  Under_sn_back_seen_MultBodyAggAux.report AS report,
+  MAX(Under_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Under_sn_back_seen_MultBodyAggAux AS Under_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Under_sn_back_step.boss AS boss,
-  Under_sn_back_step.report AS report
+  Under_sn_back_seen.boss AS boss,
+  Under_sn_back_seen.report AS report
 FROM
-  t_0_Under_sn_back_step AS Under_sn_back_step
+  t_0_Under_sn_back_seen AS Under_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Under_sn_full AS Under_sn_full
-  WHERE
-    (Under_sn_full.boss = Under_sn_back_step.boss) AND
-    (Under_sn_full.report = Under_sn_back_step.report)) IS NULL)
+  (Under_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Under_sn_full SELECT * FROM synalog_test.Under_sn_delta;

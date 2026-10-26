@@ -644,7 +644,7 @@ CREATE TABLE synalog_test.Contains_sn_new AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Contains_sn_delta.part AS part,
@@ -656,31 +656,50 @@ t_1_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Contains_sn_step AS (SELECT
+t_2_Contains_sn_step AS (SELECT
   Contains_MultBodyAggAux_f8.part AS part,
   Contains_MultBodyAggAux_f8.component AS component
 FROM
-  t_1_Contains_MultBodyAggAux_f8 AS Contains_MultBodyAggAux_f8
+  t_3_Contains_MultBodyAggAux_f8 AS Contains_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Contains_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Contains_sn_step.part AS part,
+      Contains_sn_step.component AS component,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Contains_sn_step AS Contains_sn_step
+   UNION ALL
+  
+    SELECT
+      Contains_sn_full.part AS part,
+      Contains_sn_full.component AS component,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Contains_sn_full AS Contains_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Contains_sn_seen AS (SELECT
+  Contains_sn_seen_MultBodyAggAux.part AS part,
+  Contains_sn_seen_MultBodyAggAux.component AS component,
+  MAX(Contains_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Contains_sn_seen_MultBodyAggAux AS Contains_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Contains_sn_step.part AS part,
-  Contains_sn_step.component AS component
+  Contains_sn_seen.part AS part,
+  Contains_sn_seen.component AS component
 FROM
-  t_0_Contains_sn_step AS Contains_sn_step
+  t_0_Contains_sn_seen AS Contains_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Contains_sn_full AS Contains_sn_full
-  WHERE
-    (Contains_sn_full.part = Contains_sn_step.part) AND
-    (Contains_sn_full.component = Contains_sn_step.component)) IS NULL)
+  (Contains_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Contains_sn_full SELECT * FROM synalog_test.Contains_sn_new;
@@ -742,7 +761,7 @@ CREATE TABLE synalog_test.Contains_sn_delta AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Contains_sn_new.part AS part,
@@ -754,31 +773,50 @@ t_1_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Contains_sn_back_step AS (SELECT
+t_2_Contains_sn_back_step AS (SELECT
   Contains_MultBodyAggAux_f1.part AS part,
   Contains_MultBodyAggAux_f1.component AS component
 FROM
-  t_1_Contains_MultBodyAggAux_f1 AS Contains_MultBodyAggAux_f1
+  t_3_Contains_MultBodyAggAux_f1 AS Contains_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Contains_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Contains_sn_back_step.part AS part,
+      Contains_sn_back_step.component AS component,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Contains_sn_back_step AS Contains_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Contains_sn_full.part AS part,
+      Contains_sn_full.component AS component,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Contains_sn_full AS Contains_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Contains_sn_back_seen AS (SELECT
+  Contains_sn_back_seen_MultBodyAggAux.part AS part,
+  Contains_sn_back_seen_MultBodyAggAux.component AS component,
+  MAX(Contains_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Contains_sn_back_seen_MultBodyAggAux AS Contains_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Contains_sn_back_step.part AS part,
-  Contains_sn_back_step.component AS component
+  Contains_sn_back_seen.part AS part,
+  Contains_sn_back_seen.component AS component
 FROM
-  t_0_Contains_sn_back_step AS Contains_sn_back_step
+  t_0_Contains_sn_back_seen AS Contains_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Contains_sn_full AS Contains_sn_full
-  WHERE
-    (Contains_sn_full.part = Contains_sn_back_step.part) AND
-    (Contains_sn_full.component = Contains_sn_back_step.component)) IS NULL)
+  (Contains_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Contains_sn_full SELECT * FROM synalog_test.Contains_sn_delta;
@@ -840,7 +878,7 @@ CREATE TABLE synalog_test.Contains_sn_new AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Contains_sn_delta.part AS part,
@@ -852,31 +890,50 @@ t_1_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Contains_sn_step AS (SELECT
+t_2_Contains_sn_step AS (SELECT
   Contains_MultBodyAggAux_f8.part AS part,
   Contains_MultBodyAggAux_f8.component AS component
 FROM
-  t_1_Contains_MultBodyAggAux_f8 AS Contains_MultBodyAggAux_f8
+  t_3_Contains_MultBodyAggAux_f8 AS Contains_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Contains_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Contains_sn_step.part AS part,
+      Contains_sn_step.component AS component,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Contains_sn_step AS Contains_sn_step
+   UNION ALL
+  
+    SELECT
+      Contains_sn_full.part AS part,
+      Contains_sn_full.component AS component,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Contains_sn_full AS Contains_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Contains_sn_seen AS (SELECT
+  Contains_sn_seen_MultBodyAggAux.part AS part,
+  Contains_sn_seen_MultBodyAggAux.component AS component,
+  MAX(Contains_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Contains_sn_seen_MultBodyAggAux AS Contains_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Contains_sn_step.part AS part,
-  Contains_sn_step.component AS component
+  Contains_sn_seen.part AS part,
+  Contains_sn_seen.component AS component
 FROM
-  t_0_Contains_sn_step AS Contains_sn_step
+  t_0_Contains_sn_seen AS Contains_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Contains_sn_full AS Contains_sn_full
-  WHERE
-    (Contains_sn_full.part = Contains_sn_step.part) AND
-    (Contains_sn_full.component = Contains_sn_step.component)) IS NULL)
+  (Contains_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Contains_sn_full SELECT * FROM synalog_test.Contains_sn_new;
@@ -938,7 +995,7 @@ CREATE TABLE synalog_test.Contains_sn_delta AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Contains_sn_new.part AS part,
@@ -950,31 +1007,50 @@ t_1_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Contains_sn_back_step AS (SELECT
+t_2_Contains_sn_back_step AS (SELECT
   Contains_MultBodyAggAux_f1.part AS part,
   Contains_MultBodyAggAux_f1.component AS component
 FROM
-  t_1_Contains_MultBodyAggAux_f1 AS Contains_MultBodyAggAux_f1
+  t_3_Contains_MultBodyAggAux_f1 AS Contains_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Contains_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Contains_sn_back_step.part AS part,
+      Contains_sn_back_step.component AS component,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Contains_sn_back_step AS Contains_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Contains_sn_full.part AS part,
+      Contains_sn_full.component AS component,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Contains_sn_full AS Contains_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Contains_sn_back_seen AS (SELECT
+  Contains_sn_back_seen_MultBodyAggAux.part AS part,
+  Contains_sn_back_seen_MultBodyAggAux.component AS component,
+  MAX(Contains_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Contains_sn_back_seen_MultBodyAggAux AS Contains_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Contains_sn_back_step.part AS part,
-  Contains_sn_back_step.component AS component
+  Contains_sn_back_seen.part AS part,
+  Contains_sn_back_seen.component AS component
 FROM
-  t_0_Contains_sn_back_step AS Contains_sn_back_step
+  t_0_Contains_sn_back_seen AS Contains_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Contains_sn_full AS Contains_sn_full
-  WHERE
-    (Contains_sn_full.part = Contains_sn_back_step.part) AND
-    (Contains_sn_full.component = Contains_sn_back_step.component)) IS NULL)
+  (Contains_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Contains_sn_full SELECT * FROM synalog_test.Contains_sn_delta;
@@ -1036,7 +1112,7 @@ CREATE TABLE synalog_test.Contains_sn_new AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Contains_sn_delta.part AS part,
@@ -1048,31 +1124,50 @@ t_1_Contains_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Contains_sn_step AS (SELECT
+t_2_Contains_sn_step AS (SELECT
   Contains_MultBodyAggAux_f8.part AS part,
   Contains_MultBodyAggAux_f8.component AS component
 FROM
-  t_1_Contains_MultBodyAggAux_f8 AS Contains_MultBodyAggAux_f8
+  t_3_Contains_MultBodyAggAux_f8 AS Contains_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Contains_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Contains_sn_step.part AS part,
+      Contains_sn_step.component AS component,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Contains_sn_step AS Contains_sn_step
+   UNION ALL
+  
+    SELECT
+      Contains_sn_full.part AS part,
+      Contains_sn_full.component AS component,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Contains_sn_full AS Contains_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Contains_sn_seen AS (SELECT
+  Contains_sn_seen_MultBodyAggAux.part AS part,
+  Contains_sn_seen_MultBodyAggAux.component AS component,
+  MAX(Contains_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Contains_sn_seen_MultBodyAggAux AS Contains_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Contains_sn_step.part AS part,
-  Contains_sn_step.component AS component
+  Contains_sn_seen.part AS part,
+  Contains_sn_seen.component AS component
 FROM
-  t_0_Contains_sn_step AS Contains_sn_step
+  t_0_Contains_sn_seen AS Contains_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Contains_sn_full AS Contains_sn_full
-  WHERE
-    (Contains_sn_full.part = Contains_sn_step.part) AND
-    (Contains_sn_full.component = Contains_sn_step.component)) IS NULL)
+  (Contains_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Contains_sn_full SELECT * FROM synalog_test.Contains_sn_new;
@@ -1134,7 +1229,7 @@ CREATE TABLE synalog_test.Contains_sn_delta AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Contains_sn_new.part AS part,
@@ -1146,31 +1241,50 @@ t_1_Contains_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Contains_sn_back_step AS (SELECT
+t_2_Contains_sn_back_step AS (SELECT
   Contains_MultBodyAggAux_f1.part AS part,
   Contains_MultBodyAggAux_f1.component AS component
 FROM
-  t_1_Contains_MultBodyAggAux_f1 AS Contains_MultBodyAggAux_f1
+  t_3_Contains_MultBodyAggAux_f1 AS Contains_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Contains_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Contains_sn_back_step.part AS part,
+      Contains_sn_back_step.component AS component,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Contains_sn_back_step AS Contains_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Contains_sn_full.part AS part,
+      Contains_sn_full.component AS component,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Contains_sn_full AS Contains_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Contains_sn_back_seen AS (SELECT
+  Contains_sn_back_seen_MultBodyAggAux.part AS part,
+  Contains_sn_back_seen_MultBodyAggAux.component AS component,
+  MAX(Contains_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Contains_sn_back_seen_MultBodyAggAux AS Contains_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Contains_sn_back_step.part AS part,
-  Contains_sn_back_step.component AS component
+  Contains_sn_back_seen.part AS part,
+  Contains_sn_back_seen.component AS component
 FROM
-  t_0_Contains_sn_back_step AS Contains_sn_back_step
+  t_0_Contains_sn_back_seen AS Contains_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Contains_sn_full AS Contains_sn_full
-  WHERE
-    (Contains_sn_full.part = Contains_sn_back_step.part) AND
-    (Contains_sn_full.component = Contains_sn_back_step.component)) IS NULL)
+  (Contains_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Contains_sn_full SELECT * FROM synalog_test.Contains_sn_delta;

@@ -269,7 +269,7 @@ CREATE TABLE synalog_test.R_sn_new AS WITH t_2_E AS (SELECT * FROM (
       7 AS w
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_R_MultBodyAggAux_f6 AS (SELECT * FROM (
+t_3_R_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       1 AS x
@@ -283,22 +283,39 @@ t_1_R_MultBodyAggAux_f6 AS (SELECT * FROM (
       (E.a = R_sn_delta.x)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_R_sn_step AS (SELECT
+t_2_R_sn_step AS (SELECT
   R_MultBodyAggAux_f6.x AS x
 FROM
-  t_1_R_MultBodyAggAux_f6 AS R_MultBodyAggAux_f6
+  t_3_R_MultBodyAggAux_f6 AS R_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_R_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      R_sn_step.x AS x,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_R_sn_step AS R_sn_step
+   UNION ALL
+  
+    SELECT
+      R_sn_full.x AS x,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.R_sn_full AS R_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_R_sn_seen AS (SELECT
+  R_sn_seen_MultBodyAggAux.x AS x,
+  MAX(R_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_R_sn_seen_MultBodyAggAux AS R_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  R_sn_step.x AS x
+  R_sn_seen.x AS x
 FROM
-  t_0_R_sn_step AS R_sn_step
+  t_0_R_sn_seen AS R_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.R_sn_full AS R_sn_full
-  WHERE
-    (R_sn_full.x = R_sn_step.x)) IS NULL)
+  (R_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.R_sn_full SELECT * FROM synalog_test.R_sn_new;
@@ -336,7 +353,7 @@ CREATE TABLE synalog_test.R_sn_delta AS WITH t_2_E AS (SELECT * FROM (
       7 AS w
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_R_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_R_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       1 AS x
@@ -350,22 +367,39 @@ t_1_R_MultBodyAggAux_f1 AS (SELECT * FROM (
       (E.a = R_sn_new.x)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_R_sn_back_step AS (SELECT
+t_2_R_sn_back_step AS (SELECT
   R_MultBodyAggAux_f1.x AS x
 FROM
-  t_1_R_MultBodyAggAux_f1 AS R_MultBodyAggAux_f1
+  t_3_R_MultBodyAggAux_f1 AS R_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_R_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      R_sn_back_step.x AS x,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_R_sn_back_step AS R_sn_back_step
+   UNION ALL
+  
+    SELECT
+      R_sn_full.x AS x,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.R_sn_full AS R_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_R_sn_back_seen AS (SELECT
+  R_sn_back_seen_MultBodyAggAux.x AS x,
+  MAX(R_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_R_sn_back_seen_MultBodyAggAux AS R_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  R_sn_back_step.x AS x
+  R_sn_back_seen.x AS x
 FROM
-  t_0_R_sn_back_step AS R_sn_back_step
+  t_0_R_sn_back_seen AS R_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.R_sn_full AS R_sn_full
-  WHERE
-    (R_sn_full.x = R_sn_back_step.x)) IS NULL)
+  (R_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.R_sn_full SELECT * FROM synalog_test.R_sn_delta;
@@ -403,7 +437,7 @@ CREATE TABLE synalog_test.R_sn_new AS WITH t_2_E AS (SELECT * FROM (
       7 AS w
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_R_MultBodyAggAux_f6 AS (SELECT * FROM (
+t_3_R_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       1 AS x
@@ -417,22 +451,39 @@ t_1_R_MultBodyAggAux_f6 AS (SELECT * FROM (
       (E.a = R_sn_delta.x)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_R_sn_step AS (SELECT
+t_2_R_sn_step AS (SELECT
   R_MultBodyAggAux_f6.x AS x
 FROM
-  t_1_R_MultBodyAggAux_f6 AS R_MultBodyAggAux_f6
+  t_3_R_MultBodyAggAux_f6 AS R_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_R_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      R_sn_step.x AS x,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_R_sn_step AS R_sn_step
+   UNION ALL
+  
+    SELECT
+      R_sn_full.x AS x,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.R_sn_full AS R_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_R_sn_seen AS (SELECT
+  R_sn_seen_MultBodyAggAux.x AS x,
+  MAX(R_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_R_sn_seen_MultBodyAggAux AS R_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  R_sn_step.x AS x
+  R_sn_seen.x AS x
 FROM
-  t_0_R_sn_step AS R_sn_step
+  t_0_R_sn_seen AS R_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.R_sn_full AS R_sn_full
-  WHERE
-    (R_sn_full.x = R_sn_step.x)) IS NULL)
+  (R_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.R_sn_full SELECT * FROM synalog_test.R_sn_new;

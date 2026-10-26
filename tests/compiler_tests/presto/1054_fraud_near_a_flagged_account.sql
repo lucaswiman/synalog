@@ -307,7 +307,7 @@ CREATE TABLE synalog_test.Linked_sn_full AS SELECT * FROM (
 -- Interacting with table synalog_test.Linked_sn_full
 
 DROP TABLE IF EXISTS synalog_test.Linked_sn_new;
-CREATE TABLE synalog_test.Linked_sn_new AS WITH t_1_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Linked_sn_new AS WITH t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Shares.a AS a,
@@ -318,38 +318,57 @@ CREATE TABLE synalog_test.Linked_sn_new AS WITH t_1_Linked_MultBodyAggAux_f8 AS 
   
     SELECT
       Linked_sn_delta.a AS a,
-      t_2_Shares.b AS b
+      t_4_Shares.b AS b
     FROM
-      synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_2_Shares
+      synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_delta.b)
+      (t_4_Shares.a = Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Linked_sn_step AS (SELECT
+t_2_Linked_sn_step AS (SELECT
   Linked_MultBodyAggAux_f8.a AS a,
   Linked_MultBodyAggAux_f8.b AS b
 FROM
-  t_1_Linked_MultBodyAggAux_f8 AS Linked_MultBodyAggAux_f8
+  t_3_Linked_MultBodyAggAux_f8 AS Linked_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Linked_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Linked_sn_step.a AS a,
+      Linked_sn_step.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Linked_sn_step AS Linked_sn_step
+   UNION ALL
+  
+    SELECT
+      Linked_sn_full.a AS a,
+      Linked_sn_full.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Linked_sn_full AS Linked_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Linked_sn_seen AS (SELECT
+  Linked_sn_seen_MultBodyAggAux.a AS a,
+  Linked_sn_seen_MultBodyAggAux.b AS b,
+  MAX(Linked_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Linked_sn_seen_MultBodyAggAux AS Linked_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Linked_sn_step.a AS a,
-  Linked_sn_step.b AS b
+  Linked_sn_seen.a AS a,
+  Linked_sn_seen.b AS b
 FROM
-  t_0_Linked_sn_step AS Linked_sn_step
+  t_0_Linked_sn_seen AS Linked_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Linked_sn_full AS Linked_sn_full
-  WHERE
-    (Linked_sn_full.a = Linked_sn_step.a) AND
-    (Linked_sn_full.b = Linked_sn_step.b)) IS NULL)
+  (Linked_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Linked_sn_full SELECT * FROM synalog_test.Linked_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.Linked_sn_delta;
-CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_1_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Shares.a AS a,
@@ -360,38 +379,57 @@ CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_1_Linked_MultBodyAggAux_f1 A
   
     SELECT
       Linked_sn_new.a AS a,
-      t_2_Shares.b AS b
+      t_4_Shares.b AS b
     FROM
-      synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_2_Shares
+      synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_new.b)
+      (t_4_Shares.a = Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Linked_sn_back_step AS (SELECT
+t_2_Linked_sn_back_step AS (SELECT
   Linked_MultBodyAggAux_f1.a AS a,
   Linked_MultBodyAggAux_f1.b AS b
 FROM
-  t_1_Linked_MultBodyAggAux_f1 AS Linked_MultBodyAggAux_f1
+  t_3_Linked_MultBodyAggAux_f1 AS Linked_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Linked_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Linked_sn_back_step.a AS a,
+      Linked_sn_back_step.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Linked_sn_back_step AS Linked_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Linked_sn_full.a AS a,
+      Linked_sn_full.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Linked_sn_full AS Linked_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Linked_sn_back_seen AS (SELECT
+  Linked_sn_back_seen_MultBodyAggAux.a AS a,
+  Linked_sn_back_seen_MultBodyAggAux.b AS b,
+  MAX(Linked_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Linked_sn_back_seen_MultBodyAggAux AS Linked_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Linked_sn_back_step.a AS a,
-  Linked_sn_back_step.b AS b
+  Linked_sn_back_seen.a AS a,
+  Linked_sn_back_seen.b AS b
 FROM
-  t_0_Linked_sn_back_step AS Linked_sn_back_step
+  t_0_Linked_sn_back_seen AS Linked_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Linked_sn_full AS Linked_sn_full
-  WHERE
-    (Linked_sn_full.a = Linked_sn_back_step.a) AND
-    (Linked_sn_full.b = Linked_sn_back_step.b)) IS NULL)
+  (Linked_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Linked_sn_full SELECT * FROM synalog_test.Linked_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.Linked_sn_new;
-CREATE TABLE synalog_test.Linked_sn_new AS WITH t_1_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Linked_sn_new AS WITH t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Shares.a AS a,
@@ -402,38 +440,57 @@ CREATE TABLE synalog_test.Linked_sn_new AS WITH t_1_Linked_MultBodyAggAux_f8 AS 
   
     SELECT
       Linked_sn_delta.a AS a,
-      t_2_Shares.b AS b
+      t_4_Shares.b AS b
     FROM
-      synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_2_Shares
+      synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_delta.b)
+      (t_4_Shares.a = Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Linked_sn_step AS (SELECT
+t_2_Linked_sn_step AS (SELECT
   Linked_MultBodyAggAux_f8.a AS a,
   Linked_MultBodyAggAux_f8.b AS b
 FROM
-  t_1_Linked_MultBodyAggAux_f8 AS Linked_MultBodyAggAux_f8
+  t_3_Linked_MultBodyAggAux_f8 AS Linked_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Linked_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Linked_sn_step.a AS a,
+      Linked_sn_step.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Linked_sn_step AS Linked_sn_step
+   UNION ALL
+  
+    SELECT
+      Linked_sn_full.a AS a,
+      Linked_sn_full.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Linked_sn_full AS Linked_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Linked_sn_seen AS (SELECT
+  Linked_sn_seen_MultBodyAggAux.a AS a,
+  Linked_sn_seen_MultBodyAggAux.b AS b,
+  MAX(Linked_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Linked_sn_seen_MultBodyAggAux AS Linked_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Linked_sn_step.a AS a,
-  Linked_sn_step.b AS b
+  Linked_sn_seen.a AS a,
+  Linked_sn_seen.b AS b
 FROM
-  t_0_Linked_sn_step AS Linked_sn_step
+  t_0_Linked_sn_seen AS Linked_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Linked_sn_full AS Linked_sn_full
-  WHERE
-    (Linked_sn_full.a = Linked_sn_step.a) AND
-    (Linked_sn_full.b = Linked_sn_step.b)) IS NULL)
+  (Linked_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Linked_sn_full SELECT * FROM synalog_test.Linked_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.Linked_sn_delta;
-CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_1_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Shares.a AS a,
@@ -444,38 +501,57 @@ CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_1_Linked_MultBodyAggAux_f1 A
   
     SELECT
       Linked_sn_new.a AS a,
-      t_2_Shares.b AS b
+      t_4_Shares.b AS b
     FROM
-      synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_2_Shares
+      synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_new.b)
+      (t_4_Shares.a = Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Linked_sn_back_step AS (SELECT
+t_2_Linked_sn_back_step AS (SELECT
   Linked_MultBodyAggAux_f1.a AS a,
   Linked_MultBodyAggAux_f1.b AS b
 FROM
-  t_1_Linked_MultBodyAggAux_f1 AS Linked_MultBodyAggAux_f1
+  t_3_Linked_MultBodyAggAux_f1 AS Linked_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Linked_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Linked_sn_back_step.a AS a,
+      Linked_sn_back_step.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Linked_sn_back_step AS Linked_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Linked_sn_full.a AS a,
+      Linked_sn_full.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Linked_sn_full AS Linked_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Linked_sn_back_seen AS (SELECT
+  Linked_sn_back_seen_MultBodyAggAux.a AS a,
+  Linked_sn_back_seen_MultBodyAggAux.b AS b,
+  MAX(Linked_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Linked_sn_back_seen_MultBodyAggAux AS Linked_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Linked_sn_back_step.a AS a,
-  Linked_sn_back_step.b AS b
+  Linked_sn_back_seen.a AS a,
+  Linked_sn_back_seen.b AS b
 FROM
-  t_0_Linked_sn_back_step AS Linked_sn_back_step
+  t_0_Linked_sn_back_seen AS Linked_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Linked_sn_full AS Linked_sn_full
-  WHERE
-    (Linked_sn_full.a = Linked_sn_back_step.a) AND
-    (Linked_sn_full.b = Linked_sn_back_step.b)) IS NULL)
+  (Linked_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Linked_sn_full SELECT * FROM synalog_test.Linked_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.Linked_sn_new;
-CREATE TABLE synalog_test.Linked_sn_new AS WITH t_1_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Linked_sn_new AS WITH t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Shares.a AS a,
@@ -486,38 +562,57 @@ CREATE TABLE synalog_test.Linked_sn_new AS WITH t_1_Linked_MultBodyAggAux_f8 AS 
   
     SELECT
       Linked_sn_delta.a AS a,
-      t_2_Shares.b AS b
+      t_4_Shares.b AS b
     FROM
-      synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_2_Shares
+      synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_delta.b)
+      (t_4_Shares.a = Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Linked_sn_step AS (SELECT
+t_2_Linked_sn_step AS (SELECT
   Linked_MultBodyAggAux_f8.a AS a,
   Linked_MultBodyAggAux_f8.b AS b
 FROM
-  t_1_Linked_MultBodyAggAux_f8 AS Linked_MultBodyAggAux_f8
+  t_3_Linked_MultBodyAggAux_f8 AS Linked_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Linked_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Linked_sn_step.a AS a,
+      Linked_sn_step.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Linked_sn_step AS Linked_sn_step
+   UNION ALL
+  
+    SELECT
+      Linked_sn_full.a AS a,
+      Linked_sn_full.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Linked_sn_full AS Linked_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Linked_sn_seen AS (SELECT
+  Linked_sn_seen_MultBodyAggAux.a AS a,
+  Linked_sn_seen_MultBodyAggAux.b AS b,
+  MAX(Linked_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Linked_sn_seen_MultBodyAggAux AS Linked_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Linked_sn_step.a AS a,
-  Linked_sn_step.b AS b
+  Linked_sn_seen.a AS a,
+  Linked_sn_seen.b AS b
 FROM
-  t_0_Linked_sn_step AS Linked_sn_step
+  t_0_Linked_sn_seen AS Linked_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Linked_sn_full AS Linked_sn_full
-  WHERE
-    (Linked_sn_full.a = Linked_sn_step.a) AND
-    (Linked_sn_full.b = Linked_sn_step.b)) IS NULL)
+  (Linked_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Linked_sn_full SELECT * FROM synalog_test.Linked_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.Linked_sn_delta;
-CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_1_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Shares.a AS a,
@@ -528,38 +623,57 @@ CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_1_Linked_MultBodyAggAux_f1 A
   
     SELECT
       Linked_sn_new.a AS a,
-      t_2_Shares.b AS b
+      t_4_Shares.b AS b
     FROM
-      synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_2_Shares
+      synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_new.b)
+      (t_4_Shares.a = Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Linked_sn_back_step AS (SELECT
+t_2_Linked_sn_back_step AS (SELECT
   Linked_MultBodyAggAux_f1.a AS a,
   Linked_MultBodyAggAux_f1.b AS b
 FROM
-  t_1_Linked_MultBodyAggAux_f1 AS Linked_MultBodyAggAux_f1
+  t_3_Linked_MultBodyAggAux_f1 AS Linked_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Linked_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Linked_sn_back_step.a AS a,
+      Linked_sn_back_step.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Linked_sn_back_step AS Linked_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Linked_sn_full.a AS a,
+      Linked_sn_full.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Linked_sn_full AS Linked_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Linked_sn_back_seen AS (SELECT
+  Linked_sn_back_seen_MultBodyAggAux.a AS a,
+  Linked_sn_back_seen_MultBodyAggAux.b AS b,
+  MAX(Linked_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Linked_sn_back_seen_MultBodyAggAux AS Linked_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Linked_sn_back_step.a AS a,
-  Linked_sn_back_step.b AS b
+  Linked_sn_back_seen.a AS a,
+  Linked_sn_back_seen.b AS b
 FROM
-  t_0_Linked_sn_back_step AS Linked_sn_back_step
+  t_0_Linked_sn_back_seen AS Linked_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Linked_sn_full AS Linked_sn_full
-  WHERE
-    (Linked_sn_full.a = Linked_sn_back_step.a) AND
-    (Linked_sn_full.b = Linked_sn_back_step.b)) IS NULL)
+  (Linked_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Linked_sn_full SELECT * FROM synalog_test.Linked_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.Linked_sn_new;
-CREATE TABLE synalog_test.Linked_sn_new AS WITH t_1_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Linked_sn_new AS WITH t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       Shares.a AS a,
@@ -570,38 +684,57 @@ CREATE TABLE synalog_test.Linked_sn_new AS WITH t_1_Linked_MultBodyAggAux_f8 AS 
   
     SELECT
       Linked_sn_delta.a AS a,
-      t_2_Shares.b AS b
+      t_4_Shares.b AS b
     FROM
-      synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_2_Shares
+      synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_delta.b)
+      (t_4_Shares.a = Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Linked_sn_step AS (SELECT
+t_2_Linked_sn_step AS (SELECT
   Linked_MultBodyAggAux_f8.a AS a,
   Linked_MultBodyAggAux_f8.b AS b
 FROM
-  t_1_Linked_MultBodyAggAux_f8 AS Linked_MultBodyAggAux_f8
+  t_3_Linked_MultBodyAggAux_f8 AS Linked_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_Linked_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Linked_sn_step.a AS a,
+      Linked_sn_step.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Linked_sn_step AS Linked_sn_step
+   UNION ALL
+  
+    SELECT
+      Linked_sn_full.a AS a,
+      Linked_sn_full.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Linked_sn_full AS Linked_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Linked_sn_seen AS (SELECT
+  Linked_sn_seen_MultBodyAggAux.a AS a,
+  Linked_sn_seen_MultBodyAggAux.b AS b,
+  MAX(Linked_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Linked_sn_seen_MultBodyAggAux AS Linked_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Linked_sn_step.a AS a,
-  Linked_sn_step.b AS b
+  Linked_sn_seen.a AS a,
+  Linked_sn_seen.b AS b
 FROM
-  t_0_Linked_sn_step AS Linked_sn_step
+  t_0_Linked_sn_seen AS Linked_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Linked_sn_full AS Linked_sn_full
-  WHERE
-    (Linked_sn_full.a = Linked_sn_step.a) AND
-    (Linked_sn_full.b = Linked_sn_step.b)) IS NULL)
+  (Linked_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Linked_sn_full SELECT * FROM synalog_test.Linked_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.Linked_sn_delta;
-CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_1_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Shares.a AS a,
@@ -612,32 +745,51 @@ CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_1_Linked_MultBodyAggAux_f1 A
   
     SELECT
       Linked_sn_new.a AS a,
-      t_2_Shares.b AS b
+      t_4_Shares.b AS b
     FROM
-      synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_2_Shares
+      synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_new.b)
+      (t_4_Shares.a = Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Linked_sn_back_step AS (SELECT
+t_2_Linked_sn_back_step AS (SELECT
   Linked_MultBodyAggAux_f1.a AS a,
   Linked_MultBodyAggAux_f1.b AS b
 FROM
-  t_1_Linked_MultBodyAggAux_f1 AS Linked_MultBodyAggAux_f1
+  t_3_Linked_MultBodyAggAux_f1 AS Linked_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_Linked_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Linked_sn_back_step.a AS a,
+      Linked_sn_back_step.b AS b,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Linked_sn_back_step AS Linked_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Linked_sn_full.a AS a,
+      Linked_sn_full.b AS b,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Linked_sn_full AS Linked_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Linked_sn_back_seen AS (SELECT
+  Linked_sn_back_seen_MultBodyAggAux.a AS a,
+  Linked_sn_back_seen_MultBodyAggAux.b AS b,
+  MAX(Linked_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Linked_sn_back_seen_MultBodyAggAux AS Linked_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  Linked_sn_back_step.a AS a,
-  Linked_sn_back_step.b AS b
+  Linked_sn_back_seen.a AS a,
+  Linked_sn_back_seen.b AS b
 FROM
-  t_0_Linked_sn_back_step AS Linked_sn_back_step
+  t_0_Linked_sn_back_seen AS Linked_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Linked_sn_full AS Linked_sn_full
-  WHERE
-    (Linked_sn_full.a = Linked_sn_back_step.a) AND
-    (Linked_sn_full.b = Linked_sn_back_step.b)) IS NULL)
+  (Linked_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.Linked_sn_full SELECT * FROM synalog_test.Linked_sn_delta;

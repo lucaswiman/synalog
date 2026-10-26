@@ -406,7 +406,7 @@ CREATE TABLE synalog_test.After_sn_new AS WITH t_2_Sequel AS (SELECT * FROM (
       2 AS next
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_After_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_After_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       After_sn_delta.book AS book,
@@ -418,31 +418,50 @@ t_1_After_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Sequel.book AS book,
-      t_2_Sequel.next AS next
+      t_4_Sequel.book AS book,
+      t_4_Sequel.next AS next
     FROM
-      t_2_Sequel
+      t_2_Sequel AS t_4_Sequel
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_After_sn_step AS (SELECT
+t_2_After_sn_step AS (SELECT
   After_MultBodyAggAux_f8.book AS book,
   After_MultBodyAggAux_f8.next AS next
 FROM
-  t_1_After_MultBodyAggAux_f8 AS After_MultBodyAggAux_f8
+  t_3_After_MultBodyAggAux_f8 AS After_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_After_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      After_sn_step.book AS book,
+      After_sn_step.next AS next,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_After_sn_step AS After_sn_step
+   UNION ALL
+  
+    SELECT
+      After_sn_full.book AS book,
+      After_sn_full.next AS next,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.After_sn_full AS After_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_After_sn_seen AS (SELECT
+  After_sn_seen_MultBodyAggAux.book AS book,
+  After_sn_seen_MultBodyAggAux.next AS next,
+  MAX(After_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_After_sn_seen_MultBodyAggAux AS After_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  After_sn_step.book AS book,
-  After_sn_step.next AS next
+  After_sn_seen.book AS book,
+  After_sn_seen.next AS next
 FROM
-  t_0_After_sn_step AS After_sn_step
+  t_0_After_sn_seen AS After_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.After_sn_full AS After_sn_full
-  WHERE
-    (After_sn_full.book = After_sn_step.book) AND
-    (After_sn_full.next = After_sn_step.next)) IS NULL)
+  (After_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.After_sn_full SELECT * FROM synalog_test.After_sn_new;
@@ -470,7 +489,7 @@ CREATE TABLE synalog_test.After_sn_delta AS WITH t_2_Sequel AS (SELECT * FROM (
       2 AS next
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_After_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_After_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       After_sn_new.book AS book,
@@ -482,31 +501,50 @@ t_1_After_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Sequel.book AS book,
-      t_2_Sequel.next AS next
+      t_4_Sequel.book AS book,
+      t_4_Sequel.next AS next
     FROM
-      t_2_Sequel
+      t_2_Sequel AS t_4_Sequel
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_After_sn_back_step AS (SELECT
+t_2_After_sn_back_step AS (SELECT
   After_MultBodyAggAux_f1.book AS book,
   After_MultBodyAggAux_f1.next AS next
 FROM
-  t_1_After_MultBodyAggAux_f1 AS After_MultBodyAggAux_f1
+  t_3_After_MultBodyAggAux_f1 AS After_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_After_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      After_sn_back_step.book AS book,
+      After_sn_back_step.next AS next,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_After_sn_back_step AS After_sn_back_step
+   UNION ALL
+  
+    SELECT
+      After_sn_full.book AS book,
+      After_sn_full.next AS next,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.After_sn_full AS After_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_After_sn_back_seen AS (SELECT
+  After_sn_back_seen_MultBodyAggAux.book AS book,
+  After_sn_back_seen_MultBodyAggAux.next AS next,
+  MAX(After_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_After_sn_back_seen_MultBodyAggAux AS After_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  After_sn_back_step.book AS book,
-  After_sn_back_step.next AS next
+  After_sn_back_seen.book AS book,
+  After_sn_back_seen.next AS next
 FROM
-  t_0_After_sn_back_step AS After_sn_back_step
+  t_0_After_sn_back_seen AS After_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.After_sn_full AS After_sn_full
-  WHERE
-    (After_sn_full.book = After_sn_back_step.book) AND
-    (After_sn_full.next = After_sn_back_step.next)) IS NULL)
+  (After_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.After_sn_full SELECT * FROM synalog_test.After_sn_delta;
@@ -534,7 +572,7 @@ CREATE TABLE synalog_test.After_sn_new AS WITH t_2_Sequel AS (SELECT * FROM (
       2 AS next
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_After_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_After_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       After_sn_delta.book AS book,
@@ -546,31 +584,50 @@ t_1_After_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Sequel.book AS book,
-      t_2_Sequel.next AS next
+      t_4_Sequel.book AS book,
+      t_4_Sequel.next AS next
     FROM
-      t_2_Sequel
+      t_2_Sequel AS t_4_Sequel
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_After_sn_step AS (SELECT
+t_2_After_sn_step AS (SELECT
   After_MultBodyAggAux_f8.book AS book,
   After_MultBodyAggAux_f8.next AS next
 FROM
-  t_1_After_MultBodyAggAux_f8 AS After_MultBodyAggAux_f8
+  t_3_After_MultBodyAggAux_f8 AS After_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_After_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      After_sn_step.book AS book,
+      After_sn_step.next AS next,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_After_sn_step AS After_sn_step
+   UNION ALL
+  
+    SELECT
+      After_sn_full.book AS book,
+      After_sn_full.next AS next,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.After_sn_full AS After_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_After_sn_seen AS (SELECT
+  After_sn_seen_MultBodyAggAux.book AS book,
+  After_sn_seen_MultBodyAggAux.next AS next,
+  MAX(After_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_After_sn_seen_MultBodyAggAux AS After_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  After_sn_step.book AS book,
-  After_sn_step.next AS next
+  After_sn_seen.book AS book,
+  After_sn_seen.next AS next
 FROM
-  t_0_After_sn_step AS After_sn_step
+  t_0_After_sn_seen AS After_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.After_sn_full AS After_sn_full
-  WHERE
-    (After_sn_full.book = After_sn_step.book) AND
-    (After_sn_full.next = After_sn_step.next)) IS NULL)
+  (After_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.After_sn_full SELECT * FROM synalog_test.After_sn_new;
@@ -598,7 +655,7 @@ CREATE TABLE synalog_test.After_sn_delta AS WITH t_2_Sequel AS (SELECT * FROM (
       2 AS next
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_After_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_After_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       After_sn_new.book AS book,
@@ -610,31 +667,50 @@ t_1_After_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Sequel.book AS book,
-      t_2_Sequel.next AS next
+      t_4_Sequel.book AS book,
+      t_4_Sequel.next AS next
     FROM
-      t_2_Sequel
+      t_2_Sequel AS t_4_Sequel
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_After_sn_back_step AS (SELECT
+t_2_After_sn_back_step AS (SELECT
   After_MultBodyAggAux_f1.book AS book,
   After_MultBodyAggAux_f1.next AS next
 FROM
-  t_1_After_MultBodyAggAux_f1 AS After_MultBodyAggAux_f1
+  t_3_After_MultBodyAggAux_f1 AS After_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_After_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      After_sn_back_step.book AS book,
+      After_sn_back_step.next AS next,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_After_sn_back_step AS After_sn_back_step
+   UNION ALL
+  
+    SELECT
+      After_sn_full.book AS book,
+      After_sn_full.next AS next,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.After_sn_full AS After_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_After_sn_back_seen AS (SELECT
+  After_sn_back_seen_MultBodyAggAux.book AS book,
+  After_sn_back_seen_MultBodyAggAux.next AS next,
+  MAX(After_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_After_sn_back_seen_MultBodyAggAux AS After_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  After_sn_back_step.book AS book,
-  After_sn_back_step.next AS next
+  After_sn_back_seen.book AS book,
+  After_sn_back_seen.next AS next
 FROM
-  t_0_After_sn_back_step AS After_sn_back_step
+  t_0_After_sn_back_seen AS After_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.After_sn_full AS After_sn_full
-  WHERE
-    (After_sn_full.book = After_sn_back_step.book) AND
-    (After_sn_full.next = After_sn_back_step.next)) IS NULL)
+  (After_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.After_sn_full SELECT * FROM synalog_test.After_sn_delta;
@@ -662,7 +738,7 @@ CREATE TABLE synalog_test.After_sn_new AS WITH t_2_Sequel AS (SELECT * FROM (
       2 AS next
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_After_MultBodyAggAux_f8 AS (SELECT * FROM (
+t_3_After_MultBodyAggAux_f8 AS (SELECT * FROM (
   
     SELECT
       After_sn_delta.book AS book,
@@ -674,31 +750,50 @@ t_1_After_MultBodyAggAux_f8 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Sequel.book AS book,
-      t_2_Sequel.next AS next
+      t_4_Sequel.book AS book,
+      t_4_Sequel.next AS next
     FROM
-      t_2_Sequel
+      t_2_Sequel AS t_4_Sequel
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_After_sn_step AS (SELECT
+t_2_After_sn_step AS (SELECT
   After_MultBodyAggAux_f8.book AS book,
   After_MultBodyAggAux_f8.next AS next
 FROM
-  t_1_After_MultBodyAggAux_f8 AS After_MultBodyAggAux_f8
+  t_3_After_MultBodyAggAux_f8 AS After_MultBodyAggAux_f8
+GROUP BY 1, 2),
+t_1_After_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      After_sn_step.book AS book,
+      After_sn_step.next AS next,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_After_sn_step AS After_sn_step
+   UNION ALL
+  
+    SELECT
+      After_sn_full.book AS book,
+      After_sn_full.next AS next,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.After_sn_full AS After_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_After_sn_seen AS (SELECT
+  After_sn_seen_MultBodyAggAux.book AS book,
+  After_sn_seen_MultBodyAggAux.next AS next,
+  MAX(After_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_After_sn_seen_MultBodyAggAux AS After_sn_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  After_sn_step.book AS book,
-  After_sn_step.next AS next
+  After_sn_seen.book AS book,
+  After_sn_seen.next AS next
 FROM
-  t_0_After_sn_step AS After_sn_step
+  t_0_After_sn_seen AS After_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.After_sn_full AS After_sn_full
-  WHERE
-    (After_sn_full.book = After_sn_step.book) AND
-    (After_sn_full.next = After_sn_step.next)) IS NULL)
+  (After_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.After_sn_full SELECT * FROM synalog_test.After_sn_new;
@@ -726,7 +821,7 @@ CREATE TABLE synalog_test.After_sn_delta AS WITH t_2_Sequel AS (SELECT * FROM (
       2 AS next
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_After_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_After_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       After_sn_new.book AS book,
@@ -738,31 +833,50 @@ t_1_After_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Sequel.book AS book,
-      t_2_Sequel.next AS next
+      t_4_Sequel.book AS book,
+      t_4_Sequel.next AS next
     FROM
-      t_2_Sequel
+      t_2_Sequel AS t_4_Sequel
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_After_sn_back_step AS (SELECT
+t_2_After_sn_back_step AS (SELECT
   After_MultBodyAggAux_f1.book AS book,
   After_MultBodyAggAux_f1.next AS next
 FROM
-  t_1_After_MultBodyAggAux_f1 AS After_MultBodyAggAux_f1
+  t_3_After_MultBodyAggAux_f1 AS After_MultBodyAggAux_f1
+GROUP BY 1, 2),
+t_1_After_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      After_sn_back_step.book AS book,
+      After_sn_back_step.next AS next,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_After_sn_back_step AS After_sn_back_step
+   UNION ALL
+  
+    SELECT
+      After_sn_full.book AS book,
+      After_sn_full.next AS next,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.After_sn_full AS After_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_After_sn_back_seen AS (SELECT
+  After_sn_back_seen_MultBodyAggAux.book AS book,
+  After_sn_back_seen_MultBodyAggAux.next AS next,
+  MAX(After_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_After_sn_back_seen_MultBodyAggAux AS After_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2)
 SELECT
-  After_sn_back_step.book AS book,
-  After_sn_back_step.next AS next
+  After_sn_back_seen.book AS book,
+  After_sn_back_seen.next AS next
 FROM
-  t_0_After_sn_back_step AS After_sn_back_step
+  t_0_After_sn_back_seen AS After_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.After_sn_full AS After_sn_full
-  WHERE
-    (After_sn_full.book = After_sn_back_step.book) AND
-    (After_sn_full.next = After_sn_back_step.next)) IS NULL)
+  (After_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2;
 
 INSERT INTO synalog_test.After_sn_full SELECT * FROM synalog_test.After_sn_delta;

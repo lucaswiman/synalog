@@ -1134,7 +1134,7 @@ CREATE TABLE synalog_test.Need_sn_new AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
+t_3_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       Need_sn_delta.part AS part,
@@ -1148,39 +1148,62 @@ t_1_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component,
-      t_2_Uses.component AS path_id,
-      t_2_Uses.qty AS n
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component,
+      t_4_Uses.component AS path_id,
+      t_4_Uses.qty AS n
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Need_sn_step AS (SELECT
+t_2_Need_sn_step AS (SELECT
   Need_MultBodyAggAux_f12.part AS part,
   Need_MultBodyAggAux_f12.component AS component,
   Need_MultBodyAggAux_f12.path_id AS path_id,
   Need_MultBodyAggAux_f12.n AS n
 FROM
-  t_1_Need_MultBodyAggAux_f12 AS Need_MultBodyAggAux_f12
+  t_3_Need_MultBodyAggAux_f12 AS Need_MultBodyAggAux_f12
+GROUP BY 1, 2, 3, 4),
+t_1_Need_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Need_sn_step.part AS part,
+      Need_sn_step.component AS component,
+      Need_sn_step.path_id AS path_id,
+      Need_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Need_sn_step AS Need_sn_step
+   UNION ALL
+  
+    SELECT
+      Need_sn_full.part AS part,
+      Need_sn_full.component AS component,
+      Need_sn_full.path_id AS path_id,
+      Need_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Need_sn_full AS Need_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Need_sn_seen AS (SELECT
+  Need_sn_seen_MultBodyAggAux.part AS part,
+  Need_sn_seen_MultBodyAggAux.component AS component,
+  Need_sn_seen_MultBodyAggAux.path_id AS path_id,
+  Need_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Need_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Need_sn_seen_MultBodyAggAux AS Need_sn_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  Need_sn_step.part AS part,
-  Need_sn_step.component AS component,
-  Need_sn_step.path_id AS path_id,
-  Need_sn_step.n AS n
+  Need_sn_seen.part AS part,
+  Need_sn_seen.component AS component,
+  Need_sn_seen.path_id AS path_id,
+  Need_sn_seen.n AS n
 FROM
-  t_0_Need_sn_step AS Need_sn_step
+  t_0_Need_sn_seen AS Need_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Need_sn_full AS Need_sn_full
-  WHERE
-    (Need_sn_full.part = Need_sn_step.part) AND
-    (Need_sn_full.component = Need_sn_step.component) AND
-    (Need_sn_full.path_id = Need_sn_step.path_id) AND
-    (Need_sn_full.n = Need_sn_step.n)) IS NULL)
+  (Need_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.Need_sn_full SELECT * FROM synalog_test.Need_sn_new;
@@ -1242,7 +1265,7 @@ CREATE TABLE synalog_test.Need_sn_delta AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Need_sn_new.part AS part,
@@ -1256,39 +1279,62 @@ t_1_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component,
-      t_2_Uses.component AS path_id,
-      t_2_Uses.qty AS n
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component,
+      t_4_Uses.component AS path_id,
+      t_4_Uses.qty AS n
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Need_sn_back_step AS (SELECT
+t_2_Need_sn_back_step AS (SELECT
   Need_MultBodyAggAux_f1.part AS part,
   Need_MultBodyAggAux_f1.component AS component,
   Need_MultBodyAggAux_f1.path_id AS path_id,
   Need_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Need_MultBodyAggAux_f1 AS Need_MultBodyAggAux_f1
+  t_3_Need_MultBodyAggAux_f1 AS Need_MultBodyAggAux_f1
+GROUP BY 1, 2, 3, 4),
+t_1_Need_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Need_sn_back_step.part AS part,
+      Need_sn_back_step.component AS component,
+      Need_sn_back_step.path_id AS path_id,
+      Need_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Need_sn_back_step AS Need_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Need_sn_full.part AS part,
+      Need_sn_full.component AS component,
+      Need_sn_full.path_id AS path_id,
+      Need_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Need_sn_full AS Need_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Need_sn_back_seen AS (SELECT
+  Need_sn_back_seen_MultBodyAggAux.part AS part,
+  Need_sn_back_seen_MultBodyAggAux.component AS component,
+  Need_sn_back_seen_MultBodyAggAux.path_id AS path_id,
+  Need_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Need_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Need_sn_back_seen_MultBodyAggAux AS Need_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  Need_sn_back_step.part AS part,
-  Need_sn_back_step.component AS component,
-  Need_sn_back_step.path_id AS path_id,
-  Need_sn_back_step.n AS n
+  Need_sn_back_seen.part AS part,
+  Need_sn_back_seen.component AS component,
+  Need_sn_back_seen.path_id AS path_id,
+  Need_sn_back_seen.n AS n
 FROM
-  t_0_Need_sn_back_step AS Need_sn_back_step
+  t_0_Need_sn_back_seen AS Need_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Need_sn_full AS Need_sn_full
-  WHERE
-    (Need_sn_full.part = Need_sn_back_step.part) AND
-    (Need_sn_full.component = Need_sn_back_step.component) AND
-    (Need_sn_full.path_id = Need_sn_back_step.path_id) AND
-    (Need_sn_full.n = Need_sn_back_step.n)) IS NULL)
+  (Need_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.Need_sn_full SELECT * FROM synalog_test.Need_sn_delta;
@@ -1350,7 +1396,7 @@ CREATE TABLE synalog_test.Need_sn_new AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
+t_3_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       Need_sn_delta.part AS part,
@@ -1364,39 +1410,62 @@ t_1_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component,
-      t_2_Uses.component AS path_id,
-      t_2_Uses.qty AS n
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component,
+      t_4_Uses.component AS path_id,
+      t_4_Uses.qty AS n
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Need_sn_step AS (SELECT
+t_2_Need_sn_step AS (SELECT
   Need_MultBodyAggAux_f12.part AS part,
   Need_MultBodyAggAux_f12.component AS component,
   Need_MultBodyAggAux_f12.path_id AS path_id,
   Need_MultBodyAggAux_f12.n AS n
 FROM
-  t_1_Need_MultBodyAggAux_f12 AS Need_MultBodyAggAux_f12
+  t_3_Need_MultBodyAggAux_f12 AS Need_MultBodyAggAux_f12
+GROUP BY 1, 2, 3, 4),
+t_1_Need_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Need_sn_step.part AS part,
+      Need_sn_step.component AS component,
+      Need_sn_step.path_id AS path_id,
+      Need_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Need_sn_step AS Need_sn_step
+   UNION ALL
+  
+    SELECT
+      Need_sn_full.part AS part,
+      Need_sn_full.component AS component,
+      Need_sn_full.path_id AS path_id,
+      Need_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Need_sn_full AS Need_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Need_sn_seen AS (SELECT
+  Need_sn_seen_MultBodyAggAux.part AS part,
+  Need_sn_seen_MultBodyAggAux.component AS component,
+  Need_sn_seen_MultBodyAggAux.path_id AS path_id,
+  Need_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Need_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Need_sn_seen_MultBodyAggAux AS Need_sn_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  Need_sn_step.part AS part,
-  Need_sn_step.component AS component,
-  Need_sn_step.path_id AS path_id,
-  Need_sn_step.n AS n
+  Need_sn_seen.part AS part,
+  Need_sn_seen.component AS component,
+  Need_sn_seen.path_id AS path_id,
+  Need_sn_seen.n AS n
 FROM
-  t_0_Need_sn_step AS Need_sn_step
+  t_0_Need_sn_seen AS Need_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Need_sn_full AS Need_sn_full
-  WHERE
-    (Need_sn_full.part = Need_sn_step.part) AND
-    (Need_sn_full.component = Need_sn_step.component) AND
-    (Need_sn_full.path_id = Need_sn_step.path_id) AND
-    (Need_sn_full.n = Need_sn_step.n)) IS NULL)
+  (Need_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.Need_sn_full SELECT * FROM synalog_test.Need_sn_new;
@@ -1458,7 +1527,7 @@ CREATE TABLE synalog_test.Need_sn_delta AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Need_sn_new.part AS part,
@@ -1472,39 +1541,62 @@ t_1_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component,
-      t_2_Uses.component AS path_id,
-      t_2_Uses.qty AS n
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component,
+      t_4_Uses.component AS path_id,
+      t_4_Uses.qty AS n
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Need_sn_back_step AS (SELECT
+t_2_Need_sn_back_step AS (SELECT
   Need_MultBodyAggAux_f1.part AS part,
   Need_MultBodyAggAux_f1.component AS component,
   Need_MultBodyAggAux_f1.path_id AS path_id,
   Need_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Need_MultBodyAggAux_f1 AS Need_MultBodyAggAux_f1
+  t_3_Need_MultBodyAggAux_f1 AS Need_MultBodyAggAux_f1
+GROUP BY 1, 2, 3, 4),
+t_1_Need_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Need_sn_back_step.part AS part,
+      Need_sn_back_step.component AS component,
+      Need_sn_back_step.path_id AS path_id,
+      Need_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Need_sn_back_step AS Need_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Need_sn_full.part AS part,
+      Need_sn_full.component AS component,
+      Need_sn_full.path_id AS path_id,
+      Need_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Need_sn_full AS Need_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Need_sn_back_seen AS (SELECT
+  Need_sn_back_seen_MultBodyAggAux.part AS part,
+  Need_sn_back_seen_MultBodyAggAux.component AS component,
+  Need_sn_back_seen_MultBodyAggAux.path_id AS path_id,
+  Need_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Need_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Need_sn_back_seen_MultBodyAggAux AS Need_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  Need_sn_back_step.part AS part,
-  Need_sn_back_step.component AS component,
-  Need_sn_back_step.path_id AS path_id,
-  Need_sn_back_step.n AS n
+  Need_sn_back_seen.part AS part,
+  Need_sn_back_seen.component AS component,
+  Need_sn_back_seen.path_id AS path_id,
+  Need_sn_back_seen.n AS n
 FROM
-  t_0_Need_sn_back_step AS Need_sn_back_step
+  t_0_Need_sn_back_seen AS Need_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Need_sn_full AS Need_sn_full
-  WHERE
-    (Need_sn_full.part = Need_sn_back_step.part) AND
-    (Need_sn_full.component = Need_sn_back_step.component) AND
-    (Need_sn_full.path_id = Need_sn_back_step.path_id) AND
-    (Need_sn_full.n = Need_sn_back_step.n)) IS NULL)
+  (Need_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.Need_sn_full SELECT * FROM synalog_test.Need_sn_delta;
@@ -1566,7 +1658,7 @@ CREATE TABLE synalog_test.Need_sn_new AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
+t_3_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
   
     SELECT
       Need_sn_delta.part AS part,
@@ -1580,39 +1672,62 @@ t_1_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component,
-      t_2_Uses.component AS path_id,
-      t_2_Uses.qty AS n
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component,
+      t_4_Uses.component AS path_id,
+      t_4_Uses.qty AS n
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Need_sn_step AS (SELECT
+t_2_Need_sn_step AS (SELECT
   Need_MultBodyAggAux_f12.part AS part,
   Need_MultBodyAggAux_f12.component AS component,
   Need_MultBodyAggAux_f12.path_id AS path_id,
   Need_MultBodyAggAux_f12.n AS n
 FROM
-  t_1_Need_MultBodyAggAux_f12 AS Need_MultBodyAggAux_f12
+  t_3_Need_MultBodyAggAux_f12 AS Need_MultBodyAggAux_f12
+GROUP BY 1, 2, 3, 4),
+t_1_Need_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Need_sn_step.part AS part,
+      Need_sn_step.component AS component,
+      Need_sn_step.path_id AS path_id,
+      Need_sn_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Need_sn_step AS Need_sn_step
+   UNION ALL
+  
+    SELECT
+      Need_sn_full.part AS part,
+      Need_sn_full.component AS component,
+      Need_sn_full.path_id AS path_id,
+      Need_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Need_sn_full AS Need_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Need_sn_seen AS (SELECT
+  Need_sn_seen_MultBodyAggAux.part AS part,
+  Need_sn_seen_MultBodyAggAux.component AS component,
+  Need_sn_seen_MultBodyAggAux.path_id AS path_id,
+  Need_sn_seen_MultBodyAggAux.n AS n,
+  MAX(Need_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Need_sn_seen_MultBodyAggAux AS Need_sn_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  Need_sn_step.part AS part,
-  Need_sn_step.component AS component,
-  Need_sn_step.path_id AS path_id,
-  Need_sn_step.n AS n
+  Need_sn_seen.part AS part,
+  Need_sn_seen.component AS component,
+  Need_sn_seen.path_id AS path_id,
+  Need_sn_seen.n AS n
 FROM
-  t_0_Need_sn_step AS Need_sn_step
+  t_0_Need_sn_seen AS Need_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Need_sn_full AS Need_sn_full
-  WHERE
-    (Need_sn_full.part = Need_sn_step.part) AND
-    (Need_sn_full.component = Need_sn_step.component) AND
-    (Need_sn_full.path_id = Need_sn_step.path_id) AND
-    (Need_sn_full.n = Need_sn_step.n)) IS NULL)
+  (Need_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.Need_sn_full SELECT * FROM synalog_test.Need_sn_new;
@@ -1674,7 +1789,7 @@ CREATE TABLE synalog_test.Need_sn_delta AS WITH t_2_Uses AS (SELECT * FROM (
       1 AS qty
   
 ) AS UNUSED_TABLE_NAME  ),
-t_1_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Need_sn_new.part AS part,
@@ -1688,39 +1803,62 @@ t_1_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_Uses.part AS part,
-      t_2_Uses.component AS component,
-      t_2_Uses.component AS path_id,
-      t_2_Uses.qty AS n
+      t_4_Uses.part AS part,
+      t_4_Uses.component AS component,
+      t_4_Uses.component AS path_id,
+      t_4_Uses.qty AS n
     FROM
-      t_2_Uses
+      t_2_Uses AS t_4_Uses
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Need_sn_back_step AS (SELECT
+t_2_Need_sn_back_step AS (SELECT
   Need_MultBodyAggAux_f1.part AS part,
   Need_MultBodyAggAux_f1.component AS component,
   Need_MultBodyAggAux_f1.path_id AS path_id,
   Need_MultBodyAggAux_f1.n AS n
 FROM
-  t_1_Need_MultBodyAggAux_f1 AS Need_MultBodyAggAux_f1
+  t_3_Need_MultBodyAggAux_f1 AS Need_MultBodyAggAux_f1
+GROUP BY 1, 2, 3, 4),
+t_1_Need_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Need_sn_back_step.part AS part,
+      Need_sn_back_step.component AS component,
+      Need_sn_back_step.path_id AS path_id,
+      Need_sn_back_step.n AS n,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Need_sn_back_step AS Need_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Need_sn_full.part AS part,
+      Need_sn_full.component AS component,
+      Need_sn_full.path_id AS path_id,
+      Need_sn_full.n AS n,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Need_sn_full AS Need_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Need_sn_back_seen AS (SELECT
+  Need_sn_back_seen_MultBodyAggAux.part AS part,
+  Need_sn_back_seen_MultBodyAggAux.component AS component,
+  Need_sn_back_seen_MultBodyAggAux.path_id AS path_id,
+  Need_sn_back_seen_MultBodyAggAux.n AS n,
+  MAX(Need_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Need_sn_back_seen_MultBodyAggAux AS Need_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2, 3, 4)
 SELECT
-  Need_sn_back_step.part AS part,
-  Need_sn_back_step.component AS component,
-  Need_sn_back_step.path_id AS path_id,
-  Need_sn_back_step.n AS n
+  Need_sn_back_seen.part AS part,
+  Need_sn_back_seen.component AS component,
+  Need_sn_back_seen.path_id AS path_id,
+  Need_sn_back_seen.n AS n
 FROM
-  t_0_Need_sn_back_step AS Need_sn_back_step
+  t_0_Need_sn_back_seen AS Need_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Need_sn_full AS Need_sn_full
-  WHERE
-    (Need_sn_full.part = Need_sn_back_step.part) AND
-    (Need_sn_full.component = Need_sn_back_step.component) AND
-    (Need_sn_full.path_id = Need_sn_back_step.path_id) AND
-    (Need_sn_full.n = Need_sn_back_step.n)) IS NULL)
+  (Need_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3, 4;
 
 INSERT INTO synalog_test.Need_sn_full SELECT * FROM synalog_test.Need_sn_delta;

@@ -207,7 +207,7 @@ CREATE TABLE synalog_test.Up_sn_new AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -218,29 +218,46 @@ t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_2_E
+      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_delta.id)
+      (t_4_E.id = Up_sn_delta.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_step AS (SELECT
+t_2_Up_sn_step AS (SELECT
   Up_MultBodyAggAux_f6.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+  t_3_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_Up_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_step AS Up_sn_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_seen AS (SELECT
+  Up_sn_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_seen_MultBodyAggAux AS Up_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_step.id AS id
+  Up_sn_seen.id AS id
 FROM
-  t_0_Up_sn_step AS Up_sn_step
+  t_0_Up_sn_seen AS Up_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_step.id)) IS NULL)
+  (Up_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_new;
@@ -256,7 +273,7 @@ CREATE TABLE synalog_test.Up_sn_delta AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -267,29 +284,46 @@ t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_2_E
+      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_new.id)
+      (t_4_E.id = Up_sn_new.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_back_step AS (SELECT
+t_2_Up_sn_back_step AS (SELECT
   Up_MultBodyAggAux_f1.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+  t_3_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_Up_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_back_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_back_step AS Up_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_back_seen AS (SELECT
+  Up_sn_back_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_back_seen_MultBodyAggAux AS Up_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_back_step.id AS id
+  Up_sn_back_seen.id AS id
 FROM
-  t_0_Up_sn_back_step AS Up_sn_back_step
+  t_0_Up_sn_back_seen AS Up_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_back_step.id)) IS NULL)
+  (Up_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_delta;
@@ -305,7 +339,7 @@ CREATE TABLE synalog_test.Up_sn_new AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -316,29 +350,46 @@ t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_2_E
+      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_delta.id)
+      (t_4_E.id = Up_sn_delta.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_step AS (SELECT
+t_2_Up_sn_step AS (SELECT
   Up_MultBodyAggAux_f6.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+  t_3_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_Up_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_step AS Up_sn_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_seen AS (SELECT
+  Up_sn_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_seen_MultBodyAggAux AS Up_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_step.id AS id
+  Up_sn_seen.id AS id
 FROM
-  t_0_Up_sn_step AS Up_sn_step
+  t_0_Up_sn_seen AS Up_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_step.id)) IS NULL)
+  (Up_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_new;
@@ -354,7 +405,7 @@ CREATE TABLE synalog_test.Up_sn_delta AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -365,29 +416,46 @@ t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_2_E
+      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_new.id)
+      (t_4_E.id = Up_sn_new.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_back_step AS (SELECT
+t_2_Up_sn_back_step AS (SELECT
   Up_MultBodyAggAux_f1.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+  t_3_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_Up_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_back_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_back_step AS Up_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_back_seen AS (SELECT
+  Up_sn_back_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_back_seen_MultBodyAggAux AS Up_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_back_step.id AS id
+  Up_sn_back_seen.id AS id
 FROM
-  t_0_Up_sn_back_step AS Up_sn_back_step
+  t_0_Up_sn_back_seen AS Up_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_back_step.id)) IS NULL)
+  (Up_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_delta;
@@ -403,7 +471,7 @@ CREATE TABLE synalog_test.Up_sn_new AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -414,29 +482,46 @@ t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_2_E
+      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_delta.id)
+      (t_4_E.id = Up_sn_delta.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_step AS (SELECT
+t_2_Up_sn_step AS (SELECT
   Up_MultBodyAggAux_f6.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+  t_3_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_Up_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_step AS Up_sn_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_seen AS (SELECT
+  Up_sn_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_seen_MultBodyAggAux AS Up_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_step.id AS id
+  Up_sn_seen.id AS id
 FROM
-  t_0_Up_sn_step AS Up_sn_step
+  t_0_Up_sn_seen AS Up_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_step.id)) IS NULL)
+  (Up_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_new;
@@ -452,7 +537,7 @@ CREATE TABLE synalog_test.Up_sn_delta AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -463,29 +548,46 @@ t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_2_E
+      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_new.id)
+      (t_4_E.id = Up_sn_new.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_back_step AS (SELECT
+t_2_Up_sn_back_step AS (SELECT
   Up_MultBodyAggAux_f1.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+  t_3_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_Up_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_back_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_back_step AS Up_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_back_seen AS (SELECT
+  Up_sn_back_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_back_seen_MultBodyAggAux AS Up_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_back_step.id AS id
+  Up_sn_back_seen.id AS id
 FROM
-  t_0_Up_sn_back_step AS Up_sn_back_step
+  t_0_Up_sn_back_seen AS Up_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_back_step.id)) IS NULL)
+  (Up_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_delta;
@@ -501,7 +603,7 @@ CREATE TABLE synalog_test.Up_sn_new AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -512,29 +614,46 @@ t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_2_E
+      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_delta.id)
+      (t_4_E.id = Up_sn_delta.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_step AS (SELECT
+t_2_Up_sn_step AS (SELECT
   Up_MultBodyAggAux_f6.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+  t_3_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_Up_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_step AS Up_sn_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_seen AS (SELECT
+  Up_sn_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_seen_MultBodyAggAux AS Up_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_step.id AS id
+  Up_sn_seen.id AS id
 FROM
-  t_0_Up_sn_step AS Up_sn_step
+  t_0_Up_sn_seen AS Up_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_step.id)) IS NULL)
+  (Up_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_new;
@@ -550,7 +669,7 @@ CREATE TABLE synalog_test.Up_sn_delta AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -561,29 +680,46 @@ t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_2_E
+      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_new.id)
+      (t_4_E.id = Up_sn_new.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_back_step AS (SELECT
+t_2_Up_sn_back_step AS (SELECT
   Up_MultBodyAggAux_f1.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+  t_3_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_Up_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_back_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_back_step AS Up_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_back_seen AS (SELECT
+  Up_sn_back_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_back_seen_MultBodyAggAux AS Up_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_back_step.id AS id
+  Up_sn_back_seen.id AS id
 FROM
-  t_0_Up_sn_back_step AS Up_sn_back_step
+  t_0_Up_sn_back_seen AS Up_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_back_step.id)) IS NULL)
+  (Up_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_delta;
@@ -599,7 +735,7 @@ CREATE TABLE synalog_test.Up_sn_new AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -610,29 +746,46 @@ t_1_Up_MultBodyAggAux_f6 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_2_E
+      synalog_test.Up_sn_delta AS Up_sn_delta, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_delta.id)
+      (t_4_E.id = Up_sn_delta.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_step AS (SELECT
+t_2_Up_sn_step AS (SELECT
   Up_MultBodyAggAux_f6.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+  t_3_Up_MultBodyAggAux_f6 AS Up_MultBodyAggAux_f6
+GROUP BY 1),
+t_1_Up_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_step AS Up_sn_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_seen AS (SELECT
+  Up_sn_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_seen_MultBodyAggAux AS Up_sn_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_step.id AS id
+  Up_sn_seen.id AS id
 FROM
-  t_0_Up_sn_step AS Up_sn_step
+  t_0_Up_sn_seen AS Up_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_step.id)) IS NULL)
+  (Up_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_new;
@@ -648,7 +801,7 @@ CREATE TABLE synalog_test.Up_sn_delta AS WITH t_1_E AS (SELECT * FROM VALUES
   (7, "gus", null, 30, 6000),
   (8, "hal", 7, 30, 2500)
 AS UNUSED_TABLE_NAME(id, n, boss, d, pay)),
-t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
+t_3_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       E.boss AS id
@@ -659,29 +812,46 @@ t_1_Up_MultBodyAggAux_f1 AS (SELECT * FROM (
    UNION ALL
   
     SELECT
-      t_2_E.boss AS id
+      t_4_E.boss AS id
     FROM
-      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_2_E
+      synalog_test.Up_sn_new AS Up_sn_new, t_1_E AS t_4_E
     WHERE
-      (t_2_E.id = Up_sn_new.id)
+      (t_4_E.id = Up_sn_new.id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_Up_sn_back_step AS (SELECT
+t_2_Up_sn_back_step AS (SELECT
   Up_MultBodyAggAux_f1.id AS id
 FROM
-  t_1_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+  t_3_Up_MultBodyAggAux_f1 AS Up_MultBodyAggAux_f1
+GROUP BY 1),
+t_1_Up_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      Up_sn_back_step.id AS id,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_Up_sn_back_step AS Up_sn_back_step
+   UNION ALL
+  
+    SELECT
+      Up_sn_full.id AS id,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.Up_sn_full AS Up_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_Up_sn_back_seen AS (SELECT
+  Up_sn_back_seen_MultBodyAggAux.id AS id,
+  MAX(Up_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_Up_sn_back_seen_MultBodyAggAux AS Up_sn_back_seen_MultBodyAggAux
 GROUP BY 1)
 SELECT
-  Up_sn_back_step.id AS id
+  Up_sn_back_seen.id AS id
 FROM
-  t_0_Up_sn_back_step AS Up_sn_back_step
+  t_0_Up_sn_back_seen AS Up_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.Up_sn_full AS Up_sn_full
-  WHERE
-    (Up_sn_full.id = Up_sn_back_step.id)) IS NULL)
+  (Up_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1;
 
 INSERT INTO synalog_test.Up_sn_full SELECT * FROM synalog_test.Up_sn_delta;

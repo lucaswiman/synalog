@@ -508,205 +508,289 @@ CREATE TABLE synalog_test.PathTo_sn_full AS SELECT * FROM (
 -- Interacting with table synalog_test.PathTo_sn_full
 
 DROP TABLE IF EXISTS synalog_test.PathTo_sn_new;
-CREATE TABLE synalog_test.PathTo_sn_new AS WITH t_1_PathTo_MultBodyAggAux_f10 AS (SELECT * FROM (
+CREATE TABLE synalog_test.PathTo_sn_new AS WITH t_3_PathTo_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Manages.manager_id AS source,
       Manages.employee_id AS target,
-      (CONCAT((CONCAT(N.name, ' > ')), t_2_N.name)) AS path
+      (CONCAT((CONCAT(N.name, ' > ')), t_4_N.name)) AS path
     FROM
-      synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
+      synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_4_N
     WHERE
       (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (t_4_N.person_id = Manages.employee_id)
    UNION ALL
   
     SELECT
       PathTo_sn_delta.source AS source,
-      t_3_Manages.employee_id AS target,
-      (CONCAT((CONCAT(PathTo_sn_delta.path, ' > ')), t_4_N.name)) AS path
+      t_5_Manages.employee_id AS target,
+      (CONCAT((CONCAT(PathTo_sn_delta.path, ' > ')), t_6_N.name)) AS path
     FROM
-      synalog_test.PathTo_sn_delta AS PathTo_sn_delta, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
+      synalog_test.PathTo_sn_delta AS PathTo_sn_delta, synalog_test.Manages AS t_5_Manages, synalog_test.N AS t_6_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_delta.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_5_Manages.manager_id = PathTo_sn_delta.target) AND
+      (t_6_N.person_id = t_5_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_PathTo_sn_step AS (SELECT
+t_2_PathTo_sn_step AS (SELECT
   PathTo_MultBodyAggAux_f10.source AS source,
   PathTo_MultBodyAggAux_f10.target AS target,
   PathTo_MultBodyAggAux_f10.path AS path
 FROM
-  t_1_PathTo_MultBodyAggAux_f10 AS PathTo_MultBodyAggAux_f10
+  t_3_PathTo_MultBodyAggAux_f10 AS PathTo_MultBodyAggAux_f10
+GROUP BY 1, 2, 3),
+t_1_PathTo_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      PathTo_sn_step.source AS source,
+      PathTo_sn_step.target AS target,
+      PathTo_sn_step.path AS path,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_PathTo_sn_step AS PathTo_sn_step
+   UNION ALL
+  
+    SELECT
+      PathTo_sn_full.source AS source,
+      PathTo_sn_full.target AS target,
+      PathTo_sn_full.path AS path,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.PathTo_sn_full AS PathTo_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_PathTo_sn_seen AS (SELECT
+  PathTo_sn_seen_MultBodyAggAux.source AS source,
+  PathTo_sn_seen_MultBodyAggAux.target AS target,
+  PathTo_sn_seen_MultBodyAggAux.path AS path,
+  MAX(PathTo_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_PathTo_sn_seen_MultBodyAggAux AS PathTo_sn_seen_MultBodyAggAux
 GROUP BY 1, 2, 3)
 SELECT
-  PathTo_sn_step.source AS source,
-  PathTo_sn_step.target AS target,
-  PathTo_sn_step.path AS path
+  PathTo_sn_seen.source AS source,
+  PathTo_sn_seen.target AS target,
+  PathTo_sn_seen.path AS path
 FROM
-  t_0_PathTo_sn_step AS PathTo_sn_step
+  t_0_PathTo_sn_seen AS PathTo_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.PathTo_sn_full AS PathTo_sn_full
-  WHERE
-    (PathTo_sn_full.source = PathTo_sn_step.source) AND
-    (PathTo_sn_full.target = PathTo_sn_step.target) AND
-    (PathTo_sn_full.path = PathTo_sn_step.path)) IS NULL)
+  (PathTo_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3;
 
 INSERT INTO synalog_test.PathTo_sn_full SELECT * FROM synalog_test.PathTo_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.PathTo_sn_delta;
-CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_1_PathTo_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_3_PathTo_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Manages.manager_id AS source,
       Manages.employee_id AS target,
-      (CONCAT((CONCAT(N.name, ' > ')), t_2_N.name)) AS path
+      (CONCAT((CONCAT(N.name, ' > ')), t_4_N.name)) AS path
     FROM
-      synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
+      synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_4_N
     WHERE
       (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (t_4_N.person_id = Manages.employee_id)
    UNION ALL
   
     SELECT
       PathTo_sn_new.source AS source,
-      t_3_Manages.employee_id AS target,
-      (CONCAT((CONCAT(PathTo_sn_new.path, ' > ')), t_4_N.name)) AS path
+      t_5_Manages.employee_id AS target,
+      (CONCAT((CONCAT(PathTo_sn_new.path, ' > ')), t_6_N.name)) AS path
     FROM
-      synalog_test.PathTo_sn_new AS PathTo_sn_new, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
+      synalog_test.PathTo_sn_new AS PathTo_sn_new, synalog_test.Manages AS t_5_Manages, synalog_test.N AS t_6_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_new.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_5_Manages.manager_id = PathTo_sn_new.target) AND
+      (t_6_N.person_id = t_5_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_PathTo_sn_back_step AS (SELECT
+t_2_PathTo_sn_back_step AS (SELECT
   PathTo_MultBodyAggAux_f1.source AS source,
   PathTo_MultBodyAggAux_f1.target AS target,
   PathTo_MultBodyAggAux_f1.path AS path
 FROM
-  t_1_PathTo_MultBodyAggAux_f1 AS PathTo_MultBodyAggAux_f1
+  t_3_PathTo_MultBodyAggAux_f1 AS PathTo_MultBodyAggAux_f1
+GROUP BY 1, 2, 3),
+t_1_PathTo_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      PathTo_sn_back_step.source AS source,
+      PathTo_sn_back_step.target AS target,
+      PathTo_sn_back_step.path AS path,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_PathTo_sn_back_step AS PathTo_sn_back_step
+   UNION ALL
+  
+    SELECT
+      PathTo_sn_full.source AS source,
+      PathTo_sn_full.target AS target,
+      PathTo_sn_full.path AS path,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.PathTo_sn_full AS PathTo_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_PathTo_sn_back_seen AS (SELECT
+  PathTo_sn_back_seen_MultBodyAggAux.source AS source,
+  PathTo_sn_back_seen_MultBodyAggAux.target AS target,
+  PathTo_sn_back_seen_MultBodyAggAux.path AS path,
+  MAX(PathTo_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_PathTo_sn_back_seen_MultBodyAggAux AS PathTo_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2, 3)
 SELECT
-  PathTo_sn_back_step.source AS source,
-  PathTo_sn_back_step.target AS target,
-  PathTo_sn_back_step.path AS path
+  PathTo_sn_back_seen.source AS source,
+  PathTo_sn_back_seen.target AS target,
+  PathTo_sn_back_seen.path AS path
 FROM
-  t_0_PathTo_sn_back_step AS PathTo_sn_back_step
+  t_0_PathTo_sn_back_seen AS PathTo_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.PathTo_sn_full AS PathTo_sn_full
-  WHERE
-    (PathTo_sn_full.source = PathTo_sn_back_step.source) AND
-    (PathTo_sn_full.target = PathTo_sn_back_step.target) AND
-    (PathTo_sn_full.path = PathTo_sn_back_step.path)) IS NULL)
+  (PathTo_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3;
 
 INSERT INTO synalog_test.PathTo_sn_full SELECT * FROM synalog_test.PathTo_sn_delta;
 
 DROP TABLE IF EXISTS synalog_test.PathTo_sn_new;
-CREATE TABLE synalog_test.PathTo_sn_new AS WITH t_1_PathTo_MultBodyAggAux_f10 AS (SELECT * FROM (
+CREATE TABLE synalog_test.PathTo_sn_new AS WITH t_3_PathTo_MultBodyAggAux_f10 AS (SELECT * FROM (
   
     SELECT
       Manages.manager_id AS source,
       Manages.employee_id AS target,
-      (CONCAT((CONCAT(N.name, ' > ')), t_2_N.name)) AS path
+      (CONCAT((CONCAT(N.name, ' > ')), t_4_N.name)) AS path
     FROM
-      synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
+      synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_4_N
     WHERE
       (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (t_4_N.person_id = Manages.employee_id)
    UNION ALL
   
     SELECT
       PathTo_sn_delta.source AS source,
-      t_3_Manages.employee_id AS target,
-      (CONCAT((CONCAT(PathTo_sn_delta.path, ' > ')), t_4_N.name)) AS path
+      t_5_Manages.employee_id AS target,
+      (CONCAT((CONCAT(PathTo_sn_delta.path, ' > ')), t_6_N.name)) AS path
     FROM
-      synalog_test.PathTo_sn_delta AS PathTo_sn_delta, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
+      synalog_test.PathTo_sn_delta AS PathTo_sn_delta, synalog_test.Manages AS t_5_Manages, synalog_test.N AS t_6_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_delta.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_5_Manages.manager_id = PathTo_sn_delta.target) AND
+      (t_6_N.person_id = t_5_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_PathTo_sn_step AS (SELECT
+t_2_PathTo_sn_step AS (SELECT
   PathTo_MultBodyAggAux_f10.source AS source,
   PathTo_MultBodyAggAux_f10.target AS target,
   PathTo_MultBodyAggAux_f10.path AS path
 FROM
-  t_1_PathTo_MultBodyAggAux_f10 AS PathTo_MultBodyAggAux_f10
+  t_3_PathTo_MultBodyAggAux_f10 AS PathTo_MultBodyAggAux_f10
+GROUP BY 1, 2, 3),
+t_1_PathTo_sn_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      PathTo_sn_step.source AS source,
+      PathTo_sn_step.target AS target,
+      PathTo_sn_step.path AS path,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_PathTo_sn_step AS PathTo_sn_step
+   UNION ALL
+  
+    SELECT
+      PathTo_sn_full.source AS source,
+      PathTo_sn_full.target AS target,
+      PathTo_sn_full.path AS path,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.PathTo_sn_full AS PathTo_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_PathTo_sn_seen AS (SELECT
+  PathTo_sn_seen_MultBodyAggAux.source AS source,
+  PathTo_sn_seen_MultBodyAggAux.target AS target,
+  PathTo_sn_seen_MultBodyAggAux.path AS path,
+  MAX(PathTo_sn_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_PathTo_sn_seen_MultBodyAggAux AS PathTo_sn_seen_MultBodyAggAux
 GROUP BY 1, 2, 3)
 SELECT
-  PathTo_sn_step.source AS source,
-  PathTo_sn_step.target AS target,
-  PathTo_sn_step.path AS path
+  PathTo_sn_seen.source AS source,
+  PathTo_sn_seen.target AS target,
+  PathTo_sn_seen.path AS path
 FROM
-  t_0_PathTo_sn_step AS PathTo_sn_step
+  t_0_PathTo_sn_seen AS PathTo_sn_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.PathTo_sn_full AS PathTo_sn_full
-  WHERE
-    (PathTo_sn_full.source = PathTo_sn_step.source) AND
-    (PathTo_sn_full.target = PathTo_sn_step.target) AND
-    (PathTo_sn_full.path = PathTo_sn_step.path)) IS NULL)
+  (PathTo_sn_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3;
 
 INSERT INTO synalog_test.PathTo_sn_full SELECT * FROM synalog_test.PathTo_sn_new;
 
 DROP TABLE IF EXISTS synalog_test.PathTo_sn_delta;
-CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_1_PathTo_MultBodyAggAux_f1 AS (SELECT * FROM (
+CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_3_PathTo_MultBodyAggAux_f1 AS (SELECT * FROM (
   
     SELECT
       Manages.manager_id AS source,
       Manages.employee_id AS target,
-      (CONCAT((CONCAT(N.name, ' > ')), t_2_N.name)) AS path
+      (CONCAT((CONCAT(N.name, ' > ')), t_4_N.name)) AS path
     FROM
-      synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
+      synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_4_N
     WHERE
       (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (t_4_N.person_id = Manages.employee_id)
    UNION ALL
   
     SELECT
       PathTo_sn_new.source AS source,
-      t_3_Manages.employee_id AS target,
-      (CONCAT((CONCAT(PathTo_sn_new.path, ' > ')), t_4_N.name)) AS path
+      t_5_Manages.employee_id AS target,
+      (CONCAT((CONCAT(PathTo_sn_new.path, ' > ')), t_6_N.name)) AS path
     FROM
-      synalog_test.PathTo_sn_new AS PathTo_sn_new, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
+      synalog_test.PathTo_sn_new AS PathTo_sn_new, synalog_test.Manages AS t_5_Manages, synalog_test.N AS t_6_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_new.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_5_Manages.manager_id = PathTo_sn_new.target) AND
+      (t_6_N.person_id = t_5_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
-t_0_PathTo_sn_back_step AS (SELECT
+t_2_PathTo_sn_back_step AS (SELECT
   PathTo_MultBodyAggAux_f1.source AS source,
   PathTo_MultBodyAggAux_f1.target AS target,
   PathTo_MultBodyAggAux_f1.path AS path
 FROM
-  t_1_PathTo_MultBodyAggAux_f1 AS PathTo_MultBodyAggAux_f1
+  t_3_PathTo_MultBodyAggAux_f1 AS PathTo_MultBodyAggAux_f1
+GROUP BY 1, 2, 3),
+t_1_PathTo_sn_back_seen_MultBodyAggAux AS (SELECT * FROM (
+  
+    SELECT
+      PathTo_sn_back_step.source AS source,
+      PathTo_sn_back_step.target AS target,
+      PathTo_sn_back_step.path AS path,
+      0 AS synalog_sn_in_full
+    FROM
+      t_2_PathTo_sn_back_step AS PathTo_sn_back_step
+   UNION ALL
+  
+    SELECT
+      PathTo_sn_full.source AS source,
+      PathTo_sn_full.target AS target,
+      PathTo_sn_full.path AS path,
+      1 AS synalog_sn_in_full
+    FROM
+      synalog_test.PathTo_sn_full AS PathTo_sn_full
+  
+) AS UNUSED_TABLE_NAME  ),
+t_0_PathTo_sn_back_seen AS (SELECT
+  PathTo_sn_back_seen_MultBodyAggAux.source AS source,
+  PathTo_sn_back_seen_MultBodyAggAux.target AS target,
+  PathTo_sn_back_seen_MultBodyAggAux.path AS path,
+  MAX(PathTo_sn_back_seen_MultBodyAggAux.synalog_sn_in_full) AS synalog_sn_in_full
+FROM
+  t_1_PathTo_sn_back_seen_MultBodyAggAux AS PathTo_sn_back_seen_MultBodyAggAux
 GROUP BY 1, 2, 3)
 SELECT
-  PathTo_sn_back_step.source AS source,
-  PathTo_sn_back_step.target AS target,
-  PathTo_sn_back_step.path AS path
+  PathTo_sn_back_seen.source AS source,
+  PathTo_sn_back_seen.target AS target,
+  PathTo_sn_back_seen.path AS path
 FROM
-  t_0_PathTo_sn_back_step AS PathTo_sn_back_step
+  t_0_PathTo_sn_back_seen AS PathTo_sn_back_seen
 WHERE
-  ((SELECT
-    MIN(1) AS synalog_value
-  FROM
-    synalog_test.PathTo_sn_full AS PathTo_sn_full
-  WHERE
-    (PathTo_sn_full.source = PathTo_sn_back_step.source) AND
-    (PathTo_sn_full.target = PathTo_sn_back_step.target) AND
-    (PathTo_sn_full.path = PathTo_sn_back_step.path)) IS NULL)
+  (PathTo_sn_back_seen.synalog_sn_in_full = 0)
 GROUP BY 1, 2, 3;
 
 INSERT INTO synalog_test.PathTo_sn_full SELECT * FROM synalog_test.PathTo_sn_delta;
