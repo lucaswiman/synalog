@@ -112,7 +112,7 @@ t_1_Conn_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_t0 AS Conn_sn_t0, t_1_U AS t_3_U
     WHERE
-      (t_3_U.a = Conn_sn_t0.b)
+      (t_3_U.a <=> Conn_sn_t0.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Conn_sn_r1 AS (SELECT
@@ -181,7 +181,7 @@ t_1_Conn_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_t1 AS Conn_sn_t1, t_1_U AS t_3_U
     WHERE
-      (t_3_U.a = Conn_sn_t1.b)
+      (t_3_U.a <=> Conn_sn_t1.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Conn_sn_r2 AS (SELECT
@@ -250,7 +250,7 @@ t_1_Conn_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_t2 AS Conn_sn_t2, t_1_U AS t_3_U
     WHERE
-      (t_3_U.a = Conn_sn_t2.b)
+      (t_3_U.a <=> Conn_sn_t2.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Conn_sn_r3 AS (SELECT
@@ -319,7 +319,7 @@ t_1_Conn_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_t3 AS Conn_sn_t3, t_1_U AS t_3_U
     WHERE
-      (t_3_U.a = Conn_sn_t3.b)
+      (t_3_U.a <=> Conn_sn_t3.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Conn_sn_r4 AS (SELECT
@@ -388,7 +388,7 @@ t_1_Conn_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_t4 AS Conn_sn_t4, t_1_U AS t_3_U
     WHERE
-      (t_3_U.a = Conn_sn_t4.b)
+      (t_3_U.a <=> Conn_sn_t4.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Conn_sn_r5 AS (SELECT
@@ -505,7 +505,7 @@ t_3_Conn_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_delta AS Conn_sn_delta, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_delta.b)
+      (t_5_U.a <=> Conn_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_step AS (SELECT
@@ -600,7 +600,7 @@ t_3_Conn_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_new AS Conn_sn_new, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_new.b)
+      (t_5_U.a <=> Conn_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_back_step AS (SELECT
@@ -695,7 +695,7 @@ t_3_Conn_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_delta AS Conn_sn_delta, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_delta.b)
+      (t_5_U.a <=> Conn_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_step AS (SELECT
@@ -790,7 +790,7 @@ t_3_Conn_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_new AS Conn_sn_new, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_new.b)
+      (t_5_U.a <=> Conn_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_back_step AS (SELECT
@@ -885,7 +885,7 @@ t_3_Conn_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_delta AS Conn_sn_delta, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_delta.b)
+      (t_5_U.a <=> Conn_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_step AS (SELECT
@@ -980,7 +980,7 @@ t_3_Conn_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_new AS Conn_sn_new, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_new.b)
+      (t_5_U.a <=> Conn_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_back_step AS (SELECT
@@ -1075,7 +1075,7 @@ t_3_Conn_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_delta AS Conn_sn_delta, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_delta.b)
+      (t_5_U.a <=> Conn_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_step AS (SELECT
@@ -1170,7 +1170,7 @@ t_3_Conn_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_new AS Conn_sn_new, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_new.b)
+      (t_5_U.a <=> Conn_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_back_step AS (SELECT
@@ -1265,7 +1265,7 @@ t_3_Conn_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_delta AS Conn_sn_delta, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_delta.b)
+      (t_5_U.a <=> Conn_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_step AS (SELECT
@@ -1360,7 +1360,7 @@ t_3_Conn_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_new AS Conn_sn_new, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_new.b)
+      (t_5_U.a <=> Conn_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_back_step AS (SELECT
@@ -1455,7 +1455,7 @@ t_3_Conn_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_delta AS Conn_sn_delta, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_delta.b)
+      (t_5_U.a <=> Conn_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_step AS (SELECT
@@ -1550,7 +1550,7 @@ t_3_Conn_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Conn_sn_new AS Conn_sn_new, t_1_U AS t_5_U
     WHERE
-      (t_5_U.a = Conn_sn_new.b)
+      (t_5_U.a <=> Conn_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Conn_sn_back_step AS (SELECT
@@ -1617,7 +1617,7 @@ t_2_Comp_MultBodyAggAux AS (SELECT * FROM (
     FROM
       t_3_Node AS Node, synalog_test.Conn_sn_full AS Conn_sn_full
     WHERE
-      (Node.n = Conn_sn_full.a)
+      (Node.n <=> Conn_sn_full.a)
    UNION ALL
   
     SELECT
@@ -1639,4 +1639,4 @@ FROM
   t_1_Comp AS Comp, t_1_Comp AS t_0_Comp
 WHERE
   (Comp.n = 5) AND
-  (t_0_Comp.c = Comp.c) ORDER BY m NULLS LAST;
+  (t_0_Comp.c <=> Comp.c) ORDER BY m NULLS LAST;

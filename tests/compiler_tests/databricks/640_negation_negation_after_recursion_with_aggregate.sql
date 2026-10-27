@@ -410,4 +410,4 @@ WHERE
   FROM
     synalog_test.R_sn_full AS R_sn_full
   WHERE
-    (x_2 = R_sn_full.x)) IS NULL);
+    (x_2 <=> R_sn_full.x)) IS NULL);

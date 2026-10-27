@@ -61,7 +61,7 @@ t_1_R_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.R_sn_t0 AS R_sn_t0, t_2_E AS E
     WHERE
-      (E.a = R_sn_t0.x)
+      (E.a IS NOT DISTINCT FROM R_sn_t0.x)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_R_sn_r1 AS (SELECT
@@ -116,7 +116,7 @@ t_1_R_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.R_sn_t1 AS R_sn_t1, t_2_E AS E
     WHERE
-      (E.a = R_sn_t1.x)
+      (E.a IS NOT DISTINCT FROM R_sn_t1.x)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_R_sn_r2 AS (SELECT
@@ -171,7 +171,7 @@ t_1_R_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.R_sn_t2 AS R_sn_t2, t_2_E AS E
     WHERE
-      (E.a = R_sn_t2.x)
+      (E.a IS NOT DISTINCT FROM R_sn_t2.x)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_R_sn_r3 AS (SELECT
@@ -256,7 +256,7 @@ t_3_R_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.R_sn_delta AS R_sn_delta, t_2_E AS E
     WHERE
-      (E.a = R_sn_delta.x)
+      (E.a IS NOT DISTINCT FROM R_sn_delta.x)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_R_sn_step AS (SELECT

@@ -47,8 +47,8 @@ SELECT
 FROM
   t_1_HasPhone AS HasPhone, t_1_HasPhone AS t_0_HasPhone
 WHERE
-  (HasPhone.account != t_0_HasPhone.account) AND
-  (t_0_HasPhone.phone = HasPhone.phone)
+  (HasPhone.account IS DISTINCT FROM t_0_HasPhone.account) AND
+  (t_0_HasPhone.phone IS NOT DISTINCT FROM HasPhone.phone)
 GROUP BY 1, 2;
 
 -- Interacting with table synalog_test.Shares
@@ -99,7 +99,7 @@ CREATE TABLE synalog_test.Linked_sn_t1 AS WITH t_1_Linked_MultBodyAggAux_f3 AS (
     FROM
       synalog_test.Linked_sn_t0 AS Linked_sn_t0, synalog_test.Shares AS t_2_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_t0.b)
+      (t_2_Shares.a IS NOT DISTINCT FROM Linked_sn_t0.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r1 AS (SELECT
@@ -134,7 +134,7 @@ CREATE TABLE synalog_test.Linked_sn_t2 AS WITH t_1_Linked_MultBodyAggAux_f4 AS (
     FROM
       synalog_test.Linked_sn_t1 AS Linked_sn_t1, synalog_test.Shares AS t_2_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_t1.b)
+      (t_2_Shares.a IS NOT DISTINCT FROM Linked_sn_t1.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r2 AS (SELECT
@@ -169,7 +169,7 @@ CREATE TABLE synalog_test.Linked_sn_t3 AS WITH t_1_Linked_MultBodyAggAux_f5 AS (
     FROM
       synalog_test.Linked_sn_t2 AS Linked_sn_t2, synalog_test.Shares AS t_2_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_t2.b)
+      (t_2_Shares.a IS NOT DISTINCT FROM Linked_sn_t2.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r3 AS (SELECT
@@ -204,7 +204,7 @@ CREATE TABLE synalog_test.Linked_sn_t4 AS WITH t_1_Linked_MultBodyAggAux_f6 AS (
     FROM
       synalog_test.Linked_sn_t3 AS Linked_sn_t3, synalog_test.Shares AS t_2_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_t3.b)
+      (t_2_Shares.a IS NOT DISTINCT FROM Linked_sn_t3.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r4 AS (SELECT
@@ -239,7 +239,7 @@ CREATE TABLE synalog_test.Linked_sn_t5 AS WITH t_1_Linked_MultBodyAggAux_f7 AS (
     FROM
       synalog_test.Linked_sn_t4 AS Linked_sn_t4, synalog_test.Shares AS t_2_Shares
     WHERE
-      (t_2_Shares.a = Linked_sn_t4.b)
+      (t_2_Shares.a IS NOT DISTINCT FROM Linked_sn_t4.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r5 AS (SELECT
@@ -322,7 +322,7 @@ CREATE TABLE synalog_test.Linked_sn_new AS WITH t_3_Linked_MultBodyAggAux_f8 AS 
     FROM
       synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_4_Shares.a = Linked_sn_delta.b)
+      (t_4_Shares.a IS NOT DISTINCT FROM Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_step AS (SELECT
@@ -383,7 +383,7 @@ CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_3_Linked_MultBodyAggAux_f1 A
     FROM
       synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_4_Shares.a = Linked_sn_new.b)
+      (t_4_Shares.a IS NOT DISTINCT FROM Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_back_step AS (SELECT
@@ -444,7 +444,7 @@ CREATE TABLE synalog_test.Linked_sn_new AS WITH t_3_Linked_MultBodyAggAux_f8 AS 
     FROM
       synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_4_Shares.a = Linked_sn_delta.b)
+      (t_4_Shares.a IS NOT DISTINCT FROM Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_step AS (SELECT
@@ -505,7 +505,7 @@ CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_3_Linked_MultBodyAggAux_f1 A
     FROM
       synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_4_Shares.a = Linked_sn_new.b)
+      (t_4_Shares.a IS NOT DISTINCT FROM Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_back_step AS (SELECT
@@ -566,7 +566,7 @@ CREATE TABLE synalog_test.Linked_sn_new AS WITH t_3_Linked_MultBodyAggAux_f8 AS 
     FROM
       synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_4_Shares.a = Linked_sn_delta.b)
+      (t_4_Shares.a IS NOT DISTINCT FROM Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_step AS (SELECT
@@ -627,7 +627,7 @@ CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_3_Linked_MultBodyAggAux_f1 A
     FROM
       synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_4_Shares.a = Linked_sn_new.b)
+      (t_4_Shares.a IS NOT DISTINCT FROM Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_back_step AS (SELECT
@@ -688,7 +688,7 @@ CREATE TABLE synalog_test.Linked_sn_new AS WITH t_3_Linked_MultBodyAggAux_f8 AS 
     FROM
       synalog_test.Linked_sn_delta AS Linked_sn_delta, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_4_Shares.a = Linked_sn_delta.b)
+      (t_4_Shares.a IS NOT DISTINCT FROM Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_step AS (SELECT
@@ -749,7 +749,7 @@ CREATE TABLE synalog_test.Linked_sn_delta AS WITH t_3_Linked_MultBodyAggAux_f1 A
     FROM
       synalog_test.Linked_sn_new AS Linked_sn_new, synalog_test.Shares AS t_4_Shares
     WHERE
-      (t_4_Shares.a = Linked_sn_new.b)
+      (t_4_Shares.a IS NOT DISTINCT FROM Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_back_step AS (SELECT
@@ -799,6 +799,6 @@ SELECT
 FROM
   synalog_test.Linked_sn_full AS Linked_sn_full
 WHERE
-  (Linked_sn_full.b != 'a1') AND
+  (Linked_sn_full.b IS DISTINCT FROM 'a1') AND
   ('a1' = Linked_sn_full.a)
 GROUP BY 1 ORDER BY b;

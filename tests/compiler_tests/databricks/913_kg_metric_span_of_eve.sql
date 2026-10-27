@@ -25,8 +25,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_0_Below_MultBodyAggAux_f2 AS (SELECT * FROM (
   
@@ -84,8 +84,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_1_Below_MultBodyAggAux_f3 AS (SELECT * FROM (
   
@@ -95,7 +95,7 @@ t_1_Below_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_t0 AS Below_sn_t0, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_t0.employee_id)
+      (Manages.manager_id <=> Below_sn_t0.employee_id)
    UNION ALL
   
     SELECT
@@ -148,8 +148,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_1_Below_MultBodyAggAux_f4 AS (SELECT * FROM (
   
@@ -159,7 +159,7 @@ t_1_Below_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_t1 AS Below_sn_t1, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_t1.employee_id)
+      (Manages.manager_id <=> Below_sn_t1.employee_id)
    UNION ALL
   
     SELECT
@@ -212,8 +212,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_1_Below_MultBodyAggAux_f5 AS (SELECT * FROM (
   
@@ -223,7 +223,7 @@ t_1_Below_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_t2 AS Below_sn_t2, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_t2.employee_id)
+      (Manages.manager_id <=> Below_sn_t2.employee_id)
    UNION ALL
   
     SELECT
@@ -276,8 +276,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_1_Below_MultBodyAggAux_f6 AS (SELECT * FROM (
   
@@ -287,7 +287,7 @@ t_1_Below_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_t3 AS Below_sn_t3, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_t3.employee_id)
+      (Manages.manager_id <=> Below_sn_t3.employee_id)
    UNION ALL
   
     SELECT
@@ -340,8 +340,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_1_Below_MultBodyAggAux_f7 AS (SELECT * FROM (
   
@@ -351,7 +351,7 @@ t_1_Below_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_t4 AS Below_sn_t4, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_t4.employee_id)
+      (Manages.manager_id <=> Below_sn_t4.employee_id)
    UNION ALL
   
     SELECT
@@ -452,8 +452,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
   
@@ -463,7 +463,7 @@ t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_delta AS Below_sn_delta, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_delta.employee_id)
+      (Manages.manager_id <=> Below_sn_delta.employee_id)
    UNION ALL
   
     SELECT
@@ -542,8 +542,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
   
@@ -553,7 +553,7 @@ t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_new AS Below_sn_new, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_new.employee_id)
+      (Manages.manager_id <=> Below_sn_new.employee_id)
    UNION ALL
   
     SELECT
@@ -632,8 +632,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
   
@@ -643,7 +643,7 @@ t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_delta AS Below_sn_delta, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_delta.employee_id)
+      (Manages.manager_id <=> Below_sn_delta.employee_id)
    UNION ALL
   
     SELECT
@@ -722,8 +722,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
   
@@ -733,7 +733,7 @@ t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_new AS Below_sn_new, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_new.employee_id)
+      (Manages.manager_id <=> Below_sn_new.employee_id)
    UNION ALL
   
     SELECT
@@ -812,8 +812,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
   
@@ -823,7 +823,7 @@ t_3_Below_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_delta AS Below_sn_delta, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_delta.employee_id)
+      (Manages.manager_id <=> Below_sn_delta.employee_id)
    UNION ALL
   
     SELECT
@@ -902,8 +902,8 @@ t_2_Manages AS (SELECT
 FROM
   t_4_Person AS Person, t_4_Person AS t_3_Person, t_7_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_3_Person.person_id)
+  (Management.manager_id <=> Person.person_id) AND
+  (Management.employee_id <=> t_3_Person.person_id)
 GROUP BY 1, 2),
 t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
   
@@ -913,7 +913,7 @@ t_3_Below_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Below_sn_new AS Below_sn_new, t_2_Manages AS Manages
     WHERE
-      (Manages.manager_id = Below_sn_new.employee_id)
+      (Manages.manager_id <=> Below_sn_new.employee_id)
    UNION ALL
   
     SELECT

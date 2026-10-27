@@ -1574,9 +1574,7 @@ fn get_semi_naive_recursion_functor(depth: i64, p: &str, fields: &[Json]) -> Str
         format!("@Ground({p}_sn_full);"),
         format!("{p}_sn_step := {p}_ROne({p}_RZero: {p}_sn_delta);"),
         // A step's rows that `{p}_sn_full` lacks: a row tagged 0 when only
-        // the step has it. Grouped, rows holding nulls are the same row
-        // (`~{p}_sn_full(...)` would compare them with `=`, under which a null
-        // equals nothing, and find every row holding a null new again).
+        // the step has it, grouped (rows holding nulls are the same row).
         format!("{p}_sn_seen({args}, synalog_sn_in_full? Max= t) distinct :- {p}_sn_step({args}), t == 0 | {p}_sn_full({args}), t == 1;"),
         format!("{p}_sn_new({args}) distinct :- {p}_sn_seen({args}, synalog_sn_in_full: 0);"),
         format!("@Ground({p}_sn_new);"),

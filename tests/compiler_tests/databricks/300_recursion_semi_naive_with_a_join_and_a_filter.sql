@@ -45,7 +45,7 @@ t_1_Reach_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t0 AS Reach_sn_t0, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_t0.node) AND
+      (Edge.`from` <=> Reach_sn_t0.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -84,7 +84,7 @@ t_1_Reach_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t1 AS Reach_sn_t1, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_t1.node) AND
+      (Edge.`from` <=> Reach_sn_t1.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -123,7 +123,7 @@ t_1_Reach_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t2 AS Reach_sn_t2, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_t2.node) AND
+      (Edge.`from` <=> Reach_sn_t2.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -162,7 +162,7 @@ t_1_Reach_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t3 AS Reach_sn_t3, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_t3.node) AND
+      (Edge.`from` <=> Reach_sn_t3.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -201,7 +201,7 @@ t_1_Reach_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t4 AS Reach_sn_t4, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_t4.node) AND
+      (Edge.`from` <=> Reach_sn_t4.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -288,7 +288,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -353,7 +353,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -418,7 +418,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -483,7 +483,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -548,7 +548,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -613,7 +613,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -678,7 +678,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -743,7 +743,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -808,7 +808,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -873,7 +873,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -938,7 +938,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1003,7 +1003,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1068,7 +1068,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1133,7 +1133,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1198,7 +1198,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1263,7 +1263,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1328,7 +1328,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1393,7 +1393,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1458,7 +1458,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1523,7 +1523,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1588,7 +1588,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1653,7 +1653,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1718,7 +1718,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1783,7 +1783,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1848,7 +1848,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1913,7 +1913,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -1978,7 +1978,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2043,7 +2043,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2108,7 +2108,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2173,7 +2173,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2238,7 +2238,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2303,7 +2303,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2368,7 +2368,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2433,7 +2433,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2498,7 +2498,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2563,7 +2563,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2628,7 +2628,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2693,7 +2693,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2758,7 +2758,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2823,7 +2823,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2888,7 +2888,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -2953,7 +2953,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -3018,7 +3018,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -3083,7 +3083,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -3148,7 +3148,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -3213,7 +3213,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -3278,7 +3278,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -3343,7 +3343,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -3408,7 +3408,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_delta.node) AND
+      (Edge.`from` <=> Reach_sn_delta.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),
@@ -3473,7 +3473,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.`from` = Reach_sn_new.node) AND
+      (Edge.`from` <=> Reach_sn_new.node) AND
       (Edge.ok = true)
   
 ) AS UNUSED_TABLE_NAME  ),

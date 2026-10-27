@@ -35,7 +35,7 @@ CREATE TABLE synalog_test.Reach_sn_t1 AS WITH t_1_Reach_MultBodyAggAux_f3 AS (SE
     FROM
       synalog_test.Reach_sn_t0 AS Reach_sn_t0, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
     WHERE
-      (Reach_sn_t0.y = x_9)
+      (Reach_sn_t0.y IS NOT DISTINCT FROM x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r1 AS (SELECT
@@ -64,7 +64,7 @@ CREATE TABLE synalog_test.Reach_sn_t2 AS WITH t_1_Reach_MultBodyAggAux_f4 AS (SE
     FROM
       synalog_test.Reach_sn_t1 AS Reach_sn_t1, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
     WHERE
-      (Reach_sn_t1.y = x_9)
+      (Reach_sn_t1.y IS NOT DISTINCT FROM x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r2 AS (SELECT
@@ -93,7 +93,7 @@ CREATE TABLE synalog_test.Reach_sn_t3 AS WITH t_1_Reach_MultBodyAggAux_f5 AS (SE
     FROM
       synalog_test.Reach_sn_t2 AS Reach_sn_t2, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_9)
     WHERE
-      (Reach_sn_t2.y = x_9)
+      (Reach_sn_t2.y IS NOT DISTINCT FROM x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r3 AS (SELECT
@@ -152,7 +152,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -204,7 +204,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -256,7 +256,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -308,7 +308,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -360,7 +360,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -412,7 +412,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -464,7 +464,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -516,7 +516,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -568,7 +568,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -620,7 +620,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -672,7 +672,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -724,7 +724,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -776,7 +776,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -828,7 +828,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -880,7 +880,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -932,7 +932,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -984,7 +984,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1036,7 +1036,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1088,7 +1088,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1140,7 +1140,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1192,7 +1192,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1244,7 +1244,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1296,7 +1296,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1348,7 +1348,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1400,7 +1400,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1452,7 +1452,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1504,7 +1504,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1556,7 +1556,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1608,7 +1608,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1660,7 +1660,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1712,7 +1712,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1764,7 +1764,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1816,7 +1816,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1868,7 +1868,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -1920,7 +1920,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -1972,7 +1972,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2024,7 +2024,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2076,7 +2076,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2128,7 +2128,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2180,7 +2180,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2232,7 +2232,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2284,7 +2284,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2336,7 +2336,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2388,7 +2388,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2440,7 +2440,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2492,7 +2492,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2544,7 +2544,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2596,7 +2596,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2648,7 +2648,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2700,7 +2700,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2752,7 +2752,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2804,7 +2804,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2856,7 +2856,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -2908,7 +2908,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -2960,7 +2960,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3012,7 +3012,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3064,7 +3064,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3116,7 +3116,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3168,7 +3168,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3220,7 +3220,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3272,7 +3272,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3324,7 +3324,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3376,7 +3376,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3428,7 +3428,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3480,7 +3480,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3532,7 +3532,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3584,7 +3584,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3636,7 +3636,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3688,7 +3688,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3740,7 +3740,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3792,7 +3792,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3844,7 +3844,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -3896,7 +3896,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -3948,7 +3948,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4000,7 +4000,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4052,7 +4052,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4104,7 +4104,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4156,7 +4156,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4208,7 +4208,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4260,7 +4260,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4312,7 +4312,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4364,7 +4364,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4416,7 +4416,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4468,7 +4468,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4520,7 +4520,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4572,7 +4572,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4624,7 +4624,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4676,7 +4676,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4728,7 +4728,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4780,7 +4780,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4832,7 +4832,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4884,7 +4884,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -4936,7 +4936,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -4988,7 +4988,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -5040,7 +5040,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -5092,7 +5092,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -5144,7 +5144,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -5196,7 +5196,7 @@ CREATE TABLE synalog_test.Reach_sn_delta AS WITH t_3_Reach_MultBodyAggAux_f1 AS 
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_new.y = x_16)
+      (Reach_sn_new.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -5248,7 +5248,7 @@ CREATE TABLE synalog_test.Reach_sn_new AS WITH t_3_Reach_MultBodyAggAux_f6 AS (S
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, UNNEST(TRANSFORM(FILTER(SEQUENCE(0, 200), x -> x < 200), synalog_e -> ROW(synalog_e))) as pushkin(x_16)
     WHERE
-      (Reach_sn_delta.y = x_16)
+      (Reach_sn_delta.y IS NOT DISTINCT FROM x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT

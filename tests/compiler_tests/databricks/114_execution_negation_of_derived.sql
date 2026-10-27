@@ -44,7 +44,7 @@ t_1_Reach_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t0 AS Reach_sn_t0, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_t0.y)
+      (Edge.x <=> Reach_sn_t0.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r1 AS (SELECT
@@ -81,7 +81,7 @@ t_1_Reach_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t1 AS Reach_sn_t1, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_t1.y)
+      (Edge.x <=> Reach_sn_t1.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r2 AS (SELECT
@@ -118,7 +118,7 @@ t_1_Reach_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t2 AS Reach_sn_t2, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_t2.y)
+      (Edge.x <=> Reach_sn_t2.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r3 AS (SELECT
@@ -155,7 +155,7 @@ t_1_Reach_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t3 AS Reach_sn_t3, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_t3.y)
+      (Edge.x <=> Reach_sn_t3.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r4 AS (SELECT
@@ -192,7 +192,7 @@ t_1_Reach_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t4 AS Reach_sn_t4, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_t4.y)
+      (Edge.x <=> Reach_sn_t4.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r5 AS (SELECT
@@ -277,7 +277,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_delta.y)
+      (Edge.x <=> Reach_sn_delta.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -340,7 +340,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_new.y)
+      (Edge.x <=> Reach_sn_new.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -403,7 +403,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_delta.y)
+      (Edge.x <=> Reach_sn_delta.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -466,7 +466,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_new.y)
+      (Edge.x <=> Reach_sn_new.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -529,7 +529,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_delta.y)
+      (Edge.x <=> Reach_sn_delta.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -592,7 +592,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_new.y)
+      (Edge.x <=> Reach_sn_new.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -655,7 +655,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_delta.y)
+      (Edge.x <=> Reach_sn_delta.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -718,7 +718,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_new.y)
+      (Edge.x <=> Reach_sn_new.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -781,7 +781,7 @@ t_3_Reach_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta AS Reach_sn_delta, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_delta.y)
+      (Edge.x <=> Reach_sn_delta.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step AS (SELECT
@@ -844,7 +844,7 @@ t_3_Reach_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new AS Reach_sn_new, t_2_Edge AS Edge
     WHERE
-      (Edge.x = Reach_sn_new.y)
+      (Edge.x <=> Reach_sn_new.y)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step AS (SELECT
@@ -900,4 +900,4 @@ WHERE
     synalog_test.Reach_sn_full AS Reach_sn_full
   WHERE
     ("a" = Reach_sn_full.x) AND
-    (x_3 = Reach_sn_full.y)) IS NULL) ORDER BY n NULLS LAST;
+    (x_3 <=> Reach_sn_full.y)) IS NULL) ORDER BY n NULLS LAST;

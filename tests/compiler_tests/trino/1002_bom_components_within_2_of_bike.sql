@@ -147,7 +147,7 @@ t_1_Down_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_t0 AS Down_sn_t0, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Down_sn_t0.component)
+      (Uses.part IS NOT DISTINCT FROM Down_sn_t0.component)
    UNION ALL
   
     SELECT
@@ -236,7 +236,7 @@ t_1_Down_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_t1 AS Down_sn_t1, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Down_sn_t1.component)
+      (Uses.part IS NOT DISTINCT FROM Down_sn_t1.component)
    UNION ALL
   
     SELECT
@@ -325,7 +325,7 @@ t_1_Down_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_t2 AS Down_sn_t2, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Down_sn_t2.component)
+      (Uses.part IS NOT DISTINCT FROM Down_sn_t2.component)
    UNION ALL
   
     SELECT
@@ -444,7 +444,7 @@ t_3_Down_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_delta AS Down_sn_delta, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Down_sn_delta.component)
+      (Uses.part IS NOT DISTINCT FROM Down_sn_delta.component)
    UNION ALL
   
     SELECT
@@ -556,7 +556,7 @@ t_3_Down_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_new AS Down_sn_new, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Down_sn_new.component)
+      (Uses.part IS NOT DISTINCT FROM Down_sn_new.component)
    UNION ALL
   
     SELECT

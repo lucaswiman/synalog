@@ -88,7 +88,7 @@ t_1_Above_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_t0 AS Above_sn_t0, t_1_ApproverOf AS t_2_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_t0.approver)
+      (t_2_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_t0.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Above_sn_r1 AS (SELECT
@@ -145,7 +145,7 @@ t_1_Above_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_t1 AS Above_sn_t1, t_1_ApproverOf AS t_2_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_t1.approver)
+      (t_2_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_t1.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Above_sn_r2 AS (SELECT
@@ -202,7 +202,7 @@ t_1_Above_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_t2 AS Above_sn_t2, t_1_ApproverOf AS t_2_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_t2.approver)
+      (t_2_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_t2.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Above_sn_r3 AS (SELECT
@@ -259,7 +259,7 @@ t_1_Above_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_t3 AS Above_sn_t3, t_1_ApproverOf AS t_2_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_t3.approver)
+      (t_2_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_t3.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Above_sn_r4 AS (SELECT
@@ -316,7 +316,7 @@ t_1_Above_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_t4 AS Above_sn_t4, t_1_ApproverOf AS t_2_ApproverOf
     WHERE
-      (t_2_ApproverOf.requester = Above_sn_t4.approver)
+      (t_2_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_t4.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Above_sn_r5 AS (SELECT
@@ -421,7 +421,7 @@ t_3_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_4_ApproverOf.requester = Above_sn_delta.approver)
+      (t_4_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_delta.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Above_sn_step AS (SELECT
@@ -504,7 +504,7 @@ t_3_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_4_ApproverOf.requester = Above_sn_new.approver)
+      (t_4_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_new.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Above_sn_back_step AS (SELECT
@@ -587,7 +587,7 @@ t_3_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_4_ApproverOf.requester = Above_sn_delta.approver)
+      (t_4_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_delta.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Above_sn_step AS (SELECT
@@ -670,7 +670,7 @@ t_3_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_4_ApproverOf.requester = Above_sn_new.approver)
+      (t_4_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_new.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Above_sn_back_step AS (SELECT
@@ -753,7 +753,7 @@ t_3_Above_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_delta AS Above_sn_delta, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_4_ApproverOf.requester = Above_sn_delta.approver)
+      (t_4_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_delta.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Above_sn_step AS (SELECT
@@ -836,7 +836,7 @@ t_3_Above_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Above_sn_new AS Above_sn_new, t_1_ApproverOf AS t_4_ApproverOf
     WHERE
-      (t_4_ApproverOf.requester = Above_sn_new.approver)
+      (t_4_ApproverOf.requester IS NOT DISTINCT FROM Above_sn_new.approver)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Above_sn_back_step AS (SELECT

@@ -85,7 +85,7 @@ t_1_C_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t0 AS C_sn_t0, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t0.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t0.entity)
    UNION ALL
   
     SELECT
@@ -148,7 +148,7 @@ t_1_C_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t1 AS C_sn_t1, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t1.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t1.entity)
    UNION ALL
   
     SELECT
@@ -211,7 +211,7 @@ t_1_C_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t2 AS C_sn_t2, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t2.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t2.entity)
    UNION ALL
   
     SELECT
@@ -274,7 +274,7 @@ t_1_C_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t3 AS C_sn_t3, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t3.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t3.entity)
    UNION ALL
   
     SELECT
@@ -337,7 +337,7 @@ t_1_C_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t4 AS C_sn_t4, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t4.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t4.entity)
    UNION ALL
   
     SELECT
@@ -400,7 +400,7 @@ t_1_C_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t5 AS C_sn_t5, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t5.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t5.entity)
    UNION ALL
   
     SELECT
@@ -463,7 +463,7 @@ t_1_C_MultBodyAggAux_f9 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t6 AS C_sn_t6, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t6.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t6.entity)
    UNION ALL
   
     SELECT
@@ -526,7 +526,7 @@ t_1_C_MultBodyAggAux_f10 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t7 AS C_sn_t7, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t7.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t7.entity)
    UNION ALL
   
     SELECT
@@ -589,7 +589,7 @@ t_1_C_MultBodyAggAux_f11 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_t8 AS C_sn_t8, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_t8.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_t8.entity)
    UNION ALL
   
     SELECT
@@ -748,7 +748,7 @@ t_3_C_MultBodyAggAux_f12 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_delta AS C_sn_delta, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_delta.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_delta.entity)
    UNION ALL
   
     SELECT
@@ -843,7 +843,7 @@ t_3_C_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_new AS C_sn_new, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_new.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_new.entity)
    UNION ALL
   
     SELECT
@@ -938,7 +938,7 @@ t_3_C_MultBodyAggAux_f12 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_delta AS C_sn_delta, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_delta.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_delta.entity)
    UNION ALL
   
     SELECT
@@ -1033,7 +1033,7 @@ t_3_C_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.C_sn_new AS C_sn_new, t_2_Own AS Own
     WHERE
-      (Own.owner = C_sn_new.entity)
+      (Own.owner IS NOT DISTINCT FROM C_sn_new.entity)
    UNION ALL
   
     SELECT

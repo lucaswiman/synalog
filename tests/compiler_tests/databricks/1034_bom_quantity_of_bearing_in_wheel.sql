@@ -67,7 +67,7 @@ t_1_Need_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t0 AS Need_sn_t0, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t0.component)
+      (Uses.part <=> Need_sn_t0.component)
    UNION ALL
   
     SELECT
@@ -121,7 +121,7 @@ t_1_Need_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t1 AS Need_sn_t1, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t1.component)
+      (Uses.part <=> Need_sn_t1.component)
    UNION ALL
   
     SELECT
@@ -175,7 +175,7 @@ t_1_Need_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t2 AS Need_sn_t2, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t2.component)
+      (Uses.part <=> Need_sn_t2.component)
    UNION ALL
   
     SELECT
@@ -229,7 +229,7 @@ t_1_Need_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t3 AS Need_sn_t3, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t3.component)
+      (Uses.part <=> Need_sn_t3.component)
    UNION ALL
   
     SELECT
@@ -283,7 +283,7 @@ t_1_Need_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t4 AS Need_sn_t4, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t4.component)
+      (Uses.part <=> Need_sn_t4.component)
    UNION ALL
   
     SELECT
@@ -337,7 +337,7 @@ t_1_Need_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t5 AS Need_sn_t5, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t5.component)
+      (Uses.part <=> Need_sn_t5.component)
    UNION ALL
   
     SELECT
@@ -391,7 +391,7 @@ t_1_Need_MultBodyAggAux_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t6 AS Need_sn_t6, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t6.component)
+      (Uses.part <=> Need_sn_t6.component)
    UNION ALL
   
     SELECT
@@ -445,7 +445,7 @@ t_1_Need_MultBodyAggAux_f10 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t7 AS Need_sn_t7, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t7.component)
+      (Uses.part <=> Need_sn_t7.component)
    UNION ALL
   
     SELECT
@@ -499,7 +499,7 @@ t_1_Need_MultBodyAggAux_f11 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_t8 AS Need_sn_t8, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_t8.component)
+      (Uses.part <=> Need_sn_t8.component)
    UNION ALL
   
     SELECT
@@ -649,7 +649,7 @@ t_3_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_delta AS Need_sn_delta, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_delta.component)
+      (Uses.part <=> Need_sn_delta.component)
    UNION ALL
   
     SELECT
@@ -735,7 +735,7 @@ t_3_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_new AS Need_sn_new, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_new.component)
+      (Uses.part <=> Need_sn_new.component)
    UNION ALL
   
     SELECT
@@ -821,7 +821,7 @@ t_3_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_delta AS Need_sn_delta, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_delta.component)
+      (Uses.part <=> Need_sn_delta.component)
    UNION ALL
   
     SELECT
@@ -907,7 +907,7 @@ t_3_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_new AS Need_sn_new, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_new.component)
+      (Uses.part <=> Need_sn_new.component)
    UNION ALL
   
     SELECT
@@ -993,7 +993,7 @@ t_3_Need_MultBodyAggAux_f12 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_delta AS Need_sn_delta, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_delta.component)
+      (Uses.part <=> Need_sn_delta.component)
    UNION ALL
   
     SELECT
@@ -1079,7 +1079,7 @@ t_3_Need_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Need_sn_new AS Need_sn_new, t_2_Uses AS Uses
     WHERE
-      (Uses.part = Need_sn_new.component)
+      (Uses.part <=> Need_sn_new.component)
    UNION ALL
   
     SELECT

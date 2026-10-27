@@ -66,7 +66,7 @@ t_1_Reach_MultBodyAggAux_f3_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t0_f9 AS Reach_sn_t0_f9, t_1_Ship AS t_3_Ship
     WHERE
-      (Reach_sn_t0_f9.b = t_3_Ship.src)
+      (Reach_sn_t0_f9.b <=> t_3_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r1_f9 AS (SELECT
@@ -112,7 +112,7 @@ t_1_Reach_MultBodyAggAux_f4_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t1_f9 AS Reach_sn_t1_f9, t_1_Ship AS t_3_Ship
     WHERE
-      (Reach_sn_t1_f9.b = t_3_Ship.src)
+      (Reach_sn_t1_f9.b <=> t_3_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r2_f9 AS (SELECT
@@ -158,7 +158,7 @@ t_1_Reach_MultBodyAggAux_f5_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t2_f9 AS Reach_sn_t2_f9, t_1_Ship AS t_3_Ship
     WHERE
-      (Reach_sn_t2_f9.b = t_3_Ship.src)
+      (Reach_sn_t2_f9.b <=> t_3_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r3_f9 AS (SELECT
@@ -204,7 +204,7 @@ t_1_Reach_MultBodyAggAux_f6_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t3_f9 AS Reach_sn_t3_f9, t_1_Ship AS t_3_Ship
     WHERE
-      (Reach_sn_t3_f9.b = t_3_Ship.src)
+      (Reach_sn_t3_f9.b <=> t_3_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r4_f9 AS (SELECT
@@ -250,7 +250,7 @@ t_1_Reach_MultBodyAggAux_f7_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_t4_f9 AS Reach_sn_t4_f9, t_1_Ship AS t_3_Ship
     WHERE
-      (Reach_sn_t4_f9.b = t_3_Ship.src)
+      (Reach_sn_t4_f9.b <=> t_3_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Reach_sn_r5_f9 AS (SELECT
@@ -344,7 +344,7 @@ t_3_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta_f9 AS Reach_sn_delta_f9, t_1_Ship AS t_5_Ship
     WHERE
-      (Reach_sn_delta_f9.b = t_5_Ship.src)
+      (Reach_sn_delta_f9.b <=> t_5_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step_f9 AS (SELECT
@@ -416,7 +416,7 @@ t_3_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new_f9 AS Reach_sn_new_f9, t_1_Ship AS t_5_Ship
     WHERE
-      (Reach_sn_new_f9.b = t_5_Ship.src)
+      (Reach_sn_new_f9.b <=> t_5_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step_f9 AS (SELECT
@@ -488,7 +488,7 @@ t_3_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta_f9 AS Reach_sn_delta_f9, t_1_Ship AS t_5_Ship
     WHERE
-      (Reach_sn_delta_f9.b = t_5_Ship.src)
+      (Reach_sn_delta_f9.b <=> t_5_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step_f9 AS (SELECT
@@ -560,7 +560,7 @@ t_3_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new_f9 AS Reach_sn_new_f9, t_1_Ship AS t_5_Ship
     WHERE
-      (Reach_sn_new_f9.b = t_5_Ship.src)
+      (Reach_sn_new_f9.b <=> t_5_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step_f9 AS (SELECT
@@ -632,7 +632,7 @@ t_3_Reach_MultBodyAggAux_f8_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_delta_f9 AS Reach_sn_delta_f9, t_1_Ship AS t_5_Ship
     WHERE
-      (Reach_sn_delta_f9.b = t_5_Ship.src)
+      (Reach_sn_delta_f9.b <=> t_5_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_step_f9 AS (SELECT
@@ -704,7 +704,7 @@ t_3_Reach_MultBodyAggAux_f1_f9 AS (SELECT * FROM (
     FROM
       synalog_test.Reach_sn_new_f9 AS Reach_sn_new_f9, t_1_Ship AS t_5_Ship
     WHERE
-      (Reach_sn_new_f9.b = t_5_Ship.src)
+      (Reach_sn_new_f9.b <=> t_5_Ship.src)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Reach_sn_back_step_f9 AS (SELECT

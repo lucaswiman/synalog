@@ -15,8 +15,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_0_Linked_MultBodyAggAux_f2 AS (SELECT * FROM (
   
@@ -64,8 +64,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_1_Linked_MultBodyAggAux_f3 AS (SELECT * FROM (
   
@@ -82,7 +82,7 @@ t_1_Linked_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_t0 AS Linked_sn_t0, t_1_Shares AS t_3_Shares
     WHERE
-      (t_3_Shares.a = Linked_sn_t0.b)
+      (t_3_Shares.a <=> Linked_sn_t0.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r1 AS (SELECT
@@ -118,8 +118,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_1_Linked_MultBodyAggAux_f4 AS (SELECT * FROM (
   
@@ -136,7 +136,7 @@ t_1_Linked_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_t1 AS Linked_sn_t1, t_1_Shares AS t_3_Shares
     WHERE
-      (t_3_Shares.a = Linked_sn_t1.b)
+      (t_3_Shares.a <=> Linked_sn_t1.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r2 AS (SELECT
@@ -172,8 +172,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_1_Linked_MultBodyAggAux_f5 AS (SELECT * FROM (
   
@@ -190,7 +190,7 @@ t_1_Linked_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_t2 AS Linked_sn_t2, t_1_Shares AS t_3_Shares
     WHERE
-      (t_3_Shares.a = Linked_sn_t2.b)
+      (t_3_Shares.a <=> Linked_sn_t2.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r3 AS (SELECT
@@ -226,8 +226,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_1_Linked_MultBodyAggAux_f6 AS (SELECT * FROM (
   
@@ -244,7 +244,7 @@ t_1_Linked_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_t3 AS Linked_sn_t3, t_1_Shares AS t_3_Shares
     WHERE
-      (t_3_Shares.a = Linked_sn_t3.b)
+      (t_3_Shares.a <=> Linked_sn_t3.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r4 AS (SELECT
@@ -280,8 +280,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_1_Linked_MultBodyAggAux_f7 AS (SELECT * FROM (
   
@@ -298,7 +298,7 @@ t_1_Linked_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_t4 AS Linked_sn_t4, t_1_Shares AS t_3_Shares
     WHERE
-      (t_3_Shares.a = Linked_sn_t4.b)
+      (t_3_Shares.a <=> Linked_sn_t4.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Linked_sn_r5 AS (SELECT
@@ -382,8 +382,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
   
@@ -400,7 +400,7 @@ t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_delta AS Linked_sn_delta, t_1_Shares AS t_5_Shares
     WHERE
-      (t_5_Shares.a = Linked_sn_delta.b)
+      (t_5_Shares.a <=> Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_step AS (SELECT
@@ -462,8 +462,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
   
@@ -480,7 +480,7 @@ t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_new AS Linked_sn_new, t_1_Shares AS t_5_Shares
     WHERE
-      (t_5_Shares.a = Linked_sn_new.b)
+      (t_5_Shares.a <=> Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_back_step AS (SELECT
@@ -542,8 +542,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
   
@@ -560,7 +560,7 @@ t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_delta AS Linked_sn_delta, t_1_Shares AS t_5_Shares
     WHERE
-      (t_5_Shares.a = Linked_sn_delta.b)
+      (t_5_Shares.a <=> Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_step AS (SELECT
@@ -622,8 +622,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
   
@@ -640,7 +640,7 @@ t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_new AS Linked_sn_new, t_1_Shares AS t_5_Shares
     WHERE
-      (t_5_Shares.a = Linked_sn_new.b)
+      (t_5_Shares.a <=> Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_back_step AS (SELECT
@@ -702,8 +702,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
   
@@ -720,7 +720,7 @@ t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_delta AS Linked_sn_delta, t_1_Shares AS t_5_Shares
     WHERE
-      (t_5_Shares.a = Linked_sn_delta.b)
+      (t_5_Shares.a <=> Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_step AS (SELECT
@@ -782,8 +782,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
   
@@ -800,7 +800,7 @@ t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_new AS Linked_sn_new, t_1_Shares AS t_5_Shares
     WHERE
-      (t_5_Shares.a = Linked_sn_new.b)
+      (t_5_Shares.a <=> Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_back_step AS (SELECT
@@ -862,8 +862,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
   
@@ -880,7 +880,7 @@ t_3_Linked_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_delta AS Linked_sn_delta, t_1_Shares AS t_5_Shares
     WHERE
-      (t_5_Shares.a = Linked_sn_delta.b)
+      (t_5_Shares.a <=> Linked_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_step AS (SELECT
@@ -942,8 +942,8 @@ t_1_Shares AS (SELECT
 FROM
   t_6_HasPhone AS HasPhone, t_6_HasPhone AS t_2_HasPhone
 WHERE
-  (HasPhone.account != t_2_HasPhone.account) AND
-  (t_2_HasPhone.phone = HasPhone.phone)
+  (NOT (HasPhone.account <=> t_2_HasPhone.account)) AND
+  (t_2_HasPhone.phone <=> HasPhone.phone)
 GROUP BY 1, 2),
 t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
   
@@ -960,7 +960,7 @@ t_3_Linked_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Linked_sn_new AS Linked_sn_new, t_1_Shares AS t_5_Shares
     WHERE
-      (t_5_Shares.a = Linked_sn_new.b)
+      (t_5_Shares.a <=> Linked_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Linked_sn_back_step AS (SELECT

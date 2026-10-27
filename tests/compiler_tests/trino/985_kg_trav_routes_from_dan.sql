@@ -85,8 +85,8 @@ SELECT
 FROM
   synalog_test.Person AS Person, synalog_test.Person AS t_0_Person, t_1_Management AS Management
 WHERE
-  (Management.manager_id = Person.person_id) AND
-  (Management.employee_id = t_0_Person.person_id)
+  (Management.manager_id IS NOT DISTINCT FROM Person.person_id) AND
+  (Management.employee_id IS NOT DISTINCT FROM t_0_Person.person_id)
 GROUP BY 1, 2;
 
 -- Interacting with table synalog_test.Manages
@@ -110,8 +110,8 @@ CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_0_PathTo_MultBodyAggAux_f2 A
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_1_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_1_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_1_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  )
 SELECT
@@ -146,8 +146,8 @@ CREATE TABLE synalog_test.PathTo_sn_t1 AS WITH t_1_PathTo_MultBodyAggAux_f3 AS (
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_2_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -157,8 +157,8 @@ CREATE TABLE synalog_test.PathTo_sn_t1 AS WITH t_1_PathTo_MultBodyAggAux_f3 AS (
     FROM
       synalog_test.PathTo_sn_t0 AS PathTo_sn_t0, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_t0.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_3_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_t0.target) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM t_3_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_PathTo_sn_r1 AS (SELECT
@@ -189,8 +189,8 @@ CREATE TABLE synalog_test.PathTo_sn_t2 AS WITH t_1_PathTo_MultBodyAggAux_f4 AS (
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_2_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -200,8 +200,8 @@ CREATE TABLE synalog_test.PathTo_sn_t2 AS WITH t_1_PathTo_MultBodyAggAux_f4 AS (
     FROM
       synalog_test.PathTo_sn_t1 AS PathTo_sn_t1, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_t1.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_3_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_t1.target) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM t_3_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_PathTo_sn_r2 AS (SELECT
@@ -232,8 +232,8 @@ CREATE TABLE synalog_test.PathTo_sn_t3 AS WITH t_1_PathTo_MultBodyAggAux_f5 AS (
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_2_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -243,8 +243,8 @@ CREATE TABLE synalog_test.PathTo_sn_t3 AS WITH t_1_PathTo_MultBodyAggAux_f5 AS (
     FROM
       synalog_test.PathTo_sn_t2 AS PathTo_sn_t2, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_t2.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_3_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_t2.target) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM t_3_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_PathTo_sn_r3 AS (SELECT
@@ -275,8 +275,8 @@ CREATE TABLE synalog_test.PathTo_sn_t4 AS WITH t_1_PathTo_MultBodyAggAux_f6 AS (
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_2_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -286,8 +286,8 @@ CREATE TABLE synalog_test.PathTo_sn_t4 AS WITH t_1_PathTo_MultBodyAggAux_f6 AS (
     FROM
       synalog_test.PathTo_sn_t3 AS PathTo_sn_t3, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_t3.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_3_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_t3.target) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM t_3_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_PathTo_sn_r4 AS (SELECT
@@ -318,8 +318,8 @@ CREATE TABLE synalog_test.PathTo_sn_t5 AS WITH t_1_PathTo_MultBodyAggAux_f7 AS (
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_2_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -329,8 +329,8 @@ CREATE TABLE synalog_test.PathTo_sn_t5 AS WITH t_1_PathTo_MultBodyAggAux_f7 AS (
     FROM
       synalog_test.PathTo_sn_t4 AS PathTo_sn_t4, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_t4.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_3_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_t4.target) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM t_3_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_PathTo_sn_r5 AS (SELECT
@@ -361,8 +361,8 @@ CREATE TABLE synalog_test.PathTo_sn_t6 AS WITH t_1_PathTo_MultBodyAggAux_f8 AS (
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_2_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -372,8 +372,8 @@ CREATE TABLE synalog_test.PathTo_sn_t6 AS WITH t_1_PathTo_MultBodyAggAux_f8 AS (
     FROM
       synalog_test.PathTo_sn_t5 AS PathTo_sn_t5, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_t5.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_3_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_t5.target) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM t_3_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_PathTo_sn_r6 AS (SELECT
@@ -404,8 +404,8 @@ CREATE TABLE synalog_test.PathTo_sn_t7 AS WITH t_1_PathTo_MultBodyAggAux_f9 AS (
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_2_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_2_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_2_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -415,8 +415,8 @@ CREATE TABLE synalog_test.PathTo_sn_t7 AS WITH t_1_PathTo_MultBodyAggAux_f9 AS (
     FROM
       synalog_test.PathTo_sn_t6 AS PathTo_sn_t6, synalog_test.Manages AS t_3_Manages, synalog_test.N AS t_4_N
     WHERE
-      (t_3_Manages.manager_id = PathTo_sn_t6.target) AND
-      (t_4_N.person_id = t_3_Manages.employee_id)
+      (t_3_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_t6.target) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM t_3_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_PathTo_sn_r7 AS (SELECT
@@ -517,8 +517,8 @@ CREATE TABLE synalog_test.PathTo_sn_new AS WITH t_3_PathTo_MultBodyAggAux_f10 AS
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_4_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_4_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -528,8 +528,8 @@ CREATE TABLE synalog_test.PathTo_sn_new AS WITH t_3_PathTo_MultBodyAggAux_f10 AS
     FROM
       synalog_test.PathTo_sn_delta AS PathTo_sn_delta, synalog_test.Manages AS t_5_Manages, synalog_test.N AS t_6_N
     WHERE
-      (t_5_Manages.manager_id = PathTo_sn_delta.target) AND
-      (t_6_N.person_id = t_5_Manages.employee_id)
+      (t_5_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_delta.target) AND
+      (t_6_N.person_id IS NOT DISTINCT FROM t_5_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_PathTo_sn_step AS (SELECT
@@ -589,8 +589,8 @@ CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_3_PathTo_MultBodyAggAux_f1 A
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_4_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_4_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -600,8 +600,8 @@ CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_3_PathTo_MultBodyAggAux_f1 A
     FROM
       synalog_test.PathTo_sn_new AS PathTo_sn_new, synalog_test.Manages AS t_5_Manages, synalog_test.N AS t_6_N
     WHERE
-      (t_5_Manages.manager_id = PathTo_sn_new.target) AND
-      (t_6_N.person_id = t_5_Manages.employee_id)
+      (t_5_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_new.target) AND
+      (t_6_N.person_id IS NOT DISTINCT FROM t_5_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_PathTo_sn_back_step AS (SELECT
@@ -661,8 +661,8 @@ CREATE TABLE synalog_test.PathTo_sn_new AS WITH t_3_PathTo_MultBodyAggAux_f10 AS
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_4_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_4_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -672,8 +672,8 @@ CREATE TABLE synalog_test.PathTo_sn_new AS WITH t_3_PathTo_MultBodyAggAux_f10 AS
     FROM
       synalog_test.PathTo_sn_delta AS PathTo_sn_delta, synalog_test.Manages AS t_5_Manages, synalog_test.N AS t_6_N
     WHERE
-      (t_5_Manages.manager_id = PathTo_sn_delta.target) AND
-      (t_6_N.person_id = t_5_Manages.employee_id)
+      (t_5_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_delta.target) AND
+      (t_6_N.person_id IS NOT DISTINCT FROM t_5_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_PathTo_sn_step AS (SELECT
@@ -733,8 +733,8 @@ CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_3_PathTo_MultBodyAggAux_f1 A
     FROM
       synalog_test.Manages AS Manages, synalog_test.N AS N, synalog_test.N AS t_4_N
     WHERE
-      (N.person_id = Manages.manager_id) AND
-      (t_4_N.person_id = Manages.employee_id)
+      (N.person_id IS NOT DISTINCT FROM Manages.manager_id) AND
+      (t_4_N.person_id IS NOT DISTINCT FROM Manages.employee_id)
    UNION ALL
   
     SELECT
@@ -744,8 +744,8 @@ CREATE TABLE synalog_test.PathTo_sn_delta AS WITH t_3_PathTo_MultBodyAggAux_f1 A
     FROM
       synalog_test.PathTo_sn_new AS PathTo_sn_new, synalog_test.Manages AS t_5_Manages, synalog_test.N AS t_6_N
     WHERE
-      (t_5_Manages.manager_id = PathTo_sn_new.target) AND
-      (t_6_N.person_id = t_5_Manages.employee_id)
+      (t_5_Manages.manager_id IS NOT DISTINCT FROM PathTo_sn_new.target) AND
+      (t_6_N.person_id IS NOT DISTINCT FROM t_5_Manages.employee_id)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_PathTo_sn_back_step AS (SELECT
@@ -802,5 +802,5 @@ FROM
   synalog_test.PathTo_sn_full AS PathTo_sn_full, synalog_test.N AS N
 WHERE
   (4 = PathTo_sn_full.source) AND
-  (N.person_id = PathTo_sn_full.target)
+  (N.person_id IS NOT DISTINCT FROM PathTo_sn_full.target)
 GROUP BY 1, 2 ORDER BY target, path;

@@ -45,7 +45,7 @@ t_1_P_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_t0 AS P_sn_t0, t_2_E AS E
     WHERE
-      (E.a = P_sn_t0.n)
+      (E.a <=> P_sn_t0.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_P_sn_r1 AS (SELECT
@@ -83,7 +83,7 @@ t_1_P_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_t1 AS P_sn_t1, t_2_E AS E
     WHERE
-      (E.a = P_sn_t1.n)
+      (E.a <=> P_sn_t1.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_P_sn_r2 AS (SELECT
@@ -121,7 +121,7 @@ t_1_P_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_t2 AS P_sn_t2, t_2_E AS E
     WHERE
-      (E.a = P_sn_t2.n)
+      (E.a <=> P_sn_t2.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_P_sn_r3 AS (SELECT
@@ -159,7 +159,7 @@ t_1_P_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_t3 AS P_sn_t3, t_2_E AS E
     WHERE
-      (E.a = P_sn_t3.n)
+      (E.a <=> P_sn_t3.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_P_sn_r4 AS (SELECT
@@ -197,7 +197,7 @@ t_1_P_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_t4 AS P_sn_t4, t_2_E AS E
     WHERE
-      (E.a = P_sn_t4.n)
+      (E.a <=> P_sn_t4.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_P_sn_r5 AS (SELECT
@@ -283,7 +283,7 @@ t_3_P_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_delta AS P_sn_delta, t_2_E AS E
     WHERE
-      (E.a = P_sn_delta.n)
+      (E.a <=> P_sn_delta.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_P_sn_step AS (SELECT
@@ -347,7 +347,7 @@ t_3_P_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_new AS P_sn_new, t_2_E AS E
     WHERE
-      (E.a = P_sn_new.n)
+      (E.a <=> P_sn_new.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_P_sn_back_step AS (SELECT
@@ -411,7 +411,7 @@ t_3_P_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_delta AS P_sn_delta, t_2_E AS E
     WHERE
-      (E.a = P_sn_delta.n)
+      (E.a <=> P_sn_delta.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_P_sn_step AS (SELECT
@@ -475,7 +475,7 @@ t_3_P_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_new AS P_sn_new, t_2_E AS E
     WHERE
-      (E.a = P_sn_new.n)
+      (E.a <=> P_sn_new.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_P_sn_back_step AS (SELECT
@@ -539,7 +539,7 @@ t_3_P_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.P_sn_delta AS P_sn_delta, t_2_E AS E
     WHERE
-      (E.a = P_sn_delta.n)
+      (E.a <=> P_sn_delta.n)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_P_sn_step AS (SELECT

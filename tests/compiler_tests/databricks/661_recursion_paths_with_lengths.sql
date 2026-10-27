@@ -52,7 +52,7 @@ t_1_P_MultBodyAggAux_f3 AS (SELECT * FROM (
       synalog_test.P_sn_t0 AS P_sn_t0, t_2_E AS E
     WHERE
       (P_sn_t0.l < 3) AND
-      (E.a = P_sn_t0.n)
+      (E.a <=> P_sn_t0.n)
    UNION ALL
   
     SELECT
@@ -96,7 +96,7 @@ t_1_P_MultBodyAggAux_f4 AS (SELECT * FROM (
       synalog_test.P_sn_t1 AS P_sn_t1, t_2_E AS E
     WHERE
       (P_sn_t1.l < 3) AND
-      (E.a = P_sn_t1.n)
+      (E.a <=> P_sn_t1.n)
    UNION ALL
   
     SELECT
@@ -140,7 +140,7 @@ t_1_P_MultBodyAggAux_f5 AS (SELECT * FROM (
       synalog_test.P_sn_t2 AS P_sn_t2, t_2_E AS E
     WHERE
       (P_sn_t2.l < 3) AND
-      (E.a = P_sn_t2.n)
+      (E.a <=> P_sn_t2.n)
    UNION ALL
   
     SELECT
@@ -184,7 +184,7 @@ t_1_P_MultBodyAggAux_f6 AS (SELECT * FROM (
       synalog_test.P_sn_t3 AS P_sn_t3, t_2_E AS E
     WHERE
       (P_sn_t3.l < 3) AND
-      (E.a = P_sn_t3.n)
+      (E.a <=> P_sn_t3.n)
    UNION ALL
   
     SELECT
@@ -228,7 +228,7 @@ t_1_P_MultBodyAggAux_f7 AS (SELECT * FROM (
       synalog_test.P_sn_t4 AS P_sn_t4, t_2_E AS E
     WHERE
       (P_sn_t4.l < 3) AND
-      (E.a = P_sn_t4.n)
+      (E.a <=> P_sn_t4.n)
    UNION ALL
   
     SELECT
@@ -320,7 +320,7 @@ t_3_P_MultBodyAggAux_f8 AS (SELECT * FROM (
       synalog_test.P_sn_delta AS P_sn_delta, t_2_E AS E
     WHERE
       (P_sn_delta.l < 3) AND
-      (E.a = P_sn_delta.n)
+      (E.a <=> P_sn_delta.n)
    UNION ALL
   
     SELECT
@@ -390,7 +390,7 @@ t_3_P_MultBodyAggAux_f1 AS (SELECT * FROM (
       synalog_test.P_sn_new AS P_sn_new, t_2_E AS E
     WHERE
       (P_sn_new.l < 3) AND
-      (E.a = P_sn_new.n)
+      (E.a <=> P_sn_new.n)
    UNION ALL
   
     SELECT
@@ -460,7 +460,7 @@ t_3_P_MultBodyAggAux_f8 AS (SELECT * FROM (
       synalog_test.P_sn_delta AS P_sn_delta, t_2_E AS E
     WHERE
       (P_sn_delta.l < 3) AND
-      (E.a = P_sn_delta.n)
+      (E.a <=> P_sn_delta.n)
    UNION ALL
   
     SELECT
@@ -530,7 +530,7 @@ t_3_P_MultBodyAggAux_f1 AS (SELECT * FROM (
       synalog_test.P_sn_new AS P_sn_new, t_2_E AS E
     WHERE
       (P_sn_new.l < 3) AND
-      (E.a = P_sn_new.n)
+      (E.a <=> P_sn_new.n)
    UNION ALL
   
     SELECT
@@ -600,7 +600,7 @@ t_3_P_MultBodyAggAux_f8 AS (SELECT * FROM (
       synalog_test.P_sn_delta AS P_sn_delta, t_2_E AS E
     WHERE
       (P_sn_delta.l < 3) AND
-      (E.a = P_sn_delta.n)
+      (E.a <=> P_sn_delta.n)
    UNION ALL
   
     SELECT

@@ -131,7 +131,7 @@ t_1_Under_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_t0 AS Under_sn_t0, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_t0.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_t0.report)
    UNION ALL
   
     SELECT
@@ -213,7 +213,7 @@ t_1_Under_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_t1 AS Under_sn_t1, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_t1.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_t1.report)
    UNION ALL
   
     SELECT
@@ -295,7 +295,7 @@ t_1_Under_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_t2 AS Under_sn_t2, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_t2.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_t2.report)
    UNION ALL
   
     SELECT
@@ -377,7 +377,7 @@ t_1_Under_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_t3 AS Under_sn_t3, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_t3.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_t3.report)
    UNION ALL
   
     SELECT
@@ -459,7 +459,7 @@ t_1_Under_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_t4 AS Under_sn_t4, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_t4.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_t4.report)
    UNION ALL
   
     SELECT
@@ -589,7 +589,7 @@ t_3_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_delta AS Under_sn_delta, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_delta.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_delta.report)
    UNION ALL
   
     SELECT
@@ -697,7 +697,7 @@ t_3_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_new AS Under_sn_new, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_new.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_new.report)
    UNION ALL
   
     SELECT
@@ -805,7 +805,7 @@ t_3_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_delta AS Under_sn_delta, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_delta.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_delta.report)
    UNION ALL
   
     SELECT
@@ -913,7 +913,7 @@ t_3_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_new AS Under_sn_new, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_new.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_new.report)
    UNION ALL
   
     SELECT
@@ -1021,7 +1021,7 @@ t_3_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_delta AS Under_sn_delta, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_delta.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_delta.report)
    UNION ALL
   
     SELECT
@@ -1129,7 +1129,7 @@ t_3_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_new AS Under_sn_new, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_new.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_new.report)
    UNION ALL
   
     SELECT
@@ -1237,7 +1237,7 @@ t_3_Under_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_delta AS Under_sn_delta, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_delta.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_delta.report)
    UNION ALL
   
     SELECT
@@ -1345,7 +1345,7 @@ t_3_Under_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Under_sn_new AS Under_sn_new, t_2_Manages AS Manages
     WHERE
-      (Manages.boss = Under_sn_new.report)
+      (Manages.boss IS NOT DISTINCT FROM Under_sn_new.report)
    UNION ALL
   
     SELECT
@@ -1417,5 +1417,5 @@ WHERE
     synalog_test.Under AS t_0_Under
   WHERE
     (t_0_Under.boss = 'cto') AND
-    (t_0_Under.report = Under.report)) IS NULL) AND
+    (t_0_Under.report IS NOT DISTINCT FROM Under.report)) IS NULL) AND
   (Under.boss = 'ceo') ORDER BY report;

@@ -56,7 +56,7 @@ t_1_Down_MultBodyAggAux_f3 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_t0 AS Down_sn_t0, t_1_Influenced AS t_2_Influenced
     WHERE
-      (t_2_Influenced.a = Down_sn_t0.b)
+      (t_2_Influenced.a <=> Down_sn_t0.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Down_sn_r1 AS (SELECT
@@ -97,7 +97,7 @@ t_1_Down_MultBodyAggAux_f4 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_t1 AS Down_sn_t1, t_1_Influenced AS t_2_Influenced
     WHERE
-      (t_2_Influenced.a = Down_sn_t1.b)
+      (t_2_Influenced.a <=> Down_sn_t1.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Down_sn_r2 AS (SELECT
@@ -138,7 +138,7 @@ t_1_Down_MultBodyAggAux_f5 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_t2 AS Down_sn_t2, t_1_Influenced AS t_2_Influenced
     WHERE
-      (t_2_Influenced.a = Down_sn_t2.b)
+      (t_2_Influenced.a <=> Down_sn_t2.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Down_sn_r3 AS (SELECT
@@ -179,7 +179,7 @@ t_1_Down_MultBodyAggAux_f6 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_t3 AS Down_sn_t3, t_1_Influenced AS t_2_Influenced
     WHERE
-      (t_2_Influenced.a = Down_sn_t3.b)
+      (t_2_Influenced.a <=> Down_sn_t3.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Down_sn_r4 AS (SELECT
@@ -220,7 +220,7 @@ t_1_Down_MultBodyAggAux_f7 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_t4 AS Down_sn_t4, t_1_Influenced AS t_2_Influenced
     WHERE
-      (t_2_Influenced.a = Down_sn_t4.b)
+      (t_2_Influenced.a <=> Down_sn_t4.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_Down_sn_r5 AS (SELECT
@@ -309,7 +309,7 @@ t_3_Down_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_delta AS Down_sn_delta, t_1_Influenced AS t_4_Influenced
     WHERE
-      (t_4_Influenced.a = Down_sn_delta.b)
+      (t_4_Influenced.a <=> Down_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Down_sn_step AS (SELECT
@@ -376,7 +376,7 @@ t_3_Down_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_new AS Down_sn_new, t_1_Influenced AS t_4_Influenced
     WHERE
-      (t_4_Influenced.a = Down_sn_new.b)
+      (t_4_Influenced.a <=> Down_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Down_sn_back_step AS (SELECT
@@ -443,7 +443,7 @@ t_3_Down_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_delta AS Down_sn_delta, t_1_Influenced AS t_4_Influenced
     WHERE
-      (t_4_Influenced.a = Down_sn_delta.b)
+      (t_4_Influenced.a <=> Down_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Down_sn_step AS (SELECT
@@ -510,7 +510,7 @@ t_3_Down_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_new AS Down_sn_new, t_1_Influenced AS t_4_Influenced
     WHERE
-      (t_4_Influenced.a = Down_sn_new.b)
+      (t_4_Influenced.a <=> Down_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Down_sn_back_step AS (SELECT
@@ -577,7 +577,7 @@ t_3_Down_MultBodyAggAux_f8 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_delta AS Down_sn_delta, t_1_Influenced AS t_4_Influenced
     WHERE
-      (t_4_Influenced.a = Down_sn_delta.b)
+      (t_4_Influenced.a <=> Down_sn_delta.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Down_sn_step AS (SELECT
@@ -644,7 +644,7 @@ t_3_Down_MultBodyAggAux_f1 AS (SELECT * FROM (
     FROM
       synalog_test.Down_sn_new AS Down_sn_new, t_1_Influenced AS t_4_Influenced
     WHERE
-      (t_4_Influenced.a = Down_sn_new.b)
+      (t_4_Influenced.a <=> Down_sn_new.b)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_Down_sn_back_step AS (SELECT
@@ -707,4 +707,4 @@ FROM
   synalog_test.Down_sn_full AS Down_sn_full, t_0_Book AS Book
 WHERE
   ("austen" = Down_sn_full.a) AND
-  (Book.author = Down_sn_full.b) ORDER BY title NULLS LAST;
+  (Book.author <=> Down_sn_full.b) ORDER BY title NULLS LAST;

@@ -35,7 +35,7 @@ CREATE TABLE synalog_test.A_sn_t1 AS WITH t_1_A_MultBodyAggAux_f3 AS (SELECT * F
     FROM
       synalog_test.A_sn_t0 AS A_sn_t0, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_9) AS pushkin
     WHERE
-      (A_sn_t0.y = x_9)
+      (A_sn_t0.y <=> x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_A_sn_r1 AS (SELECT
@@ -64,7 +64,7 @@ CREATE TABLE synalog_test.A_sn_t2 AS WITH t_1_A_MultBodyAggAux_f4 AS (SELECT * F
     FROM
       synalog_test.A_sn_t1 AS A_sn_t1, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_9) AS pushkin
     WHERE
-      (A_sn_t1.y = x_9)
+      (A_sn_t1.y <=> x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_A_sn_r2 AS (SELECT
@@ -93,7 +93,7 @@ CREATE TABLE synalog_test.A_sn_t3 AS WITH t_1_A_MultBodyAggAux_f5 AS (SELECT * F
     FROM
       synalog_test.A_sn_t2 AS A_sn_t2, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_9) AS pushkin
     WHERE
-      (A_sn_t2.y = x_9)
+      (A_sn_t2.y <=> x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_A_sn_r3 AS (SELECT
@@ -177,7 +177,7 @@ CREATE TABLE synalog_test.B_sn_t1 AS WITH t_1_B_MultBodyAggAux_f9 AS (SELECT * F
     FROM
       synalog_test.B_sn_t0 AS B_sn_t0, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_9) AS pushkin
     WHERE
-      (B_sn_t0.y = x_9)
+      (B_sn_t0.y <=> x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_B_sn_r1 AS (SELECT
@@ -206,7 +206,7 @@ CREATE TABLE synalog_test.B_sn_t2 AS WITH t_1_B_MultBodyAggAux_f10 AS (SELECT * 
     FROM
       synalog_test.B_sn_t1 AS B_sn_t1, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_9) AS pushkin
     WHERE
-      (B_sn_t1.y = x_9)
+      (B_sn_t1.y <=> x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_B_sn_r2 AS (SELECT
@@ -235,7 +235,7 @@ CREATE TABLE synalog_test.B_sn_t3 AS WITH t_1_B_MultBodyAggAux_f11 AS (SELECT * 
     FROM
       synalog_test.B_sn_t2 AS B_sn_t2, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_9) AS pushkin
     WHERE
-      (B_sn_t2.y = x_9)
+      (B_sn_t2.y <=> x_9)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_0_B_sn_r3 AS (SELECT
@@ -294,7 +294,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -346,7 +346,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -398,7 +398,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -450,7 +450,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -502,7 +502,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -554,7 +554,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -606,7 +606,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -658,7 +658,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -710,7 +710,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -762,7 +762,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -814,7 +814,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -866,7 +866,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -918,7 +918,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -970,7 +970,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -1022,7 +1022,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -1074,7 +1074,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -1126,7 +1126,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -1178,7 +1178,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -1230,7 +1230,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -1282,7 +1282,7 @@ CREATE TABLE synalog_test.A_sn_delta AS WITH t_3_A_MultBodyAggAux_f1 AS (SELECT 
     FROM
       synalog_test.A_sn_new AS A_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_new.y = x_16)
+      (A_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_back_step AS (SELECT
@@ -1334,7 +1334,7 @@ CREATE TABLE synalog_test.A_sn_new AS WITH t_3_A_MultBodyAggAux_f6 AS (SELECT * 
     FROM
       synalog_test.A_sn_delta AS A_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (A_sn_delta.y = x_16)
+      (A_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_A_sn_step AS (SELECT
@@ -1386,7 +1386,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -1438,7 +1438,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -1490,7 +1490,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -1542,7 +1542,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -1594,7 +1594,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -1646,7 +1646,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -1698,7 +1698,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -1750,7 +1750,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -1802,7 +1802,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -1854,7 +1854,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -1906,7 +1906,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -1958,7 +1958,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -2010,7 +2010,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -2062,7 +2062,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -2114,7 +2114,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -2166,7 +2166,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -2218,7 +2218,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -2270,7 +2270,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -2322,7 +2322,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -2374,7 +2374,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
@@ -2426,7 +2426,7 @@ CREATE TABLE synalog_test.B_sn_new AS WITH t_3_B_MultBodyAggAux_f12 AS (SELECT *
     FROM
       synalog_test.B_sn_delta AS B_sn_delta, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_delta.y = x_16)
+      (B_sn_delta.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_step AS (SELECT
@@ -2478,7 +2478,7 @@ CREATE TABLE synalog_test.B_sn_delta AS WITH t_3_B_MultBodyAggAux_f7 AS (SELECT 
     FROM
       synalog_test.B_sn_new AS B_sn_new, LATERAL (SELECT explode(FILTER(SEQUENCE(0, CAST(100 AS BIGINT)), x -> x < 100)) AS x_16) AS pushkin
     WHERE
-      (B_sn_new.y = x_16)
+      (B_sn_new.y <=> x_16)
   
 ) AS UNUSED_TABLE_NAME  ),
 t_2_B_sn_back_step AS (SELECT
